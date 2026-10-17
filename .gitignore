@@ -26,6 +26,9 @@
 hs_err_pid*
 replay_pid*
 
+# JVM heap dumps
+*.hprof
+
 ########################
 ### Gradle ###
 ########################
@@ -93,7 +96,21 @@ bin/
 ### VS Code ###
 ########################
 .vscode/
-.code-workspace
+*.code-workspace
+
+########################
+### Local Environment ###
+########################
+.env
+.env.*
+!.env.example
+
+########################
+### Editor Temporary Files ###
+########################
+*.swp
+*.swo
+*~
 
 ########################
 ### Mac OS ###
