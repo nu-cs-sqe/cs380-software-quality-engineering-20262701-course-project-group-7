@@ -1,8 +1,10 @@
 # YOUR PROJECT NAME
 
 ## Contributors
-- PERSON
-- PERSON
+- Casey Zhang
+- Fiona Gan
+- Graciela Zhang
+- Yiliu Li
 
 ## Dependencies
 - JDK 11
