@@ -89,3 +89,48 @@ Setup can throw exceptions if:
 1. Asks for the number of players and names.
 2. Calls `game.setup(n)`.
 3. On `IllegalArgumentException`, shows the exception message and asks again.
+
+# User Story
+As a player of Exploding Kittens, I want to choose the number of players when a new game starts, so that the game matches the size of my group.
+
+As a player of Exploding Kittens, I want the deck to be prepared and the cards dealt automatically once the number of players is set, so that I can begin playing without manually organizing the deck and distributing cards.
+
+Acceptance Criteria
+✅ The game must not start unless there are 2 to 5 players.
+✅ Each player must receive exactly 7 random cards from the deck.
+✅ Each player must receive 1 Defuse card in addition to the 7 random cards.
+✅ The number of Exploding Kitten cards added back into the deck must be one less than the number of players.
+✅ The deck must be shuffled after adding the Exploding Kitten cards back in.
+✅ The turn order must be initialized once setup is complete.
+
+# Use Case 1: Start New Game
+Actor: Player
+
+Preconditions: The game application is launched.
+
+Main Flow:
+Player clicks “Start Game”.
+
+System asks for the total number of player.
+
+The player enters the number of players and player names.
+
+System shuffles the deck.
+
+System removes all Exploding Kitten cards.
+
+System deals 7 cards to each player.
+
+System gives each player 1 Defuse card.
+
+System returns the correct number of Exploding Kitten cards to the deck (1 less than the number of players).
+
+System shuffles the deck again.
+
+System sets the initial turn order.
+ 
+
+## Postconditions:
+Each player has 8 cards (7 random + 1 Defuse).
+The deck contains the correct number of Exploding Kittens.
+The game is ready for the first turn.
