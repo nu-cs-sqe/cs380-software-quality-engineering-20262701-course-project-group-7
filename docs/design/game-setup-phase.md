@@ -96,12 +96,15 @@ As a player of Exploding Kittens, I want to choose the number of players when a 
 As a player of Exploding Kittens, I want the deck to be prepared and the cards dealt automatically once the number of players is set, so that I can begin playing without manually organizing the deck and distributing cards.
 
 Acceptance Criteria
-✅ The game must not start unless there are 2 to 5 players.
-✅ Each player must receive exactly 7 random cards from the deck.
-✅ Each player must receive 1 Defuse card in addition to the 7 random cards.
-✅ The number of Exploding Kitten cards added back into the deck must be one less than the number of players.
-✅ The deck must be shuffled after adding the Exploding Kitten cards back in.
-✅ The turn order must be initialized once setup is complete.
+- [ ] The game must not start unless there are 2 to 5 players.
+- [ ] All Exploding Kitten and Defuse cards must be removed from the deck before dealing.
+- [ ] The deck must be shuffled before dealing.
+- [ ] Each player must receive exactly 7 cards from the shuffled deck.
+- [ ] Each player must receive 1 Defuse card in addition to the 7 cards.
+- [ ] The remaining Defuse cards must be added back into the deck.
+- [ ] The number of Exploding Kitten cards added back into the deck must be one less than the number of players.
+- [ ] The deck must be shuffled after adding the Exploding Kitten and remaining Defuse cards back in.
+- [ ] Once setup is complete, the turn order must be set, starting with player 1.
 
 # Use Case 1: Start New Game
 Actor: Player
