@@ -91,12 +91,14 @@ Setup can throw exceptions if:
 3. On `IllegalArgumentException`, shows the exception message and asks again.
 
 # User Story
-As a player of Exploding Kittens, I want to choose the number of players when a new game starts, so that the game matches the size of my group.
+As a player of Exploding Kittens, I want to choose the number of players and enter each player's name when a new game starts, so that the game matches my group and I can tell whose turn it is.
 
 As a player of Exploding Kittens, I want the deck to be prepared and the cards dealt automatically once the number of players is set, so that I can begin playing without manually organizing the deck and distributing cards.
 
 Acceptance Criteria
 - [ ] The game must not start unless there are 2 to 5 players.
+- [ ] Each player must have a non-empty name.
+- [ ] No two players may have the same name.
 - [ ] All Exploding Kitten and Defuse cards must be removed from the deck before dealing.
 - [ ] The deck must be shuffled before dealing.
 - [ ] Each player must receive exactly 7 cards from the shuffled deck.
@@ -107,33 +109,39 @@ Acceptance Criteria
 - [ ] Once setup is complete, the turn order must be set, starting with player 1.
 
 # Use Case 1: Start New Game
-Actor: Player
 
-Preconditions: The game application is launched.
+## Actor
+Player
 
-Main Flow:
-Player clicks “Start Game”.
+## Preconditions
+The game application is launched.
 
-System asks for the total number of player.
+## Main Flow
+1. Player selects "Start Game".
+2. System asks for the total number of players.
+3. Player enters the number of players.
+4. Player enters a name for each player.
+5. System removes all Exploding Kitten and Defuse cards from the deck.
+6. System shuffles the deck.
+7. System deals 7 cards to each player.
+8. System gives each player 1 Defuse card.
+9. System returns the remaining Defuse cards to the deck.
+10. System returns (number of players − 1) Exploding Kitten cards to the deck.
+11. System shuffles the deck again.
+12. System sets the initial turn order, starting with player 1.
 
-The player enters the number of players and player names.
+## Alternative Flow
+3a. Player enters a number less than 2 or greater than 5:
+  1. System displays an error message.
+  2. Return to step 2.
+4a. Player enters an empty name:
+  1. System displays an error message.
+  2. System asks for that player's name again.
+4b. Player enters a name that is already taken:
+  1. System displays an error message.
+  2. System asks for that player's name again.
 
-System shuffles the deck.
-
-System removes all Exploding Kitten cards.
-
-System deals 7 cards to each player.
-
-System gives each player 1 Defuse card.
-
-System returns the correct number of Exploding Kitten cards to the deck (1 less than the number of players).
-
-System shuffles the deck again.
-
-System sets the initial turn order.
- 
-
-## Postconditions:
-Each player has 8 cards (7 random + 1 Defuse).
-The deck contains the correct number of Exploding Kittens.
-The game is ready for the first turn.
+## Postconditions
+- Each player has 8 cards (7 cards from the shuffled deck + 1 Defuse).
+- The deck contains (number of players − 1) Exploding Kitten cards and the remaining Defuse cards.
+- The game is ready for the first turn.
