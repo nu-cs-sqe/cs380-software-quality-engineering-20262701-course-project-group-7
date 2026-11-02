@@ -32,4 +32,48 @@ public class DeckTest {
 
         assertEquals(0, deck.size());
     }
+
+    // BVA Method 2, TC2
+    @Test
+    public void size_oneCard_returnsOne() {
+        Deck deck = createDeckWith(CardType.ATTACK);
+
+        assertEquals(1, deck.size());
+    }
+
+    // BVA Method 2, TC3
+    @Test
+    public void size_threeCards_returnsThree() {
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP, CardType.FAVOR);
+
+        assertEquals(3, deck.size());
+    }
+
+    // BVA Method 3, TC1
+    @Test
+    public void add_nullType_throwsIllegalArgumentException() {
+        Deck deck = createDeckWith();
+
+        assertThrows(IllegalArgumentException.class, () -> deck.add(null, 1));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 3, TC3
+    @Test
+    public void add_zeroCards_leavesDeckEmpty() {
+        Deck deck = createDeckWith();
+
+        deck.add(CardType.ATTACK, 0);
+
+        assertEquals(0, deck.size());
+    }
+
+    private Deck createDeckWith(CardType... cardsFromTop) {
+        EasyMock.replay(mockRandom);
+        Deck deck = new Deck(mockRandom);
+        for (CardType card : cardsFromTop) {
+            deck.add(card, 1);
+        }
+        return deck;
+    }
 }
