@@ -15,10 +15,10 @@
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|------------------|-----------------|--------------|
-| TC1 | `new Player("Alice")` | `getName().equals("Alice")`, `getHandSize()==0` | no |
-| TC2 | `new Player("A")` | `getName().equals("A")`, `getHandSize()==0` | no |
-| TC3 | `new Player("")` | throws `IllegalArgumentException` with message `"player.constructor.emptyName"` | no |
-| TC4 | `new Player(null)` | throws `IllegalArgumentException` with message `"player.constructor.nullName"` | no |
+| TC1 | `new Player("Alice")` | `getName().equals("Alice")`, `getHandSize()==0` | y |
+| TC2 | `new Player("A")` | `getName().equals("A")`, `getHandSize()==0` | y |
+| TC3 | `new Player("")` | throws `IllegalArgumentException` with message `"player.constructor.emptyName"` | y |
+| TC4 | `new Player(null)` | throws `IllegalArgumentException` with message `"player.constructor.nullName"` | y |
 
 ---
 
@@ -37,8 +37,8 @@
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|------------------|-----------------|--------------|
-| TC1 | `new Player("Alice").getName()` | `"Alice"` | no |
-| TC2 | `new Player("A").getName()` | `"A"` | no |
+| TC1 | `new Player("Alice").getName()` | `"Alice"` | y |
+| TC2 | `new Player("A").getName()` | `"A"` | y |
 
 ---
 
@@ -57,10 +57,10 @@
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|------------------|-----------------|--------------|
-| TC1 | `addToHand(DEFUSE)` on empty hand | `getHandSize()==1`, `getHand().get(0)==DEFUSE` | no |
-| TC2 | `addToHand(ATTACK)` on hand `[DEFUSE]` | `getHandSize()==2`, `getHand()` equals `[DEFUSE, ATTACK]` (appended at the end) | no |
-| TC3 | `addToHand(DEFUSE)` on hand `[DEFUSE]` | `getHandSize()==2`, `countInHand(DEFUSE)==2` (duplicates allowed) | no |
-| TC4 | `addToHand(null)` | throws `IllegalArgumentException` with message `"player.addToHand.nullCard"` | no |
+| TC1 | `addToHand(DEFUSE)` on empty hand | `getHandSize()==1`, `getHand().get(0)==DEFUSE` | y |
+| TC2 | `addToHand(ATTACK)` on hand `[DEFUSE]` | `getHandSize()==2`, `getHand()` equals `[DEFUSE, ATTACK]` (appended at the end) | y |
+| TC3 | `addToHand(DEFUSE)` on hand `[DEFUSE]` | `getHandSize()==2`, `countInHand(DEFUSE)==2` (duplicates allowed) | y |
+| TC4 | `addToHand(null)` | throws `IllegalArgumentException` with message `"player.addToHand.nullCard"` | y |
 
 ---
 
@@ -79,9 +79,9 @@
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|------------------|-----------------|--------------|
-| TC1 | new player | `0` | no |
-| TC2 | after one `addToHand` | `1` | no |
-| TC3 | after two `addToHand` | `2` | no |
+| TC1 | new player | `0` | y |
+| TC2 | after one `addToHand` | `1` | y |
+| TC3 | after two `addToHand` | `2` | y |
 
 ---
 
@@ -100,13 +100,13 @@
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|------------------|-----------------|--------------|
-| TC1 | empty hand, `countInHand(DEFUSE)` | `0` | no |
-| TC2 | hand `[DEFUSE]`, `countInHand(ATTACK)` | `0` | no |
-| TC3 | hand `[DEFUSE, ATTACK]`, `countInHand(DEFUSE)` (first element) | `1` | no |
-| TC4 | hand `[DEFUSE, ATTACK]`, `countInHand(ATTACK)` (last element) | `1` | no |
-| TC5 | hand `[DEFUSE, ATTACK, DEFUSE]`, `countInHand(DEFUSE)` (duplicates, not adjacent) | `2` | no |
-| TC6 | hand `[ATTACK, ATTACK]`, `countInHand(ATTACK)` (whole hand) | `2` | no |
-| TC7 | hand `[DEFUSE]`, `countInHand(null)` | throws `IllegalArgumentException` with message `"player.countInHand.nullType"` | no |
+| TC1 | empty hand, `countInHand(DEFUSE)` | `0` | y |
+| TC2 | hand `[DEFUSE]`, `countInHand(ATTACK)` | `0` | y |
+| TC3 | hand `[DEFUSE, ATTACK]`, `countInHand(DEFUSE)` (first element) | `1` | y |
+| TC4 | hand `[DEFUSE, ATTACK]`, `countInHand(ATTACK)` (last element) | `1` | y |
+| TC5 | hand `[DEFUSE, ATTACK, DEFUSE]`, `countInHand(DEFUSE)` (duplicates, not adjacent) | `2` | y |
+| TC6 | hand `[ATTACK, ATTACK]`, `countInHand(ATTACK)` (whole hand) | `2` | y |
+| TC7 | hand `[DEFUSE]`, `countInHand(null)` | throws `IllegalArgumentException` with message `"player.countInHand.nullType"` | y |
 
 ---
 
@@ -125,9 +125,9 @@
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|------------------|-----------------|--------------|
-| TC1 | `getHand()` on new player | empty list (`size()==0`) | no |
-| TC2 | `getHand()` after `addToHand(DEFUSE)` | list `[DEFUSE]` | no |
-| TC3 | `getHand()` after `addToHand(DEFUSE)`, `addToHand(ATTACK)` | list `[DEFUSE, ATTACK]` (insertion order) | no |
-| TC4 | call `add(ATTACK)` on the list returned by `getHand()`, then call `getHandSize()` | player's hand size is unchanged (the list is a copy) | no |
+| TC1 | `getHand()` on new player | empty list (`size()==0`) | y |
+| TC2 | `getHand()` after `addToHand(DEFUSE)` | list `[DEFUSE]` | y |
+| TC3 | `getHand()` after `addToHand(DEFUSE)`, `addToHand(ATTACK)` | list `[DEFUSE, ATTACK]` (insertion order) | y |
+| TC4 | call `add(ATTACK)` on the list returned by `getHand()`, then call `getHandSize()` | player's hand size is unchanged (the list is a copy) | y |
 
 ---
