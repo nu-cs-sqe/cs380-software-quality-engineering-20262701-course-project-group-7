@@ -21,8 +21,8 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | `new Deck(null)` | throws IllegalArgumentException | no |
-| TC2 | `new Deck(mockRandom)` | size = 0; `mockRandom` not called | no |
+| TC1 | `new Deck(null)` | throws IllegalArgumentException | yes |
+| TC2 | `new Deck(mockRandom)` | size = 0; `mockRandom` not called | yes |
 
 ## Method 2: `public int size()`
 
@@ -39,7 +39,7 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | empty deck | 0 | no (Method 1 TC2) |
+| TC1 | empty deck | 0 | yes (Method 1 TC2) |
 | TC2 | Deck [ATTACK] | 1 | no |
 | TC3 | Deck [ATTACK, SKIP, FAVOR] | 3 | no |
 | TC4 | standard deck | 56 | no (Method 7 TC2) |
