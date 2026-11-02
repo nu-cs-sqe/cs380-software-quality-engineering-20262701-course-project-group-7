@@ -37,4 +37,8 @@ public class Player {
     public int getHandSize(){
         return hand.size();
     }
+
+    public int countInHand(CardType type){
+        return 0;
+    }
 }

@@ -77,4 +77,11 @@ public class PlayerTest {
         assertEquals("player.addToHand.nullCard", ex.getMessage());
     }
 
+    @Test
+    void countEmptyHand_returnZero() {
+        Player player = new Player("Alice");
+
+        assertEquals(0, player.countInHand(CardType.DEFUSE));
+    }
+
 }
