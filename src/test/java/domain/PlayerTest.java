@@ -111,4 +111,16 @@ public class PlayerTest {
         assertEquals(2, player.countInHand(CardType.ATTACK));
     }
 
+    @Test
+    void countNullType_throwIllegalArgumentException() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.ATTACK);
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    player.countInHand(null);
+                });
+        assertEquals( "player.countInHand.nullType", ex.getMessage());
+    }
+
 }

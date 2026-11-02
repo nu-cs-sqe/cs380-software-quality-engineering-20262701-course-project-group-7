@@ -8,6 +8,7 @@ public class Player {
     private static final String NULL_NAME_KEY = "player.constructor.nullName";
     private static final String EMPTY_NAME_KEY = "player.constructor.emptyName";
     private static final String NULL_CARD_KEY = "player.addToHand.nullCard";
+    private static final String NULL_TYPE_KEY = "player.countInHand.nullType";
     private final String name;
     private final ArrayList<Object> hand;
     
@@ -40,6 +41,9 @@ public class Player {
     }
 
     public int countInHand(CardType type){
+        if (type == null){
+            throw new IllegalArgumentException(NULL_TYPE_KEY);
+        }
         int count = Collections.frequency(hand, type);
         return count;
     }
