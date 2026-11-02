@@ -47,4 +47,13 @@ public class PlayerTest {
         assertEquals(1, player.getHandSize());
     }
 
+    @Test
+    void addTwoCardsOnEmptyHand_returnTwo() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+        player.addToHand(CardType.ATTACK);
+
+        assertEquals(2, player.getHandSize());
+    }
+
 }
