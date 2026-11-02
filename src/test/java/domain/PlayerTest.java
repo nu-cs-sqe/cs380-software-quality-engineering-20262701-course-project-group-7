@@ -123,4 +123,11 @@ public class PlayerTest {
         assertEquals( "player.countInHand.nullType", ex.getMessage());
     }
 
+    @Test
+    void getHandOnNewPlayer_returnZero() {
+        Player player = new Player("Alice");
+
+        assertEquals(0, player.getHand().size());
+    }
+
 }

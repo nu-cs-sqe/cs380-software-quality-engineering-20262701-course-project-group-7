@@ -3,6 +3,7 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Player {
     private static final String NULL_NAME_KEY = "player.constructor.nullName";
@@ -10,7 +11,7 @@ public class Player {
     private static final String NULL_CARD_KEY = "player.addToHand.nullCard";
     private static final String NULL_TYPE_KEY = "player.countInHand.nullType";
     private final String name;
-    private final ArrayList<Object> hand;
+    private final ArrayList<CardType> hand;
     
     public Player(String name) {
         this.name = name;
@@ -46,5 +47,9 @@ public class Player {
         }
         int count = Collections.frequency(hand, type);
         return count;
+    }
+
+    public List<CardType> getHand() {
+        return new ArrayList<>(hand);
     }
 }
