@@ -2,6 +2,7 @@ package domain;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Player {
     private static final String NULL_NAME_KEY = "player.constructor.nullName";
@@ -39,6 +40,7 @@ public class Player {
     }
 
     public int countInHand(CardType type){
-        return 0;
+        int count = Collections.frequency(hand, type);
+        return count;
     }
 }

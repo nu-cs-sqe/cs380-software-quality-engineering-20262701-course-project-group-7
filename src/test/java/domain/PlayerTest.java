@@ -84,4 +84,12 @@ public class PlayerTest {
         assertEquals(0, player.countInHand(CardType.DEFUSE));
     }
 
+    @Test
+    void countDefuseOnAttackHand_returnZero() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.ATTACK);
+
+        assertEquals(0, player.countInHand(CardType.DEFUSE));
+    }
+
 }
