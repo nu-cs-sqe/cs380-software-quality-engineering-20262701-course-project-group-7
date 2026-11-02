@@ -65,4 +65,16 @@ public class PlayerTest {
         assertEquals(2, player.getHandSize());
     }
 
+    @Test
+    void addNullCard_throwIllegalArgumentException() {
+        Player player = new Player("Alice");
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    player.addToHand(null);
+                });
+        assertEquals("player.addToHand.nullCard", ex.getMessage());
+    }
+
 }

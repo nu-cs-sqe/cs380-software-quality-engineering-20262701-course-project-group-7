@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Player {
     private static final String NULL_NAME_KEY = "player.constructor.nullName";
     private static final String EMPTY_NAME_KEY = "player.constructor.emptyName";
+    private static final String NULL_CARD_KEY = "player.addToHand.nullCard";
     private final String name;
     private final ArrayList<Object> hand;
     
@@ -26,6 +27,10 @@ public class Player {
     }
 
     public void addToHand(CardType card){
+        if(card == null){
+            throw new IllegalArgumentException(NULL_CARD_KEY);
+        }
+
         hand.add(card);
     }
 
