@@ -92,4 +92,14 @@ public class PlayerTest {
         assertEquals(0, player.countInHand(CardType.DEFUSE));
     }
 
+    @Test
+    void countDuplicateDefuse_returnTwo() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+        player.addToHand(CardType.ATTACK);
+        player.addToHand(CardType.DEFUSE);
+
+        assertEquals(2, player.countInHand(CardType.DEFUSE));
+    }
+
 }
