@@ -102,4 +102,13 @@ public class PlayerTest {
         assertEquals(2, player.countInHand(CardType.DEFUSE));
     }
 
+    @Test
+    void countWholeHand_returnTwo() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.ATTACK);
+        player.addToHand(CardType.ATTACK);
+
+        assertEquals(2, player.countInHand(CardType.ATTACK));
+    }
+
 }
