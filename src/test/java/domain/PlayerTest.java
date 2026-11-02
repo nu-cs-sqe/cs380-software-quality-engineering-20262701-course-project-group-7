@@ -56,4 +56,13 @@ public class PlayerTest {
         assertEquals(2, player.getHandSize());
     }
 
+    @Test
+    void addDuplicateCardsOnEmptyHand_returnTwo() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+        player.addToHand(CardType.DEFUSE);
+
+        assertEquals(2, player.getHandSize());
+    }
+
 }
