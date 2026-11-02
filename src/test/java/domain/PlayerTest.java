@@ -39,4 +39,12 @@ public class PlayerTest {
         assertEquals("player.constructor.emptyName", ex.getMessage());
     }
 
+    @Test
+    void addDefuseOnEmptyHand_sizeOne() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+
+        assertEquals(1, player.getHandSize());
+    }
+
 }

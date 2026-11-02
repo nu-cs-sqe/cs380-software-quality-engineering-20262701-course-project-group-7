@@ -24,4 +24,12 @@ public class Player {
         }
         return name;
     }
+
+    public void addToHand(CardType card){
+        hand.add(card);
+    }
+
+    public int getHandSize(){
+        return hand.size();
+    }
 }
