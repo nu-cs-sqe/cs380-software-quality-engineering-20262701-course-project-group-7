@@ -28,4 +28,15 @@ public class PlayerTest {
         assertEquals("player.constructor.nullName", ex.getMessage());
     }
 
+    @Test
+    void getEmptyName_throwIllegalArgumentException() {
+        Player player = new Player("");
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    player.getName();
+                });
+        assertEquals("player.constructor.emptyName", ex.getMessage());
+    }
+
 }
