@@ -2,6 +2,8 @@ package domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
@@ -129,5 +131,19 @@ public class PlayerTest {
 
         assertEquals(0, player.getHand().size());
     }
+
+    @Test
+    void getHandOnTwoCardHand_returnHand() {
+        Player player = new Player("Alice");
+
+        player.addToHand(CardType.ATTACK);
+        player.addToHand(CardType.DEFUSE);
+        List<CardType> result = player.getHand();
+        assertEquals(List.of(CardType.ATTACK, CardType.DEFUSE), result);
+
+        result.add(CardType.DEFUSE);
+        assertEquals(2, player.getHandSize());
+    }
+
 
 }
