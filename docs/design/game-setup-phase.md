@@ -2,31 +2,40 @@
 
 ## Additional game rules that the design follows beyond acceptance criteria
 
+Source: official *Exploding Kittens* Original Edition rules sheet (Setup, steps 1–6).
+
 1. **Original Edition deck with 56 cards:** 4 Exploding Kitten, 6 Defuse, 4 Attack, 4 Skip, 4 Favor, 4 Shuffle, 5 See the Future, 5 Nope, and 4 each of the 5 types of cat cards.
-2. **Exploding and Defuse cards are removed before dealing cards to players**: to prevent players being dealt Defuse or Exploding as one of the 7 cards.
-3. **Remaining Defuse cards go back into the deck** after each player receives one, defuse cards go back into the deck.
+2. **Exploding and Defuse cards are removed before dealing cards to players**: so that no player is dealt an Exploding Kitten, and every player is guaranteed exactly 1 Defuse.
+3. **Only 2 of the remaining Defuse cards go back into the deck** after each player receives one (1 in a 5 player game, since only 1 is left); the rest are removed from the game. They go back before the 7 cards are dealt, so a player may be dealt a second Defuse.
+4. **Extra Exploding Kittens are removed from the game:** only (number of players − 1) go back into the deck.
+5. **Player 1 goes first:** the official rules let the group pick any player to go first. Here the turn order follows the order in which names are entered, so the group chooses who goes first by entering that player's name first.
+6. **Faster Game Variant** (removing about one-third of the deck in 2 and 3 player games) is out of scope.
 
 ## Classes
-### 1. `CardType` (enum)
+### 1. `CardType` (enum, package `domain`)
 
 **Responsibility:** identifies the kind of a card. The setup phase only needs the card type, so no card class is being implemented yet.
 
 Values: `EXPLODING_KITTEN`, `DEFUSE`, `ATTACK`, `SKIP`, `FAVOR`, `SHUFFLE`, `SEE_THE_FUTURE`, `NOPE`, `TACOCAT`, `CATTERMELON`, `HAIRY_POTATO_CAT`, `BEARD_CAT`, `RAINBOW_RALPHING_CAT`.
 
-### 2. `Deck` (class)
+### 2. `Deck` (class, package `domain`)
 
-**Responsibility:** holds the draw pile and its order.
+**Responsibility:** holds the draw pile and its order. It only provides operations; the order in which they are called during setup is decided by `Game`.
 
 | Member | Description |
 |--------|-------------|
 | `- List<CardType> cards` | Index 0 is the top of the deck. |
-| `- Random random` | Injected for shuffling. |
-| `+ static Deck createStandardDeck(Random random)` | Builds the base game deck. |
-| `+ void shuffle()` | Shuffle the cards. |
+| `- Random random` | Injected for shuffling, so tests can pass a seeded `Random`. |
+| `+ Deck(Random random)` | Creates an empty deck. Throws `IllegalArgumentException` if `random` is `null`. Lets tests build small decks (0, 1, few cards) with `add`. |
+| `+ static Deck createStandardDeck(Random random)` | Builds the 56 card Original Edition deck with the counts in rule 1, in a fixed (unshuffled) order. Throws `IllegalArgumentException` if `random` is `null`. |
+| `+ void shuffle()` | Shuffles the cards with `Collections.shuffle(cards, random)`. Size and card counts do not change. |
 | `+ CardType draw()` | Removes and returns the top card. Throws `IllegalStateException("Cannot draw from an empty deck.")` if deck empty. |
-| `+ int removeAll(CardType type)` | Removes every card of `type`, returns how many were removed. Used to remove Exploding and Defuse from deck.|
-| `+ void add(CardType type, int count)` | Adds `count` cards of `type`. Throws `IllegalArgumentException` if `count < 0`.  Used to add Exploding and Defuse from deck.|
+| `+ int removeAll(CardType type)` | Removes every card of `type`, returns how many were removed (0 if none). Throws `IllegalArgumentException` if `type` is `null`. Used to remove Exploding and Defuse from deck. |
+| `+ void add(CardType type, int count)` | Adds `count` cards of `type` to the bottom of the deck. `count = 0` does nothing. Throws `IllegalArgumentException` if `type` is `null` or `count < 0`. Used to put Exploding and Defuse back into the deck. |
 | `+ int size()` | Number of cards in the deck. |
+| `+ int count(CardType type)` | Number of cards of `type` in the deck. Throws `IllegalArgumentException` if `type` is `null`. Lets tests check the Defuse and Exploding Kitten counts after setup without drawing every card. |
+
+The standard counts are kept in one constant map (`CardType` → count) inside `Deck`, not as literal numbers spread through `createStandardDeck`.
 
 ### 3. `Player` (class, package `domain`)
 
@@ -93,20 +102,21 @@ Setup can throw exceptions if:
 # User Story
 As a player of Exploding Kittens, I want to choose the number of players and enter each player's name when a new game starts, so that the game matches my group and I can tell whose turn it is.
 
-As a player of Exploding Kittens, I want the deck to be prepared and the cards dealt automatically once the number of players is set, so that I can begin playing without manually organizing the deck and distributing cards.
+As a player of Exploding Kittens, I want the deck to be prepared and the cards dealt automatically according to the official rules once the players are set, so that I can begin playing without manually organizing the deck and distributing cards.
 
 Acceptance Criteria
 - [ ] The game must not start unless there are 2 to 5 players.
+- [ ] An invalid number of players must be rejected immediately, before any player names are entered.
 - [ ] Each player must have a non-empty name.
 - [ ] No two players may have the same name.
 - [ ] All Exploding Kitten and Defuse cards must be removed from the deck before dealing.
-- [ ] The deck must be shuffled before dealing.
-- [ ] Each player must receive exactly 7 cards from the shuffled deck.
-- [ ] Each player must receive 1 Defuse card in addition to the 7 cards.
-- [ ] The remaining Defuse cards must be added back into the deck.
-- [ ] The number of Exploding Kitten cards added back into the deck must be one less than the number of players.
-- [ ] The deck must be shuffled after adding the Exploding Kitten and remaining Defuse cards back in.
-- [ ] Once setup is complete, the turn order must be set, starting with player 1.
+- [ ] Each player must receive exactly 1 Defuse card.
+- [ ] 2 of the remaining Defuse cards (1 in a 5 player game) must be added back into the deck before the 7 cards are dealt; the rest are removed from the game.
+- [ ] The deck must be shuffled before dealing the 7 cards.
+- [ ] Each player must receive exactly 7 cards from the shuffled deck, for a hand of 8 cards in total.
+- [ ] The number of Exploding Kitten cards added back into the deck must be one less than the number of players; the rest are removed from the game.
+- [ ] The deck must be shuffled after adding the Exploding Kitten cards back in.
+- [ ] Once setup is complete, the turn order must be set in the order the names were entered, starting with player 1.
 
 # Use Case 1: Start New Game
 
@@ -122,17 +132,17 @@ The game application is launched.
 3. Player enters the number of players.
 4. Player enters a name for each player.
 5. System removes all Exploding Kitten and Defuse cards from the deck.
-6. System shuffles the deck.
-7. System deals 7 cards to each player.
-8. System gives each player 1 Defuse card.
-9. System returns the remaining Defuse cards to the deck.
-10. System returns (number of players − 1) Exploding Kitten cards to the deck.
+6. System gives each player 1 Defuse card.
+7. System returns 2 of the remaining Defuse cards to the deck (1 in a 5 player game) and removes the rest from the game.
+8. System shuffles the deck.
+9. System deals 7 cards to each player.
+10. System returns (number of players − 1) Exploding Kitten cards to the deck and removes the rest from the game.
 11. System shuffles the deck again.
-12. System sets the initial turn order, starting with player 1.
+12. System sets the initial turn order in the order the names were entered, starting with player 1.
 
 ## Alternative Flow
 3a. Player enters a number less than 2 or greater than 5:
-  1. System displays an error message.
+  1. System immediately displays an error message, before asking for any names.
   2. Return to step 2.
 4a. Player enters an empty name:
   1. System displays an error message.
@@ -142,6 +152,7 @@ The game application is launched.
   2. System asks for that player's name again.
 
 ## Postconditions
-- Each player has 8 cards (7 cards from the shuffled deck + 1 Defuse).
-- The deck contains (number of players − 1) Exploding Kitten cards and the remaining Defuse cards.
-- The game is ready for the first turn.
+- Each player has 8 cards (1 Defuse + 7 cards from the shuffled deck).
+- The deck contains exactly (number of players − 1) Exploding Kitten cards.
+- The deck plus all players' hands contain (number of players + 2) Defuse cards in total (6 in a 5 player game).
+- The game is ready for the first turn, and player 1 is the current player.
