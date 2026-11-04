@@ -29,4 +29,8 @@ public class Deck {
             cards.add(type);
         }
     }
+
+    public CardType draw() {
+        throw new IllegalStateException("Cannot draw from an empty deck.");
+    }
 }
