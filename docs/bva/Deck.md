@@ -98,7 +98,7 @@ each-choice
 | TC1 | empty deck | throws IllegalStateException | yes |
 | TC2 | Deck [NOPE] | NOPE; size = 0 | yes |
 | TC3 | Deck [SKIP, ATTACK, FAVOR] | SKIP; size = 2 | yes |
-| TC4 | Deck [SKIP, ATTACK, FAVOR], draw 4 times | SKIP, ATTACK, FAVOR, then throws IllegalStateException | no |
+| TC4 | Deck [SKIP, ATTACK, FAVOR], draw 4 times | SKIP, ATTACK, FAVOR, then throws IllegalStateException | yes |
 | TC5 | standard deck, draw returns `t` | size = 55; count(t) = standard count − 1 | no |
 | TC6 | Deck [SKIP, SKIP, ATTACK] | SKIP; size = 2; count(SKIP) = 1 | no |
 | TC7 | one of each type, in enum order; draw 13 times | each CardType once, in enum order | no |

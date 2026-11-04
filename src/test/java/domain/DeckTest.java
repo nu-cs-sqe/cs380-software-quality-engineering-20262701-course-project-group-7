@@ -92,6 +92,17 @@ public class DeckTest {
         assertEquals(2, deck.size());
     }
 
+    // BVA Method 4, TC4
+    @Test
+    public void draw_untilEmpty_returnsCardsInOrderThenThrows() {
+        Deck deck = createDeckWith(CardType.SKIP, CardType.ATTACK, CardType.FAVOR);
+
+        assertEquals(CardType.SKIP, deck.draw());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.FAVOR, deck.draw());
+        assertThrows(IllegalStateException.class, deck::draw);
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
