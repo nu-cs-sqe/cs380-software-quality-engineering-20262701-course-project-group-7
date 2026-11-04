@@ -308,6 +308,179 @@ public class DeckTest {
         assertEquals(1, deck.count(CardType.RAINBOW_RALPHING_CAT));
     }
 
+    // BVA Method 3, TC6
+    @Test
+    public void add_officialCountOfExplodingKittenToEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith();
+
+        deck.add(CardType.EXPLODING_KITTEN, 4);
+
+        assertEquals(4, deck.size());
+        assertEquals(4, deck.count(CardType.EXPLODING_KITTEN));
+    }
+
+    // BVA Method 3, TC7
+    @Test
+    public void add_officialCountOfDefuseToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.ATTACK);
+
+        deck.add(CardType.DEFUSE, 6);
+
+        assertEquals(7, deck.size());
+        assertEquals(6, deck.count(CardType.DEFUSE));
+        assertEquals(CardType.ATTACK, deck.draw());
+    }
+
+    // BVA Method 3, TC8
+    @Test
+    public void add_officialCountOfAttackToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.SKIP, CardType.FAVOR);
+
+        deck.add(CardType.ATTACK, 4);
+
+        assertEquals(6, deck.size());
+        assertEquals(4, deck.count(CardType.ATTACK));
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 3, TC9
+    @Test
+    public void add_officialCountOfSkipToEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith();
+
+        deck.add(CardType.SKIP, 4);
+
+        assertEquals(4, deck.size());
+        assertEquals(4, deck.count(CardType.SKIP));
+    }
+
+    // BVA Method 3, TC10
+    @Test
+    public void add_officialCountOfFavorToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.NOPE);
+
+        deck.add(CardType.FAVOR, 4);
+
+        assertEquals(5, deck.size());
+        assertEquals(4, deck.count(CardType.FAVOR));
+        assertEquals(CardType.NOPE, deck.draw());
+    }
+
+    // BVA Method 3, TC11
+    @Test
+    public void add_officialCountOfShuffleToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.DEFUSE);
+
+        deck.add(CardType.SHUFFLE, 4);
+
+        assertEquals(6, deck.size());
+        assertEquals(4, deck.count(CardType.SHUFFLE));
+        assertEquals(CardType.DEFUSE, deck.draw());
+    }
+
+    // BVA Method 3, TC12
+    @Test
+    public void add_officialCountOfSeeTheFutureToEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith();
+
+        deck.add(CardType.SEE_THE_FUTURE, 5);
+
+        assertEquals(5, deck.size());
+        assertEquals(5, deck.count(CardType.SEE_THE_FUTURE));
+    }
+
+    // BVA Method 3, TC13
+    @Test
+    public void add_officialCountOfNopeToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.TACOCAT);
+
+        deck.add(CardType.NOPE, 5);
+
+        assertEquals(6, deck.size());
+        assertEquals(5, deck.count(CardType.NOPE));
+        assertEquals(CardType.TACOCAT, deck.draw());
+    }
+
+    // BVA Method 3, TC14
+    @Test
+    public void add_officialCountOfTacocatToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP, CardType.FAVOR);
+
+        deck.add(CardType.TACOCAT, 4);
+
+        assertEquals(7, deck.size());
+        assertEquals(4, deck.count(CardType.TACOCAT));
+        assertEquals(CardType.ATTACK, deck.draw());
+    }
+
+    // BVA Method 3, TC15
+    @Test
+    public void add_officialCountOfCattermelonToEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith();
+
+        deck.add(CardType.CATTERMELON, 4);
+
+        assertEquals(4, deck.size());
+        assertEquals(4, deck.count(CardType.CATTERMELON));
+    }
+
+    // BVA Method 3, TC16
+    @Test
+    public void add_officialCountOfHairyPotatoCatToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.BEARD_CAT);
+
+        deck.add(CardType.HAIRY_POTATO_CAT, 4);
+
+        assertEquals(5, deck.size());
+        assertEquals(4, deck.count(CardType.HAIRY_POTATO_CAT));
+        assertEquals(CardType.BEARD_CAT, deck.draw());
+    }
+
+    // BVA Method 3, TC17
+    @Test
+    public void add_officialCountOfBeardCatToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.NOPE, CardType.NOPE);
+
+        deck.add(CardType.BEARD_CAT, 4);
+
+        assertEquals(6, deck.size());
+        assertEquals(4, deck.count(CardType.BEARD_CAT));
+        assertEquals(CardType.NOPE, deck.draw());
+    }
+
+    // BVA Method 3, TC18
+    @Test
+    public void add_officialCountOfRainbowRalphingCatToNonEmptyDeck_addsAllCards() {
+        Deck deck = createDeckWith(CardType.SHUFFLE);
+
+        deck.add(CardType.RAINBOW_RALPHING_CAT, 4);
+
+        assertEquals(5, deck.size());
+        assertEquals(4, deck.count(CardType.RAINBOW_RALPHING_CAT));
+        assertEquals(CardType.SHUFFLE, deck.draw());
+    }
+
+    // BVA Method 3, TC19
+    @Test
+    public void add_cardTypeAlreadyInDeck_countsAllCopies() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.DEFUSE);
+
+        deck.add(CardType.DEFUSE, 1);
+
+        assertEquals(3, deck.size());
+        assertEquals(3, deck.count(CardType.DEFUSE));
+    }
+
+    // BVA Method 4, TC6
+    @Test
+    public void draw_duplicateTopCards_removesOnlyOneCopy() {
+        Deck deck = createDeckWith(CardType.SKIP, CardType.SKIP, CardType.ATTACK);
+
+        assertEquals(CardType.SKIP, deck.draw());
+        assertEquals(2, deck.size());
+        assertEquals(1, deck.count(CardType.SKIP));
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);

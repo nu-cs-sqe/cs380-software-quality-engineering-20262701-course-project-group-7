@@ -64,20 +64,20 @@ each-choice
 | TC3 | empty deck, `add(ATTACK, 0)` | size = 0 | yes |
 | TC4 | empty deck, `add(ATTACK, 1)` | size = 1; draw = ATTACK | yes |
 | TC5 | Deck [SKIP], `add(DEFUSE, 3)` | size = 4; draws = SKIP, DEFUSE, DEFUSE, DEFUSE | yes |
-| TC6 | empty deck, `add(EXPLODING_KITTEN, 4)` | size = 4; count(EXPLODING_KITTEN) = 4 | no |
-| TC7 | Deck [ATTACK], `add(DEFUSE, 6)` | size = 7; count(DEFUSE) = 6; first draw = ATTACK | no |
-| TC8 | Deck [SKIP, FAVOR], `add(ATTACK, 4)` | size = 6; count(ATTACK) = 4; first draw = SKIP | no |
-| TC9 | empty deck, `add(SKIP, 4)` | size = 4; count(SKIP) = 4 | no |
-| TC10 | Deck [NOPE], `add(FAVOR, 4)` | size = 5; count(FAVOR) = 4; first draw = NOPE | no |
-| TC11 | Deck [DEFUSE, DEFUSE], `add(SHUFFLE, 4)` | size = 6; count(SHUFFLE) = 4; first draw = DEFUSE | no |
-| TC12 | empty deck, `add(SEE_THE_FUTURE, 5)` | size = 5; count(SEE_THE_FUTURE) = 5 | no |
-| TC13 | Deck [TACOCAT], `add(NOPE, 5)` | size = 6; count(NOPE) = 5; first draw = TACOCAT | no |
-| TC14 | Deck [ATTACK, SKIP, FAVOR], `add(TACOCAT, 4)` | size = 7; count(TACOCAT) = 4; first draw = ATTACK | no |
-| TC15 | empty deck, `add(CATTERMELON, 4)` | size = 4; count(CATTERMELON) = 4 | no |
-| TC16 | Deck [BEARD_CAT], `add(HAIRY_POTATO_CAT, 4)` | size = 5; count(HAIRY_POTATO_CAT) = 4; first draw = BEARD_CAT | no |
-| TC17 | Deck [NOPE, NOPE], `add(BEARD_CAT, 4)` | size = 6; count(BEARD_CAT) = 4; first draw = NOPE | no |
-| TC18 | Deck [SHUFFLE], `add(RAINBOW_RALPHING_CAT, 4)` | size = 5; count(RAINBOW_RALPHING_CAT) = 4; first draw = SHUFFLE | no |
-| TC19 | Deck [DEFUSE, DEFUSE], `add(DEFUSE, 1)` | size = 3; count(DEFUSE) = 3 | no |
+| TC6 | empty deck, `add(EXPLODING_KITTEN, 4)` | size = 4; count(EXPLODING_KITTEN) = 4 | yes |
+| TC7 | Deck [ATTACK], `add(DEFUSE, 6)` | size = 7; count(DEFUSE) = 6; first draw = ATTACK | yes |
+| TC8 | Deck [SKIP, FAVOR], `add(ATTACK, 4)` | size = 6; count(ATTACK) = 4; first draw = SKIP | yes |
+| TC9 | empty deck, `add(SKIP, 4)` | size = 4; count(SKIP) = 4 | yes |
+| TC10 | Deck [NOPE], `add(FAVOR, 4)` | size = 5; count(FAVOR) = 4; first draw = NOPE | yes |
+| TC11 | Deck [DEFUSE, DEFUSE], `add(SHUFFLE, 4)` | size = 6; count(SHUFFLE) = 4; first draw = DEFUSE | yes |
+| TC12 | empty deck, `add(SEE_THE_FUTURE, 5)` | size = 5; count(SEE_THE_FUTURE) = 5 | yes |
+| TC13 | Deck [TACOCAT], `add(NOPE, 5)` | size = 6; count(NOPE) = 5; first draw = TACOCAT | yes |
+| TC14 | Deck [ATTACK, SKIP, FAVOR], `add(TACOCAT, 4)` | size = 7; count(TACOCAT) = 4; first draw = ATTACK | yes |
+| TC15 | empty deck, `add(CATTERMELON, 4)` | size = 4; count(CATTERMELON) = 4 | yes |
+| TC16 | Deck [BEARD_CAT], `add(HAIRY_POTATO_CAT, 4)` | size = 5; count(HAIRY_POTATO_CAT) = 4; first draw = BEARD_CAT | yes |
+| TC17 | Deck [NOPE, NOPE], `add(BEARD_CAT, 4)` | size = 6; count(BEARD_CAT) = 4; first draw = NOPE | yes |
+| TC18 | Deck [SHUFFLE], `add(RAINBOW_RALPHING_CAT, 4)` | size = 5; count(RAINBOW_RALPHING_CAT) = 4; first draw = SHUFFLE | yes |
+| TC19 | Deck [DEFUSE, DEFUSE], `add(DEFUSE, 1)` | size = 3; count(DEFUSE) = 3 | yes |
 | TC20 | standard deck after `removeAll(EXPLODING_KITTEN)` (52 cards), `add(EXPLODING_KITTEN, 4)` | size = 56; count(EXPLODING_KITTEN) = 4; last 4 draws = EXPLODING_KITTEN | no |
 
 ## Method 4: `public CardType draw()`
@@ -100,7 +100,7 @@ each-choice
 | TC3 | Deck [SKIP, ATTACK, FAVOR] | SKIP; size = 2 | yes |
 | TC4 | Deck [SKIP, ATTACK, FAVOR], draw 4 times | SKIP, ATTACK, FAVOR, then throws IllegalStateException | yes |
 | TC5 | standard deck, draw returns `t` | size = 55; count(t) = standard count − 1 | no |
-| TC6 | Deck [SKIP, SKIP, ATTACK] | SKIP; size = 2; count(SKIP) = 1 | no |
+| TC6 | Deck [SKIP, SKIP, ATTACK] | SKIP; size = 2; count(SKIP) = 1 | yes |
 | TC7 | one of each type, in enum order; draw 13 times | each CardType once, in enum order | yes |
 
 ## Method 5: `public int count(CardType type)`
