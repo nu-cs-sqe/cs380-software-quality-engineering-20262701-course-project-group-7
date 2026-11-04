@@ -23,9 +23,7 @@ public class Deck {
     }
 
     public void add(CardType type, int numberOfCards) {
-        if (type == null) {
-            throw new IllegalArgumentException("Card type must not be null.");
-        }
+        requireCardType(type);
         if (numberOfCards < 0) {
             throw new IllegalArgumentException("Number of cards must not be negative.");
         }
@@ -42,9 +40,20 @@ public class Deck {
     }
 
     public int count(CardType type) {
+        requireCardType(type);
+        return Collections.frequency(cards, type);
+    }
+
+    public int removeAll(CardType type) {
+        requireCardType(type);
+        int sizeBefore = cards.size();
+        cards.removeIf(card -> card == type);
+        return sizeBefore - cards.size();
+    }
+
+    private static void requireCardType(CardType type) {
         if (type == null) {
             throw new IllegalArgumentException("Card type must not be null.");
         }
-        return Collections.frequency(cards, type);
     }
 }

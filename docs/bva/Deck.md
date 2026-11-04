@@ -155,29 +155,29 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | Deck [ATTACK], `removeAll(null)` | throws IllegalArgumentException; size = 1 | no |
-| TC2 | empty deck, `removeAll(DEFUSE)` | 0; size = 0 | no |
-| TC3 | Deck [DEFUSE], `removeAll(DEFUSE)` | 1; size = 0 | no |
-| TC4 | Deck [ATTACK, SKIP], `removeAll(DEFUSE)` | 0; draws = ATTACK, SKIP | no |
-| TC5 | Deck [DEFUSE, ATTACK, SKIP], `removeAll(DEFUSE)` | 1; draws = ATTACK, SKIP | no |
-| TC6 | Deck [ATTACK, SKIP, DEFUSE], `removeAll(DEFUSE)` | 1; draws = ATTACK, SKIP | no |
-| TC7 | Deck [DEFUSE, ATTACK, DEFUSE, SKIP, DEFUSE], `removeAll(DEFUSE)` | 3; draws = ATTACK, SKIP | no |
-| TC8 | Deck [ATTACK, DEFUSE, DEFUSE, SKIP], `removeAll(DEFUSE)` | 2; draws = ATTACK, SKIP | no |
-| TC9 | Deck [DEFUSE, DEFUSE, ATTACK], `removeAll(DEFUSE)` | 2; draws = ATTACK | no |
-| TC10 | Deck [DEFUSE, DEFUSE], `removeAll(DEFUSE)` | 2; size = 0 | no |
-| TC11 | Deck [EXPLODING_KITTEN, DEFUSE], `removeAll(EXPLODING_KITTEN)` | 1; draws = DEFUSE | no |
-| TC12 | Deck [DEFUSE, ATTACK, DEFUSE], `removeAll(DEFUSE)` | 2; draws = ATTACK | no |
-| TC13 | Deck [ATTACK], `removeAll(ATTACK)` | 1; size = 0 | no |
-| TC14 | Deck [SKIP, NOPE, SKIP, SKIP], `removeAll(SKIP)` | 3; draws = NOPE | no |
-| TC15 | Deck [ATTACK, SKIP], `removeAll(FAVOR)` | 0; draws = ATTACK, SKIP | no |
-| TC16 | Deck [NOPE, SHUFFLE], `removeAll(SHUFFLE)` | 1; draws = NOPE | no |
-| TC17 | Deck [SEE_THE_FUTURE, SEE_THE_FUTURE], `removeAll(SEE_THE_FUTURE)` | 2; size = 0 | no |
-| TC18 | empty deck, `removeAll(NOPE)` | 0; size = 0 | no |
-| TC19 | Deck [TACOCAT, CATTERMELON, TACOCAT], `removeAll(TACOCAT)` | 2; draws = CATTERMELON | no |
-| TC20 | Deck [TACOCAT, CATTERMELON, BEARD_CAT], `removeAll(CATTERMELON)` | 1; draws = TACOCAT, BEARD_CAT | no |
-| TC21 | Deck [HAIRY_POTATO_CAT, BEARD_CAT, HAIRY_POTATO_CAT, HAIRY_POTATO_CAT], `removeAll(HAIRY_POTATO_CAT)` | 3; draws = BEARD_CAT | no |
+| TC1 | Deck [ATTACK], `removeAll(null)` | throws IllegalArgumentException; size = 1 | yes |
+| TC2 | empty deck, `removeAll(DEFUSE)` | 0; size = 0 | yes |
+| TC3 | Deck [DEFUSE], `removeAll(DEFUSE)` | 1; size = 0 | yes |
+| TC4 | Deck [ATTACK, SKIP], `removeAll(DEFUSE)` | 0; draws = ATTACK, SKIP | yes |
+| TC5 | Deck [DEFUSE, ATTACK, SKIP], `removeAll(DEFUSE)` | 1; draws = ATTACK, SKIP | yes |
+| TC6 | Deck [ATTACK, SKIP, DEFUSE], `removeAll(DEFUSE)` | 1; draws = ATTACK, SKIP | yes |
+| TC7 | Deck [DEFUSE, ATTACK, DEFUSE, SKIP, DEFUSE], `removeAll(DEFUSE)` | 3; draws = ATTACK, SKIP | yes |
+| TC8 | Deck [ATTACK, DEFUSE, DEFUSE, SKIP], `removeAll(DEFUSE)` | 2; draws = ATTACK, SKIP | yes |
+| TC9 | Deck [DEFUSE, DEFUSE, ATTACK], `removeAll(DEFUSE)` | 2; draws = ATTACK | yes |
+| TC10 | Deck [DEFUSE, DEFUSE], `removeAll(DEFUSE)` | 2; size = 0 | yes |
+| TC11 | Deck [EXPLODING_KITTEN, DEFUSE], `removeAll(EXPLODING_KITTEN)` | 1; draws = DEFUSE | yes |
+| TC12 | Deck [DEFUSE, ATTACK, DEFUSE], `removeAll(DEFUSE)` | 2; draws = ATTACK | yes |
+| TC13 | Deck [ATTACK], `removeAll(ATTACK)` | 1; size = 0 | yes |
+| TC14 | Deck [SKIP, NOPE, SKIP, SKIP], `removeAll(SKIP)` | 3; draws = NOPE | yes |
+| TC15 | Deck [ATTACK, SKIP], `removeAll(FAVOR)` | 0; draws = ATTACK, SKIP | yes |
+| TC16 | Deck [NOPE, SHUFFLE], `removeAll(SHUFFLE)` | 1; draws = NOPE | yes |
+| TC17 | Deck [SEE_THE_FUTURE, SEE_THE_FUTURE], `removeAll(SEE_THE_FUTURE)` | 2; size = 0 | yes |
+| TC18 | empty deck, `removeAll(NOPE)` | 0; size = 0 | yes |
+| TC19 | Deck [TACOCAT, CATTERMELON, TACOCAT], `removeAll(TACOCAT)` | 2; draws = CATTERMELON | yes |
+| TC20 | Deck [TACOCAT, CATTERMELON, BEARD_CAT], `removeAll(CATTERMELON)` | 1; draws = TACOCAT, BEARD_CAT | yes |
+| TC21 | Deck [HAIRY_POTATO_CAT, BEARD_CAT, HAIRY_POTATO_CAT, HAIRY_POTATO_CAT], `removeAll(HAIRY_POTATO_CAT)` | 3; draws = BEARD_CAT | yes |
 | TC22 | standard deck, `removeAll(BEARD_CAT)` | 4; size = 52; count(BEARD_CAT) = 0 | no |
-| TC23 | one of each type, `removeAll(RAINBOW_RALPHING_CAT)` | 1; size = 12; count(RAINBOW_RALPHING_CAT) = 0 | no |
+| TC23 | one of each type, `removeAll(RAINBOW_RALPHING_CAT)` | 1; size = 12; count(RAINBOW_RALPHING_CAT) = 0 | yes |
 
 ## Method 7: `public static Deck createStandardDeck(Random random)`
 
