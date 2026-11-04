@@ -41,6 +41,9 @@ public class Deck {
     }
 
     public int count(CardType type) {
-        throw new IllegalArgumentException("Card type must not be null.");
+        if (type == null) {
+            throw new IllegalArgumentException("Card type must not be null.");
+        }
+        return 0;
     }
 }
