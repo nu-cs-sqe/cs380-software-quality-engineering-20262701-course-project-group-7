@@ -148,6 +148,14 @@ public class DeckTest {
         assertEquals(CardType.SKIP, deck.draw());
     }
 
+    // BVA Method 5, TC1
+    @Test
+    public void count_nullType_throwsIllegalArgumentException() {
+        Deck deck = createDeckWith(CardType.ATTACK);
+
+        assertThrows(IllegalArgumentException.class, () -> deck.count(null));
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
