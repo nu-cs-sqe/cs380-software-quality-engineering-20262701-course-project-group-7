@@ -118,7 +118,7 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | Deck [ATTACK], `count(null)` | throws IllegalArgumentException | no |
+| TC1 | Deck [ATTACK], `count(null)` | throws IllegalArgumentException | yes |
 | TC2 | empty deck, `count(DEFUSE)` | 0 | no |
 | TC3 | Deck [DEFUSE], `count(DEFUSE)` | 1 | no |
 | TC4 | Deck [ATTACK, SKIP], `count(DEFUSE)` | 0 | no |

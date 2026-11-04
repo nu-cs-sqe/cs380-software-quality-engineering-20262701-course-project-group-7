@@ -39,4 +39,8 @@ public class Deck {
         }
         return cards.remove(0);
     }
+
+    public int count(CardType type) {
+        throw new IllegalArgumentException("Card type must not be null.");
+    }
 }
