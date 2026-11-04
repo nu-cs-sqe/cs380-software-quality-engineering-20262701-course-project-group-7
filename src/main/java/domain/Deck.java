@@ -20,4 +20,13 @@ public class Deck {
     public int size() {
         return cards.size();
     }
+
+    public void add(CardType type, int numberOfCards) {
+        if (type == null) {
+            throw new IllegalArgumentException("Card type must not be null.");
+        }
+        for (int i = 0; i < numberOfCards; i++) {
+            cards.add(type);
+        }
+    }
 }

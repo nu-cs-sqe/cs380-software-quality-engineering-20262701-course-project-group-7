@@ -40,8 +40,8 @@ each-choice
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
 | TC1 | empty deck | 0 | yes (Method 1 TC2) |
-| TC2 | Deck [ATTACK] | 1 | no |
-| TC3 | Deck [ATTACK, SKIP, FAVOR] | 3 | no |
+| TC2 | Deck [ATTACK] | 1 | yes |
+| TC3 | Deck [ATTACK, SKIP, FAVOR] | 3 | yes |
 | TC4 | standard deck | 56 | no (Method 7 TC2) |
 
 ## Method 3: `public void add(CardType type, int numberOfCards)`
@@ -59,9 +59,9 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | empty deck, `add(null, 1)` | throws IllegalArgumentException; size = 0 | no |
+| TC1 | empty deck, `add(null, 1)` | throws IllegalArgumentException; size = 0 | yes |
 | TC2 | Deck [SKIP], `add(ATTACK, -1)` | throws IllegalArgumentException; size = 1; draw = SKIP | no |
-| TC3 | empty deck, `add(ATTACK, 0)` | size = 0 | no |
+| TC3 | empty deck, `add(ATTACK, 0)` | size = 0 | yes |
 | TC4 | empty deck, `add(ATTACK, 1)` | size = 1; draw = ATTACK | no |
 | TC5 | Deck [SKIP], `add(DEFUSE, 3)` | size = 4; draws = SKIP, DEFUSE, DEFUSE, DEFUSE | no |
 | TC6 | empty deck, `add(EXPLODING_KITTEN, 4)` | size = 4; count(EXPLODING_KITTEN) = 4 | no |
