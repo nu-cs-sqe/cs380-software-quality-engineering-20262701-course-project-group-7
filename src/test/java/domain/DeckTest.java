@@ -26,9 +26,7 @@ public class DeckTest {
     // BVA Method 1, TC2
     @Test
     public void constructor_validRandom_createsEmptyDeck() {
-        EasyMock.replay(mockRandom);
-
-        Deck deck = new Deck(mockRandom);
+        Deck deck = createDeckWith();
 
         assertEquals(0, deck.size());
     }
