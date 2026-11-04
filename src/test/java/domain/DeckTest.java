@@ -68,6 +68,14 @@ public class DeckTest {
         assertEquals(0, deck.size());
     }
 
+    // BVA Method 4, TC1
+    @Test
+    public void draw_emptyDeck_throwsIllegalStateException() {
+        Deck deck = createDeckWith();
+
+        assertThrows(IllegalStateException.class, deck::draw);
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
