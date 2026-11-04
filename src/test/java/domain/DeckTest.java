@@ -869,6 +869,68 @@ public class DeckTest {
         assertEquals(0, deck.count(CardType.BEARD_CAT));
     }
 
+    // BVA Method 8, TC1
+    @Test
+    public void shuffle_emptyDeck_staysEmpty() {
+        Deck deck = createDeckWith();
+
+        deck.shuffle();
+
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 8, TC2
+    @Test
+    public void shuffle_oneCard_keepsThatCard() {
+        Deck deck = createDeckWith(CardType.NOPE);
+
+        deck.shuffle();
+
+        assertEquals(CardType.NOPE, deck.draw());
+    }
+
+    // BVA Method 8, TC3
+    @Test
+    public void shuffle_randomReturnsUpperBound_keepsOrder() {
+        EasyMock.expect(mockRandom.nextInt(3)).andStubReturn(2);
+        EasyMock.expect(mockRandom.nextInt(2)).andStubReturn(1);
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP, CardType.FAVOR);
+
+        deck.shuffle();
+
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+        assertEquals(CardType.FAVOR, deck.draw());
+    }
+
+    // BVA Method 8, TC4
+    @Test
+    public void shuffle_randomReturnsZero_swapsEveryCardWithTheTop() {
+        EasyMock.expect(mockRandom.nextInt(EasyMock.anyInt())).andStubReturn(0);
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP, CardType.FAVOR);
+
+        deck.shuffle();
+
+        assertEquals(CardType.SKIP, deck.draw());
+        assertEquals(CardType.FAVOR, deck.draw());
+        assertEquals(CardType.ATTACK, deck.draw());
+    }
+
+    // BVA Method 8, TC5
+    @Test
+    public void shuffle_standardDeck_keepsEveryCard() {
+        EasyMock.expect(mockRandom.nextInt(EasyMock.anyInt())).andStubReturn(0);
+        Deck deck = createStandardDeck();
+        Deck untouchedDeck = Deck.createStandardDeck(mockRandom);
+
+        deck.shuffle();
+
+        assertEquals(56, deck.size());
+        for (CardType type : CardType.values()) {
+            assertEquals(untouchedDeck.count(type), deck.count(type));
+        }
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
