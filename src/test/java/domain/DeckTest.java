@@ -138,6 +138,16 @@ public class DeckTest {
         assertEquals(CardType.DEFUSE, deck.draw());
     }
 
+    // BVA Method 3, TC2
+    @Test
+    public void add_negativeNumberOfCards_throwsAndLeavesDeckUnchanged() {
+        Deck deck = createDeckWith(CardType.SKIP);
+
+        assertThrows(IllegalArgumentException.class, () -> deck.add(CardType.ATTACK, -1));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
