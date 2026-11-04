@@ -156,6 +156,14 @@ public class DeckTest {
         assertThrows(IllegalArgumentException.class, () -> deck.count(null));
     }
 
+    // BVA Method 5, TC2
+    @Test
+    public void count_emptyDeck_returnsZero() {
+        Deck deck = createDeckWith();
+
+        assertEquals(0, deck.count(CardType.DEFUSE));
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
