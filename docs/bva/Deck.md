@@ -62,7 +62,7 @@ each-choice
 | TC1 | empty deck, `add(null, 1)` | throws IllegalArgumentException; size = 0 | yes |
 | TC2 | Deck [SKIP], `add(ATTACK, -1)` | throws IllegalArgumentException; size = 1; draw = SKIP | no |
 | TC3 | empty deck, `add(ATTACK, 0)` | size = 0 | yes |
-| TC4 | empty deck, `add(ATTACK, 1)` | size = 1; draw = ATTACK | no |
+| TC4 | empty deck, `add(ATTACK, 1)` | size = 1; draw = ATTACK | yes |
 | TC5 | Deck [SKIP], `add(DEFUSE, 3)` | size = 4; draws = SKIP, DEFUSE, DEFUSE, DEFUSE | no |
 | TC6 | empty deck, `add(EXPLODING_KITTEN, 4)` | size = 4; count(EXPLODING_KITTEN) = 4 | no |
 | TC7 | Deck [ATTACK], `add(DEFUSE, 6)` | size = 7; count(DEFUSE) = 6; first draw = ATTACK | no |
