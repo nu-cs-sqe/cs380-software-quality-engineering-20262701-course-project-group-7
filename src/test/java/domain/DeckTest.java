@@ -481,6 +481,226 @@ public class DeckTest {
         assertEquals(1, deck.count(CardType.SKIP));
     }
 
+    // BVA Method 6, TC1
+    @Test
+    public void removeAll_nullType_throwsAndLeavesDeckUnchanged() {
+        Deck deck = createDeckWith(CardType.ATTACK);
+
+        assertThrows(IllegalArgumentException.class, () -> deck.removeAll(null));
+        assertEquals(1, deck.size());
+    }
+
+    // BVA Method 6, TC2
+    @Test
+    public void removeAll_emptyDeck_returnsZero() {
+        Deck deck = createDeckWith();
+
+        assertEquals(0, deck.removeAll(CardType.DEFUSE));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 6, TC3
+    @Test
+    public void removeAll_onlyCardMatches_emptiesDeck() {
+        Deck deck = createDeckWith(CardType.DEFUSE);
+
+        assertEquals(1, deck.removeAll(CardType.DEFUSE));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 6, TC4
+    @Test
+    public void removeAll_noMatch_leavesDeckUnchanged() {
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP);
+
+        assertEquals(0, deck.removeAll(CardType.DEFUSE));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 6, TC5
+    @Test
+    public void removeAll_matchOnTop_removesIt() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.ATTACK, CardType.SKIP);
+
+        assertEquals(1, deck.removeAll(CardType.DEFUSE));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 6, TC6
+    @Test
+    public void removeAll_matchAtBottom_removesIt() {
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP, CardType.DEFUSE);
+
+        assertEquals(1, deck.removeAll(CardType.DEFUSE));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 6, TC7
+    @Test
+    public void removeAll_scatteredMatches_removesAllAndKeepsOrder() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.ATTACK, CardType.DEFUSE, CardType.SKIP, CardType.DEFUSE);
+
+        assertEquals(3, deck.removeAll(CardType.DEFUSE));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 6, TC8
+    @Test
+    public void removeAll_adjacentMatches_removesBoth() {
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.DEFUSE, CardType.DEFUSE, CardType.SKIP);
+
+        assertEquals(2, deck.removeAll(CardType.DEFUSE));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 6, TC9
+    @Test
+    public void removeAll_allButOneMatch_leavesOneCard() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.DEFUSE, CardType.ATTACK);
+
+        assertEquals(2, deck.removeAll(CardType.DEFUSE));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+    }
+
+    // BVA Method 6, TC10
+    @Test
+    public void removeAll_everyCardMatches_emptiesDeck() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.DEFUSE);
+
+        assertEquals(2, deck.removeAll(CardType.DEFUSE));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 6, TC11
+    @Test
+    public void removeAll_explodingKitten_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.EXPLODING_KITTEN, CardType.DEFUSE);
+
+        assertEquals(1, deck.removeAll(CardType.EXPLODING_KITTEN));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.DEFUSE, deck.draw());
+    }
+
+    // BVA Method 6, TC12
+    @Test
+    public void removeAll_defuse_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.DEFUSE, CardType.ATTACK, CardType.DEFUSE);
+
+        assertEquals(2, deck.removeAll(CardType.DEFUSE));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+    }
+
+    // BVA Method 6, TC13
+    @Test
+    public void removeAll_attack_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.ATTACK);
+
+        assertEquals(1, deck.removeAll(CardType.ATTACK));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 6, TC14
+    @Test
+    public void removeAll_skip_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.SKIP, CardType.NOPE, CardType.SKIP, CardType.SKIP);
+
+        assertEquals(3, deck.removeAll(CardType.SKIP));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.NOPE, deck.draw());
+    }
+
+    // BVA Method 6, TC15
+    @Test
+    public void removeAll_favor_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.ATTACK, CardType.SKIP);
+
+        assertEquals(0, deck.removeAll(CardType.FAVOR));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.ATTACK, deck.draw());
+        assertEquals(CardType.SKIP, deck.draw());
+    }
+
+    // BVA Method 6, TC16
+    @Test
+    public void removeAll_shuffle_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.NOPE, CardType.SHUFFLE);
+
+        assertEquals(1, deck.removeAll(CardType.SHUFFLE));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.NOPE, deck.draw());
+    }
+
+    // BVA Method 6, TC17
+    @Test
+    public void removeAll_seeTheFuture_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.SEE_THE_FUTURE, CardType.SEE_THE_FUTURE);
+
+        assertEquals(2, deck.removeAll(CardType.SEE_THE_FUTURE));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 6, TC18
+    @Test
+    public void removeAll_nope_removesEveryCopy() {
+        Deck deck = createDeckWith();
+
+        assertEquals(0, deck.removeAll(CardType.NOPE));
+        assertEquals(0, deck.size());
+    }
+
+    // BVA Method 6, TC19
+    @Test
+    public void removeAll_tacocat_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.TACOCAT, CardType.CATTERMELON, CardType.TACOCAT);
+
+        assertEquals(2, deck.removeAll(CardType.TACOCAT));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.CATTERMELON, deck.draw());
+    }
+
+    // BVA Method 6, TC20
+    @Test
+    public void removeAll_cattermelon_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.TACOCAT, CardType.CATTERMELON, CardType.BEARD_CAT);
+
+        assertEquals(1, deck.removeAll(CardType.CATTERMELON));
+        assertEquals(2, deck.size());
+        assertEquals(CardType.TACOCAT, deck.draw());
+        assertEquals(CardType.BEARD_CAT, deck.draw());
+    }
+
+    // BVA Method 6, TC21
+    @Test
+    public void removeAll_hairyPotatoCat_removesEveryCopy() {
+        Deck deck = createDeckWith(CardType.HAIRY_POTATO_CAT, CardType.BEARD_CAT, CardType.HAIRY_POTATO_CAT, CardType.HAIRY_POTATO_CAT);
+
+        assertEquals(3, deck.removeAll(CardType.HAIRY_POTATO_CAT));
+        assertEquals(1, deck.size());
+        assertEquals(CardType.BEARD_CAT, deck.draw());
+    }
+
+    // BVA Method 6, TC23
+    @Test
+    public void removeAll_oneOfEachType_removesOnlyRainbowRalphingCat() {
+        Deck deck = createDeckWith(CardType.values());
+
+        assertEquals(1, deck.removeAll(CardType.RAINBOW_RALPHING_CAT));
+        assertEquals(12, deck.size());
+        assertEquals(0, deck.count(CardType.RAINBOW_RALPHING_CAT));
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
