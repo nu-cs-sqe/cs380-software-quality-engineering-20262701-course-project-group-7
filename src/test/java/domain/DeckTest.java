@@ -701,6 +701,174 @@ public class DeckTest {
         assertEquals(0, deck.count(CardType.RAINBOW_RALPHING_CAT));
     }
 
+    // BVA Method 7, TC1
+    @Test
+    public void createStandardDeck_nullRandom_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> Deck.createStandardDeck(null));
+    }
+
+    // BVA Method 7, TC2
+    @Test
+    public void createStandardDeck_validRandom_creates56CardsWithoutShuffling() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(56, deck.size());
+    }
+
+    // BVA Method 7, TC3
+    @Test
+    public void createStandardDeck_validRandom_contains4ExplodingKittenCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.EXPLODING_KITTEN));
+    }
+
+    // BVA Method 7, TC4
+    @Test
+    public void createStandardDeck_validRandom_contains6DefuseCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(6, deck.count(CardType.DEFUSE));
+    }
+
+    // BVA Method 7, TC5
+    @Test
+    public void createStandardDeck_validRandom_contains4AttackCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.ATTACK));
+    }
+
+    // BVA Method 7, TC6
+    @Test
+    public void createStandardDeck_validRandom_contains4SkipCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.SKIP));
+    }
+
+    // BVA Method 7, TC7
+    @Test
+    public void createStandardDeck_validRandom_contains4FavorCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.FAVOR));
+    }
+
+    // BVA Method 7, TC8
+    @Test
+    public void createStandardDeck_validRandom_contains4ShuffleCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.SHUFFLE));
+    }
+
+    // BVA Method 7, TC9
+    @Test
+    public void createStandardDeck_validRandom_contains5SeeTheFutureCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(5, deck.count(CardType.SEE_THE_FUTURE));
+    }
+
+    // BVA Method 7, TC10
+    @Test
+    public void createStandardDeck_validRandom_contains5NopeCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(5, deck.count(CardType.NOPE));
+    }
+
+    // BVA Method 7, TC11
+    @Test
+    public void createStandardDeck_validRandom_contains4TacocatCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.TACOCAT));
+    }
+
+    // BVA Method 7, TC12
+    @Test
+    public void createStandardDeck_validRandom_contains4CattermelonCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.CATTERMELON));
+    }
+
+    // BVA Method 7, TC13
+    @Test
+    public void createStandardDeck_validRandom_contains4HairyPotatoCatCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.HAIRY_POTATO_CAT));
+    }
+
+    // BVA Method 7, TC14
+    @Test
+    public void createStandardDeck_validRandom_contains4BeardCatCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.BEARD_CAT));
+    }
+
+    // BVA Method 7, TC15
+    @Test
+    public void createStandardDeck_validRandom_contains4RainbowRalphingCatCards() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.RAINBOW_RALPHING_CAT));
+    }
+
+    // BVA Method 3, TC20
+    @Test
+    public void add_fillsStandardDeckBackTo56_addsToTheBottom() {
+        Deck deck = createStandardDeck();
+        int cardsWithoutKittens = 52;
+        int kittens = 4;
+
+        deck.removeAll(CardType.EXPLODING_KITTEN);
+        deck.add(CardType.EXPLODING_KITTEN, kittens);
+
+        assertEquals(56, deck.size());
+        assertEquals(kittens, deck.count(CardType.EXPLODING_KITTEN));
+        for (int i = 0; i < cardsWithoutKittens; i++) {
+            deck.draw();
+        }
+        for (int i = 0; i < kittens; i++) {
+            assertEquals(CardType.EXPLODING_KITTEN, deck.draw());
+        }
+    }
+
+    // BVA Method 4, TC5
+    @Test
+    public void draw_standardDeck_removesOneCopyOfTheDrawnType() {
+        Deck deck = createStandardDeck();
+        Deck untouchedDeck = Deck.createStandardDeck(mockRandom);
+
+        CardType drawn = deck.draw();
+
+        assertEquals(55, deck.size());
+        assertEquals(untouchedDeck.count(drawn) - 1, deck.count(drawn));
+    }
+
+    // BVA Method 5, TC20
+    @Test
+    public void count_standardDeck_returnsFourBeardCats() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.count(CardType.BEARD_CAT));
+    }
+
+    // BVA Method 6, TC22
+    @Test
+    public void removeAll_standardDeck_removesAllFourBeardCats() {
+        Deck deck = createStandardDeck();
+
+        assertEquals(4, deck.removeAll(CardType.BEARD_CAT));
+        assertEquals(52, deck.size());
+        assertEquals(0, deck.count(CardType.BEARD_CAT));
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
@@ -708,5 +876,10 @@ public class DeckTest {
             deck.add(card, 1);
         }
         return deck;
+    }
+
+    private Deck createStandardDeck() {
+        EasyMock.replay(mockRandom);
+        return Deck.createStandardDeck(mockRandom);
     }
 }
