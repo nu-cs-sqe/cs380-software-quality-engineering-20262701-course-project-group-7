@@ -124,6 +124,20 @@ public class DeckTest {
         assertEquals(CardType.ATTACK, deck.draw());
     }
 
+    // BVA Method 3, TC5
+    @Test
+    public void add_threeCardsToNonEmptyDeck_addsThemToTheBottom() {
+        Deck deck = createDeckWith(CardType.SKIP);
+
+        deck.add(CardType.DEFUSE, 3);
+
+        assertEquals(4, deck.size());
+        assertEquals(CardType.SKIP, deck.draw());
+        assertEquals(CardType.DEFUSE, deck.draw());
+        assertEquals(CardType.DEFUSE, deck.draw());
+        assertEquals(CardType.DEFUSE, deck.draw());
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
