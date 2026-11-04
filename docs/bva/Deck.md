@@ -96,7 +96,7 @@ each-choice
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
 | TC1 | empty deck | throws IllegalStateException | yes |
-| TC2 | Deck [NOPE] | NOPE; size = 0 | no |
+| TC2 | Deck [NOPE] | NOPE; size = 0 | yes |
 | TC3 | Deck [SKIP, ATTACK, FAVOR] | SKIP; size = 2 | no |
 | TC4 | Deck [SKIP, ATTACK, FAVOR], draw 4 times | SKIP, ATTACK, FAVOR, then throws IllegalStateException | no |
 | TC5 | standard deck, draw returns `t` | size = 55; count(t) = standard count − 1 | no |
