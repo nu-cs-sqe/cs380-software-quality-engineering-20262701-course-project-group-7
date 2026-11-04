@@ -121,24 +121,24 @@ each-choice
 | TC1 | Deck [ATTACK], `count(null)` | throws IllegalArgumentException | yes |
 | TC2 | empty deck, `count(DEFUSE)` | 0 | yes |
 | TC3 | Deck [DEFUSE], `count(DEFUSE)` | 1 | yes |
-| TC4 | Deck [ATTACK, SKIP], `count(DEFUSE)` | 0 | no |
-| TC5 | Deck [DEFUSE, ATTACK, SKIP], `count(DEFUSE)` | 1 | no |
-| TC6 | Deck [ATTACK, SKIP, DEFUSE], `count(DEFUSE)` | 1 | no |
-| TC7 | Deck [DEFUSE, ATTACK, DEFUSE], `count(DEFUSE)` | 2 | no |
-| TC8 | Deck [DEFUSE, DEFUSE, DEFUSE], `count(DEFUSE)` | 3 | no |
-| TC9 | Deck [EXPLODING_KITTEN, DEFUSE], `count(EXPLODING_KITTEN)` | 1 | no |
-| TC10 | Deck [ATTACK, DEFUSE, DEFUSE], `count(DEFUSE)` | 2 | no |
-| TC11 | Deck [ATTACK], `count(ATTACK)` | 1 | no |
-| TC12 | Deck [SKIP, NOPE, SKIP, SKIP], `count(SKIP)` | 3 | no |
-| TC13 | Deck [ATTACK, SKIP], `count(FAVOR)` | 0 | no |
-| TC14 | Deck [NOPE, SHUFFLE], `count(SHUFFLE)` | 1 | no |
-| TC15 | Deck [SEE_THE_FUTURE, SEE_THE_FUTURE], `count(SEE_THE_FUTURE)` | 2 | no |
-| TC16 | empty deck, `count(NOPE)` | 0 | no |
-| TC17 | Deck [TACOCAT, CATTERMELON, TACOCAT], `count(TACOCAT)` | 2 | no |
-| TC18 | Deck [TACOCAT, CATTERMELON], `count(CATTERMELON)` | 1 | no |
-| TC19 | Deck [BEARD_CAT, HAIRY_POTATO_CAT, BEARD_CAT], `count(HAIRY_POTATO_CAT)` | 1 | no |
+| TC4 | Deck [ATTACK, SKIP], `count(DEFUSE)` | 0 | yes |
+| TC5 | Deck [DEFUSE, ATTACK, SKIP], `count(DEFUSE)` | 1 | yes |
+| TC6 | Deck [ATTACK, SKIP, DEFUSE], `count(DEFUSE)` | 1 | yes |
+| TC7 | Deck [DEFUSE, ATTACK, DEFUSE], `count(DEFUSE)` | 2 | yes |
+| TC8 | Deck [DEFUSE, DEFUSE, DEFUSE], `count(DEFUSE)` | 3 | yes |
+| TC9 | Deck [EXPLODING_KITTEN, DEFUSE], `count(EXPLODING_KITTEN)` | 1 | yes |
+| TC10 | Deck [ATTACK, DEFUSE, DEFUSE], `count(DEFUSE)` | 2 | yes |
+| TC11 | Deck [ATTACK], `count(ATTACK)` | 1 | yes |
+| TC12 | Deck [SKIP, NOPE, SKIP, SKIP], `count(SKIP)` | 3 | yes |
+| TC13 | Deck [ATTACK, SKIP], `count(FAVOR)` | 0 | yes |
+| TC14 | Deck [NOPE, SHUFFLE], `count(SHUFFLE)` | 1 | yes |
+| TC15 | Deck [SEE_THE_FUTURE, SEE_THE_FUTURE], `count(SEE_THE_FUTURE)` | 2 | yes |
+| TC16 | empty deck, `count(NOPE)` | 0 | yes |
+| TC17 | Deck [TACOCAT, CATTERMELON, TACOCAT], `count(TACOCAT)` | 2 | yes |
+| TC18 | Deck [TACOCAT, CATTERMELON], `count(CATTERMELON)` | 1 | yes |
+| TC19 | Deck [BEARD_CAT, HAIRY_POTATO_CAT, BEARD_CAT], `count(HAIRY_POTATO_CAT)` | 1 | yes |
 | TC20 | standard deck, `count(BEARD_CAT)` | 4 | no |
-| TC21 | one of each type, `count(RAINBOW_RALPHING_CAT)` | 1 | no |
+| TC21 | one of each type, `count(RAINBOW_RALPHING_CAT)` | 1 | yes |
 
 ## Method 6: `public int removeAll(CardType type)`
 
