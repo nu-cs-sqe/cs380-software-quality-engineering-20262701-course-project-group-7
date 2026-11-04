@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -44,6 +45,6 @@ public class Deck {
         if (type == null) {
             throw new IllegalArgumentException("Card type must not be null.");
         }
-        return 0;
+        return Collections.frequency(cards, type);
     }
 }

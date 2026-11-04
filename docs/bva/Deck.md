@@ -120,7 +120,7 @@ each-choice
 |-------------|-------------------|-----------------|--------------|
 | TC1 | Deck [ATTACK], `count(null)` | throws IllegalArgumentException | yes |
 | TC2 | empty deck, `count(DEFUSE)` | 0 | yes |
-| TC3 | Deck [DEFUSE], `count(DEFUSE)` | 1 | no |
+| TC3 | Deck [DEFUSE], `count(DEFUSE)` | 1 | yes |
 | TC4 | Deck [ATTACK, SKIP], `count(DEFUSE)` | 0 | no |
 | TC5 | Deck [DEFUSE, ATTACK, SKIP], `count(DEFUSE)` | 1 | no |
 | TC6 | Deck [ATTACK, SKIP, DEFUSE], `count(DEFUSE)` | 1 | no |
