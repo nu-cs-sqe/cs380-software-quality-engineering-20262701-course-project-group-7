@@ -225,8 +225,8 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | empty deck | size = 0 | no |
-| TC2 | Deck [NOPE] | draw = NOPE | no |
-| TC3 | Deck [ATTACK, SKIP, FAVOR], stub `nextInt(3)` → 2, `nextInt(2)` → 1 | draws = ATTACK, SKIP, FAVOR | no |
-| TC4 | Deck [ATTACK, SKIP, FAVOR], stub `nextInt(anyInt())` → 0 | draws = SKIP, FAVOR, ATTACK | no |
-| TC5 | standard deck, stub `nextInt(anyInt())` → 0 | size = 56; count of every type unchanged | no |
+| TC1 | empty deck | size = 0 | yes |
+| TC2 | Deck [NOPE] | draw = NOPE | yes |
+| TC3 | Deck [ATTACK, SKIP, FAVOR], stub `nextInt(3)` → 2, `nextInt(2)` → 1 | draws = ATTACK, SKIP, FAVOR | yes |
+| TC4 | Deck [ATTACK, SKIP, FAVOR], stub `nextInt(anyInt())` → 0 | draws = SKIP, FAVOR, ATTACK | yes |
+| TC5 | standard deck, stub `nextInt(anyInt())` → 0 | size = 56; count of every type unchanged | yes |

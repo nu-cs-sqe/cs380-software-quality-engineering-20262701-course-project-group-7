@@ -52,6 +52,10 @@ public class Deck {
         return cards.size();
     }
 
+    public void shuffle() {
+        Collections.shuffle(cards, random);
+    }
+
     public void add(CardType type, int numberOfCards) {
         requireCardType(type);
         if (numberOfCards < 0) {
