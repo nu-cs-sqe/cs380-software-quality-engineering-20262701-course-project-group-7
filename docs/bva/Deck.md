@@ -60,7 +60,7 @@ each-choice
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
 | TC1 | empty deck, `add(null, 1)` | throws IllegalArgumentException; size = 0 | yes |
-| TC2 | Deck [SKIP], `add(ATTACK, -1)` | throws IllegalArgumentException; size = 1; draw = SKIP | no |
+| TC2 | Deck [SKIP], `add(ATTACK, -1)` | throws IllegalArgumentException; size = 1; draw = SKIP | yes |
 | TC3 | empty deck, `add(ATTACK, 0)` | size = 0 | yes |
 | TC4 | empty deck, `add(ATTACK, 1)` | size = 1; draw = ATTACK | yes |
 | TC5 | Deck [SKIP], `add(DEFUSE, 3)` | size = 4; draws = SKIP, DEFUSE, DEFUSE, DEFUSE | yes |

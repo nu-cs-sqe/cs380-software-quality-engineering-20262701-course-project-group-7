@@ -25,6 +25,9 @@ public class Deck {
         if (type == null) {
             throw new IllegalArgumentException("Card type must not be null.");
         }
+        if (numberOfCards < 0) {
+            throw new IllegalArgumentException("Number of cards must not be negative.");
+        }
         for (int i = 0; i < numberOfCards; i++) {
             cards.add(type);
         }
