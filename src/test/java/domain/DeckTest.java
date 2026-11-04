@@ -164,6 +164,14 @@ public class DeckTest {
         assertEquals(0, deck.count(CardType.DEFUSE));
     }
 
+    // BVA Method 5, TC3
+    @Test
+    public void count_oneMatchingCard_returnsOne() {
+        Deck deck = createDeckWith(CardType.DEFUSE);
+
+        assertEquals(1, deck.count(CardType.DEFUSE));
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
