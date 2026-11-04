@@ -83,6 +83,15 @@ public class DeckTest {
         assertEquals(0, deck.size());
     }
 
+    // BVA Method 4, TC3
+    @Test
+    public void draw_threeCards_returnsTopCard() {
+        Deck deck = createDeckWith(CardType.SKIP, CardType.ATTACK, CardType.FAVOR);
+
+        assertEquals(CardType.SKIP, deck.draw());
+        assertEquals(2, deck.size());
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
