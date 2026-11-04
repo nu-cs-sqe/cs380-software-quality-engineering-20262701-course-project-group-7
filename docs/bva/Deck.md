@@ -101,7 +101,7 @@ each-choice
 | TC4 | Deck [SKIP, ATTACK, FAVOR], draw 4 times | SKIP, ATTACK, FAVOR, then throws IllegalStateException | yes |
 | TC5 | standard deck, draw returns `t` | size = 55; count(t) = standard count − 1 | no |
 | TC6 | Deck [SKIP, SKIP, ATTACK] | SKIP; size = 2; count(SKIP) = 1 | no |
-| TC7 | one of each type, in enum order; draw 13 times | each CardType once, in enum order | no |
+| TC7 | one of each type, in enum order; draw 13 times | each CardType once, in enum order | yes |
 
 ## Method 5: `public int count(CardType type)`
 

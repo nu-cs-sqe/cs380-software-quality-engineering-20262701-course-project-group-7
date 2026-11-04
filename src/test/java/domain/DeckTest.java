@@ -103,6 +103,16 @@ public class DeckTest {
         assertThrows(IllegalStateException.class, deck::draw);
     }
 
+    // BVA Method 4, TC7
+    @Test
+    public void draw_oneOfEachType_returnsEveryTypeInOrder() {
+        Deck deck = createDeckWith(CardType.values());
+
+        for (CardType expected : CardType.values()) {
+            assertEquals(expected, deck.draw());
+        }
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
