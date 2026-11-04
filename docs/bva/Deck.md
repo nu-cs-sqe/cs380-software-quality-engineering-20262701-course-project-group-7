@@ -42,7 +42,7 @@ each-choice
 | TC1 | empty deck | 0 | yes (Method 1 TC2) |
 | TC2 | Deck [ATTACK] | 1 | yes |
 | TC3 | Deck [ATTACK, SKIP, FAVOR] | 3 | yes |
-| TC4 | standard deck | 56 | no (Method 7 TC2) |
+| TC4 | standard deck | 56 | yes (Method 7 TC2) |
 
 ## Method 3: `public void add(CardType type, int numberOfCards)`
 
@@ -78,7 +78,7 @@ each-choice
 | TC17 | Deck [NOPE, NOPE], `add(BEARD_CAT, 4)` | size = 6; count(BEARD_CAT) = 4; first draw = NOPE | yes |
 | TC18 | Deck [SHUFFLE], `add(RAINBOW_RALPHING_CAT, 4)` | size = 5; count(RAINBOW_RALPHING_CAT) = 4; first draw = SHUFFLE | yes |
 | TC19 | Deck [DEFUSE, DEFUSE], `add(DEFUSE, 1)` | size = 3; count(DEFUSE) = 3 | yes |
-| TC20 | standard deck after `removeAll(EXPLODING_KITTEN)` (52 cards), `add(EXPLODING_KITTEN, 4)` | size = 56; count(EXPLODING_KITTEN) = 4; last 4 draws = EXPLODING_KITTEN | no |
+| TC20 | standard deck after `removeAll(EXPLODING_KITTEN)` (52 cards), `add(EXPLODING_KITTEN, 4)` | size = 56; count(EXPLODING_KITTEN) = 4; last 4 draws = EXPLODING_KITTEN | yes |
 
 ## Method 4: `public CardType draw()`
 
@@ -99,7 +99,7 @@ each-choice
 | TC2 | Deck [NOPE] | NOPE; size = 0 | yes |
 | TC3 | Deck [SKIP, ATTACK, FAVOR] | SKIP; size = 2 | yes |
 | TC4 | Deck [SKIP, ATTACK, FAVOR], draw 4 times | SKIP, ATTACK, FAVOR, then throws IllegalStateException | yes |
-| TC5 | standard deck, draw returns `t` | size = 55; count(t) = standard count − 1 | no |
+| TC5 | standard deck, draw returns `t` | size = 55; count(t) = standard count − 1 | yes |
 | TC6 | Deck [SKIP, SKIP, ATTACK] | SKIP; size = 2; count(SKIP) = 1 | yes |
 | TC7 | one of each type, in enum order; draw 13 times | each CardType once, in enum order | yes |
 
@@ -137,7 +137,7 @@ each-choice
 | TC17 | Deck [TACOCAT, CATTERMELON, TACOCAT], `count(TACOCAT)` | 2 | yes |
 | TC18 | Deck [TACOCAT, CATTERMELON], `count(CATTERMELON)` | 1 | yes |
 | TC19 | Deck [BEARD_CAT, HAIRY_POTATO_CAT, BEARD_CAT], `count(HAIRY_POTATO_CAT)` | 1 | yes |
-| TC20 | standard deck, `count(BEARD_CAT)` | 4 | no |
+| TC20 | standard deck, `count(BEARD_CAT)` | 4 | yes |
 | TC21 | one of each type, `count(RAINBOW_RALPHING_CAT)` | 1 | yes |
 
 ## Method 6: `public int removeAll(CardType type)`
@@ -176,7 +176,7 @@ each-choice
 | TC19 | Deck [TACOCAT, CATTERMELON, TACOCAT], `removeAll(TACOCAT)` | 2; draws = CATTERMELON | yes |
 | TC20 | Deck [TACOCAT, CATTERMELON, BEARD_CAT], `removeAll(CATTERMELON)` | 1; draws = TACOCAT, BEARD_CAT | yes |
 | TC21 | Deck [HAIRY_POTATO_CAT, BEARD_CAT, HAIRY_POTATO_CAT, HAIRY_POTATO_CAT], `removeAll(HAIRY_POTATO_CAT)` | 3; draws = BEARD_CAT | yes |
-| TC22 | standard deck, `removeAll(BEARD_CAT)` | 4; size = 52; count(BEARD_CAT) = 0 | no |
+| TC22 | standard deck, `removeAll(BEARD_CAT)` | 4; size = 52; count(BEARD_CAT) = 0 | yes |
 | TC23 | one of each type, `removeAll(RAINBOW_RALPHING_CAT)` | 1; size = 12; count(RAINBOW_RALPHING_CAT) = 0 | yes |
 
 ## Method 7: `public static Deck createStandardDeck(Random random)`
@@ -194,21 +194,21 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | `createStandardDeck(null)` | throws IllegalArgumentException | no |
-| TC2 | `createStandardDeck(mockRandom)` | size = 56; `mockRandom` not called | no |
-| TC3 | standard deck, `count(EXPLODING_KITTEN)` | 4 | no |
-| TC4 | standard deck, `count(DEFUSE)` | 6 | no |
-| TC5 | standard deck, `count(ATTACK)` | 4 | no |
-| TC6 | standard deck, `count(SKIP)` | 4 | no |
-| TC7 | standard deck, `count(FAVOR)` | 4 | no |
-| TC8 | standard deck, `count(SHUFFLE)` | 4 | no |
-| TC9 | standard deck, `count(SEE_THE_FUTURE)` | 5 | no |
-| TC10 | standard deck, `count(NOPE)` | 5 | no |
-| TC11 | standard deck, `count(TACOCAT)` | 4 | no |
-| TC12 | standard deck, `count(CATTERMELON)` | 4 | no |
-| TC13 | standard deck, `count(HAIRY_POTATO_CAT)` | 4 | no |
-| TC14 | standard deck, `count(BEARD_CAT)` | 4 | no |
-| TC15 | standard deck, `count(RAINBOW_RALPHING_CAT)` | 4 | no |
+| TC1 | `createStandardDeck(null)` | throws IllegalArgumentException | yes |
+| TC2 | `createStandardDeck(mockRandom)` | size = 56; `mockRandom` not called | yes |
+| TC3 | standard deck, `count(EXPLODING_KITTEN)` | 4 | yes |
+| TC4 | standard deck, `count(DEFUSE)` | 6 | yes |
+| TC5 | standard deck, `count(ATTACK)` | 4 | yes |
+| TC6 | standard deck, `count(SKIP)` | 4 | yes |
+| TC7 | standard deck, `count(FAVOR)` | 4 | yes |
+| TC8 | standard deck, `count(SHUFFLE)` | 4 | yes |
+| TC9 | standard deck, `count(SEE_THE_FUTURE)` | 5 | yes |
+| TC10 | standard deck, `count(NOPE)` | 5 | yes |
+| TC11 | standard deck, `count(TACOCAT)` | 4 | yes |
+| TC12 | standard deck, `count(CATTERMELON)` | 4 | yes |
+| TC13 | standard deck, `count(HAIRY_POTATO_CAT)` | 4 | yes |
+| TC14 | standard deck, `count(BEARD_CAT)` | 4 | yes |
+| TC15 | standard deck, `count(RAINBOW_RALPHING_CAT)` | 4 | yes |
 
 ## Method 8: `public void shuffle()`
 

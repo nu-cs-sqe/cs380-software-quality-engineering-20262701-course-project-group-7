@@ -2,10 +2,14 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Deck {
+
+    private static final Map<CardType, Integer> STANDARD_CARD_COUNTS = createStandardCardCounts();
 
     private final List<CardType> cards;
     private final Random random;
@@ -16,6 +20,32 @@ public class Deck {
         }
         this.random = random;
         this.cards = new ArrayList<>();
+    }
+
+    public static Deck createStandardDeck(Random random) {
+        Deck deck = new Deck(random);
+        for (Map.Entry<CardType, Integer> entry : STANDARD_CARD_COUNTS.entrySet()) {
+            deck.add(entry.getKey(), entry.getValue());
+        }
+        return deck;
+    }
+
+    private static Map<CardType, Integer> createStandardCardCounts() {
+        Map<CardType, Integer> counts = new EnumMap<>(CardType.class);
+        counts.put(CardType.EXPLODING_KITTEN, 4);
+        counts.put(CardType.DEFUSE, 6);
+        counts.put(CardType.ATTACK, 4);
+        counts.put(CardType.SKIP, 4);
+        counts.put(CardType.FAVOR, 4);
+        counts.put(CardType.SHUFFLE, 4);
+        counts.put(CardType.SEE_THE_FUTURE, 5);
+        counts.put(CardType.NOPE, 5);
+        counts.put(CardType.TACOCAT, 4);
+        counts.put(CardType.CATTERMELON, 4);
+        counts.put(CardType.HAIRY_POTATO_CAT, 4);
+        counts.put(CardType.BEARD_CAT, 4);
+        counts.put(CardType.RAINBOW_RALPHING_CAT, 4);
+        return Collections.unmodifiableMap(counts);
     }
 
     public int size() {
