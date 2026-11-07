@@ -38,31 +38,31 @@ are 4, 5, 6, 6 respectively.
 ## Test Cases
 
 Every ID below is unique. "Implemented" refers to test code, not a passing run.
-The new cases are initially planned; update their status when tests are added.
+All cases below now have test code in `GameTest`.
 
 | ID | Method(s) under test | System state / input | Expected output | Implemented? |
 |----|----------------------|----------------------|-----------------|--------------|
 | GAME-01 | `Game(Deck)` | Null deck. | `IllegalArgumentException`. | Yes: `constructorRejectsNullDeck` |
 | GAME-02 | `Game(Deck)`, `isSetUp()` | Non-null standard deck. | New game is not set up; deck size unchanged. | Yes: `constructorAcceptsDeckWithoutSettingUpOrDrawingCards` |
 | GAME-03 | `isSetUp()` | New game, queried twice. | Both calls return false. | Yes: `isSetUpRemainsFalseBeforeSetup` |
-| GAME-04 | `setup`, `isSetUp`, `getPlayers`, `getCurrentPlayer` | Standard deck; 2, 3, 4, 5 unique names. | Eight cards per player; first card is Defuse, no Kittens in hands; player order and names preserved; first player current; setup true; final counts as above. | No |
-| GAME-05 | `validatePlayerCount` | Count 1 or 6. | `IllegalArgumentException`. | No |
-| GAME-06 | `validatePlayerCount` | Count 2, 3, 4, 5. | No exception. | No |
-| GAME-07 | `setup`, `isSetUp` | Null names list. | `IllegalArgumentException`; deck unchanged; setup false. | No |
-| GAME-08 | `setup`, `isSetUp` | Empty names list, 1 name, or 6 names. | `IllegalArgumentException`; deck unchanged; setup false. | No |
-| GAME-09 | `setup`, `isSetUp` | Valid count; one name null, empty (including non-interned empty string), or whitespace-only. | `IllegalArgumentException`; deck unchanged; setup false. | No |
-| GAME-10 | `setup`, `isSetUp` | Two equal names, including distinct String objects. | `IllegalArgumentException`; deck unchanged; setup false. | No |
-| GAME-11 | `setup`, `getPlayers` | Names "A" and "a". | Both accepted and preserved, per proposed case-sensitive policy. | No |
-| GAME-12 | `setup`, `getCurrentPlayer`, `getPlayers` | Already set up; another valid or invalid setup request. | `IllegalStateException`; current player, players, hands and deck unchanged. | No |
-| GAME-13 | `getCurrentPlayer`, `getPlayers` | Before setup. | `IllegalStateException("Game has not been set up.")`. | No |
-| GAME-14 | `getPlayers`, `getCurrentPlayer` | After setup; repeated queries and attempted list mutation. | Returned list cannot be modified; query does not advance current player. | No |
-| GAME-15 | `setup`, `getPlayers` | Caller mutates original names list after setup. | Stored player names and order unchanged. | No |
-| GAME-16 | `setup`, `isSetUp` | Invalid input followed by valid input on the same game. | First rejected without deck mutation; second succeeds. | No |
-| GAME-17 | `setup` | Empty custom deck, insufficient Defuses, insufficient Kittens, or one fewer drawable card than required. | `IllegalStateException` before mutation; setup false. | No |
-| GAME-18 | `setup` | Custom deck with exactly 14 drawable cards, 2 Defuses and 1 Kitten; 2 players. | Setup succeeds; draw pile contains only the Kitten; each hand has eight cards. | No |
-| GAME-19 | `setup` | Recorded Deck calls; two players and six Defuses. | Remove specials, add two extra Defuses, shuffle, draw 14 cards, add one Kitten, shuffle; no other extra specials returned. | No |
-| GAME-20 | `setup`, `getPlayers` | Deterministic Deck deals a returned Defuse among the seven cards. | One player can have two Defuses; total hand size is still eight. | No |
-| GAME-21 | `setup`, `isSetUp`, `getCurrentPlayer` | Deck passes preflight but throws on draw. | Same exception propagated; setup false; current player unavailable. No rollback promised. | No |
+| GAME-04 | `setup`, `isSetUp`, `getPlayers`, `getCurrentPlayer` | Standard deck; 2, 3, 4, 5 unique names. | Eight cards per player; first card is Defuse, no Kittens in hands; player order and names preserved; first player current; setup true; final counts as above. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` |
+| GAME-05 | `validatePlayerCount` | Count 1 or 6. | `IllegalArgumentException`. | Yes: `validatePlayerCountRejectsOutsideBoundaries` |
+| GAME-06 | `validatePlayerCount` | Count 2, 3, 4, 5. | No exception. | Yes: `validatePlayerCountAcceptsValidCounts` |
+| GAME-07 | `setup`, `isSetUp` | Null names list. | `IllegalArgumentException`; deck unchanged; setup false. | Yes: `setupRejectsNullNamesWithoutChangingDeck` |
+| GAME-08 | `setup`, `isSetUp` | Empty names list, 1 name, or 6 names. | `IllegalArgumentException`; deck unchanged; setup false. | Yes: `setupRejectsInvalidCountsWithoutChangingDeck` |
+| GAME-09 | `setup`, `isSetUp` | Valid count; one name null, empty (including non-interned empty string), or whitespace-only. | `IllegalArgumentException`; deck unchanged; setup false. | Yes: `setupRejectsNullNameWithoutChangingDeck`, `setupRejectsBlankNamesWithoutChangingDeck`, `setupRejectsNonInternedEmptyName` |
+| GAME-10 | `setup`, `isSetUp` | Two equal names, including distinct String objects. | `IllegalArgumentException`; deck unchanged; setup false. | Yes: `setupRejectsDuplicateNameValues` |
+| GAME-11 | `setup`, `getPlayers` | Names "A" and "a". | Both accepted and preserved, per proposed case-sensitive policy. | Yes: `setupPreservesCaseSensitiveNames` |
+| GAME-12 | `setup`, `getCurrentPlayer`, `getPlayers` | Already set up; another valid or invalid setup request. | `IllegalStateException`; current player, players, hands and deck unchanged. | Yes: `repeatedSetupPreservesExistingState` |
+| GAME-13 | `getCurrentPlayer`, `getPlayers` | Before setup. | `IllegalStateException("Game has not been set up.")`. | Yes: `queriesRejectAccessBeforeSetup` |
+| GAME-14 | `getPlayers`, `getCurrentPlayer` | After setup; repeated queries and attempted list mutation. | Returned list cannot be modified; query does not advance current player. | Yes: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
+| GAME-15 | `setup`, `getPlayers` | Caller mutates original names list after setup. | Stored player names and order unchanged. | Yes: `callerCannotChangeStoredNamesAfterSetup` |
+| GAME-16 | `setup`, `isSetUp` | Invalid input followed by valid input on the same game. | First rejected without deck mutation; second succeeds. | Yes: `validSetupCanFollowRejectedInput` |
+| GAME-17 | `setup` | Empty custom deck, insufficient Defuses, insufficient Kittens, or one fewer drawable card than required. | `IllegalStateException` before mutation; setup false. | Yes: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses`, `setupRejectsInsufficientKittens`, `setupRejectsOneFewerDrawableCardThanRequired` |
+| GAME-18 | `setup` | Custom deck with exactly 14 drawable cards, 2 Defuses and 1 Kitten; 2 players. | Setup succeeds; draw pile contains only the Kitten; each hand has eight cards. | Yes: `setupAcceptsExactlyEnoughDrawableCards` |
+| GAME-19 | `setup` | Recorded Deck calls; two players and six Defuses. | Remove specials, add two extra Defuses, shuffle, draw 14 cards, add one Kitten, shuffle; no other extra specials returned. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
+| GAME-20 | `setup`, `getPlayers` | Deterministic Deck deals a returned Defuse among the seven cards. | One player can have two Defuses; total hand size is still eight. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
+| GAME-21 | `setup`, `isSetUp`, `getCurrentPlayer` | Deck passes preflight but throws on draw. | Same exception propagated; setup false; current player unavailable. No rollback promised. | Yes: `setupPropagatesUnexpectedDrawFailureWithoutPublishingPlayers` |
 
 ## Remaining Team Decisions
 
