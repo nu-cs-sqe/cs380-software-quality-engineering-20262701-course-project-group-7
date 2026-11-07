@@ -64,6 +64,21 @@ All cases below now have test code in `GameTest`.
 | GAME-20 | `setup`, `getPlayers` | Deterministic Deck deals a returned Defuse among the seven cards. | One player can have two Defuses; total hand size is still eight. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
 | GAME-21 | `setup`, `isSetUp`, `getCurrentPlayer` | Deck passes preflight but throws on draw. | Same exception propagated; setup false; current player unavailable. No rollback promised. | Yes: `setupPropagatesUnexpectedDrawFailureWithoutPublishingPlayers` |
 
+## Execution Record
+
+- Before implementation, `./gradlew test --tests domain.GameTest --offline
+  --no-daemon` failed at `compileTestJava` because the new Game methods did
+  not yet exist. This was a compile-time red run, not failing assertions.
+- After implementation, all domain sources and tests compiled with
+  `javac --release 11`. JUnit Platform Console Standalone 1.10.0
+  (JUnit Jupiter 5.10.0), with EasyMock 5.4.0 and its runtime dependencies,
+  ran 37 Game tests successfully, with none skipped or failed.
+- The same independent runner scanned all tests in package `domain`:
+  161 tests passed, with none skipped or failed.
+- The post-implementation Gradle run reached `processTestResources` but
+  did not finish starting tests and was stopped. The independent test
+  result does not establish that the Gradle build or remote CI passes.
+
 ## Remaining Team Decisions
 
 - Confirm the proposed names-list API and UI's early count validation call.
