@@ -11,6 +11,7 @@
 ## Dependencies
 - JDK 11
 - JUnit 5.10
+- EasyMock 5.4
 - Gradle 8.10
 
 ## Exceptions
