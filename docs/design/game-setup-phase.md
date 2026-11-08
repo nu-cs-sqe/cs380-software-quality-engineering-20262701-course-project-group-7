@@ -60,44 +60,50 @@ The standard counts are kept in one constant map (`CardType` → count) inside `
 |--------|-------------|
 | `+ static final int MIN_PLAYERS = 2`, `MAX_PLAYERS = 5` | |
 | `+ static final int INITIAL_HAND_SIZE = 7` | |
+| `+ static final int RETURNED_DEFUSES = 2` | Maximum number of extra Defuses put back into the deck (rule 3). |
 | `- Deck deck` | Injected. |
 | `- List<Player> players` | In turn order. |
 | `- int currentPlayerIndex` | Index into `players` for turn order tracking. |
 | `- boolean isSetUp` | Prevents use before setup and repeated setup. |
 | `+ Game(Deck deck)` | Throws `IllegalArgumentException` if `deck` is `null`. |
-| `+ void setup(int numberOfPlayers)` | Runs the setup steps. |
 | `+ Player getCurrentPlayer()` | Throws `IllegalStateException("Game has not been set up.")` before setup. |
+| `+ void setup()` | Runs the setup steps in Section 5 on the players created by the constructor. Their order is the turn order. |
 | `+ boolean isSetUp()` | |
 
 Setup can throw exceptions if:
 
-- `IllegalArgumentException("Number of players must be between 2 and 5.")` when `numberOfPlayers < 2` or `> 5` (AC1).
 - `IllegalStateException("Game has already been set up.")` when called a second time.
 - `IllegalStateException` from `Deck.draw()` if the deck runs out (cannot happen with the standard deck, but `Game` does not hide it).
 
+The number of players and the names are validated by the UI before the `Game` is created (see Additional: UI), so `setup` does not validate them.
 
-## 5. `Game.setup(numberOfPlayers)` algorithm
+## 5. `Game.setup()` algorithm
+
+`n` is the number of players (`players.size()`).
 
 | Step | Action |
 |------|--------|
-| 1 | If already set up, throw `IllegalStateException`. |
-| 2 | If `numberOfPlayers` is not in [2, 5], throw `IllegalArgumentException`. |
-| 3 | `deck.shuffle()` |
-| 4 | `deck.removeAll(EXPLODING_KITTEN)` and `deck.removeAll(DEFUSE)`. |
-| 5 | Create `numberOfPlayers`|
-| 6 | For each player, `draw()` 7 cards into their hand. |
-| 7 | Give each player 1 `DEFUSE`. |
-| 8 | `deck.add(DEFUSE, k)` |
-| 9 | `deck.add(EXPLODING_KITTEN, numberOfPlayers - 1)` |
-| 10 | `deck.shuffle()` |
-| 11 | `currentPlayerIndex = 0`; `isSetUp = true`. |
+| 1 | If already set up, throw `IllegalStateException("Game has already been set up.")`. |
+| 2 | `deck.removeAll(EXPLODING_KITTEN)`; `removedDefuses = deck.removeAll(DEFUSE)`. |
+| 3 | Give each player 1 `DEFUSE` (`addToHand`). |
+| 4 | `deck.add(DEFUSE, min(RETURNED_DEFUSES, removedDefuses - n))`. The remaining Defuses are removed from the game. |
+| 5 | `deck.shuffle()` |
+| 6 | Each player `draw()`s `INITIAL_HAND_SIZE` cards from the deck. |
+| 7 | `deck.add(EXPLODING_KITTEN, n - 1)`. The remaining Exploding Kittens are removed from the game. |
+| 8 | `deck.shuffle()` |
+| 9 | `currentPlayerIndex = 0`; `isSetUp = true`. |
 
+Step 4 uses the value returned by `removeAll`, so the number of Defuses put back is not hardcoded to the standard deck (6 Defuses gives 2 back for 2–4 players and 1 back for 5 players).
 
 ### Additional: UI
 
-1. Asks for the number of players and names.
-2. Calls `game.setup(n)`.
-3. On `IllegalArgumentException`, shows the exception message and asks again.
+1. Asks for the number of players. If it is not between `Game.MIN_PLAYERS` and
+   `Game.MAX_PLAYERS`, immediately shows an error message and asks again, before
+   any names are entered.
+2. Asks for each player's name, one at a time. If a name is empty or already
+   taken, shows an error message and asks for that player's name again.
+3. Creates the `Game` with the deck and the validated names (in the order they
+   were entered), then calls `game.setup()`.
 
 # User Story
 As a player of Exploding Kittens, I want to choose the number of players and enter each player's name when a new game starts, so that the game matches my group and I can tell whose turn it is.
