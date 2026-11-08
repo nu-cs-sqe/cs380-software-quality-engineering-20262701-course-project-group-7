@@ -16,7 +16,14 @@
 1. [done] Casey: Player Class Implementation ((https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/17))
 2. [done] Graciela: CardType Class ((https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/8))
 3. [just started] Yiliu: Game Class(https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
-4[not started] Fiona: GameSetup and GUI
+4. [not started] Fiona: GameSetup and GUI
+
+# Week 6 (11/01/2026-11/08/2026)
+**Planning and Progress Tracking**:
+1. [done] Fiona: Created code_style_standard.md based on agreed team coding style standards (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/27)
+2. [done] Fiona: Setup Checkstyle and SpotBugs with configuration synced with team coding style standards (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/27)
+3. [done] Fiona: Synced design doc with updated design of Game.setup() and UI responsibilities (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/9)
+4. [not started] Fiona: GameSetup and GUI
 
 # One section per week until the last week of class (the week before the Finals week)
 
