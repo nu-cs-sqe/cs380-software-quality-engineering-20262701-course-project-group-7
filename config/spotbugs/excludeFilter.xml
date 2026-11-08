@@ -1,0 +1,9 @@
+<!-- Use this file to identify code flagged by SpotBugs that is correct for the situation-->
+<FindBugsFilter>
+    <!-- assertThrows intentionally ignores the return value of a call that
+         is expected to throw. Suppressed for test classes only. -->
+    <Match>
+        <Class name="~.*Test"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+    </Match>
+</FindBugsFilter>
