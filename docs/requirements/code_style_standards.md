@@ -95,7 +95,8 @@ on every PR.
 
 ### Magic numbers
 
-- Any numeric literal other than `0`, `1`, or `-1` is a `private static final` constant with a meaningful name, e.g. `private static final int MAX_PLAYERS = 4;`.
+- Any numeric literal other than `0`, `1`, or `-1` is a `private static final` constant with a meaningful name, e.g. `private static final int MAX_PLAYERS = 5;`.
+- Magic number rule applies to production code only, not test code.
 
 ### Comments
 

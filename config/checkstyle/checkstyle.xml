@@ -52,6 +52,11 @@
         <property name="eachLine" value="true"/>
     </module>
 
+    <module name="SuppressionSingleFilter">
+        <property name="checks" value="MagicNumber"/>
+        <property name="files" value=".*Test\.java$"/>
+    </module>
+
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
         <property name="max" value="100"/>
