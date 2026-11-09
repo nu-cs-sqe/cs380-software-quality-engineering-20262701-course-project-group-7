@@ -24,6 +24,8 @@
 2. [done] Fiona: Setup Checkstyle and SpotBugs with configuration synced with team coding style standards (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/27)
 3. [done] Fiona: Synced design doc with updated design of Game.setup() and UI responsibilities (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/9)
 4. [not started] Fiona: GameSetup and GUI
+5. [done] Graciela: Deck class implementation with TDD. All 8 public methods are implemented and every test case in the BVA (docs/bva/Deck.md) is implemented and passing (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/19)
+
 
 # One section per week until the last week of class (the week before the Finals week)
 
