@@ -18,6 +18,10 @@
 3. [just started] Yiliu: Game Class(https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
 4[not started] Fiona: GameSetup and GUI
 
+# Week 6 (11/02/2026-11/08/2026)
+**Planning and Progress Tracking**:
+1. [in progress] Yiliu: Game setup implementation and tests; pending GUI interface confirmation (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
+
 # One section per week until the last week of class (the week before the Finals week)
 
 
