@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Coordinates game setup using a deck supplied by the caller.
+ * Coordinates game setup using a deck and player names supplied by the caller.
  */
 public class Game {
 
@@ -25,18 +25,25 @@ public class Game {
     private static final String NOT_SET_UP_MESSAGE = "Game has not been set up.";
 
     private final Deck deck;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players;
     private boolean isSetUp = false;
 
-    public Game(Deck deck) {
+    /**
+     * Creates the players in the given order, which becomes the turn order.
+     * Input order and case-sensitive names are preserved. The UI is expected to
+     * validate the count and names first; the constructor repeats the checks so
+     * a game always starts with a valid set of players.
+     */
+    public Game(Deck deck, List<String> playerNames) {
         if (deck == null) {
             throw new IllegalArgumentException(NULL_DECK_MESSAGE);
         }
         this.deck = deck;
+        this.players = createPlayers(validatedNames(playerNames));
     }
 
     /**
-     * The UI can call this before asking for names; setup also revalidates the count.
+     * The UI can call this before asking for names; the constructor checks the count again.
      */
     public static void validatePlayerCount(int numberOfPlayers) {
         if (numberOfPlayers < MIN_PLAYERS || numberOfPlayers > MAX_PLAYERS) {
@@ -45,20 +52,18 @@ public class Game {
     }
 
     /**
-     * Uses input order as turn order and preserves case-sensitive names.
-     * Invalid inputs and insufficient decks are rejected before deck mutation.
-     * Unexpected dealing failures are propagated without rolling back the deck.
+     * Runs the setup steps on the players created by the constructor.
+     * An insufficient deck is rejected before any card is moved; unexpected
+     * dealing failures are propagated without rolling back the deck.
      */
-    public void setup(List<String> playerNames) {
+    public void setup() {
         if (isSetUp) {
             throw new IllegalStateException(ALREADY_SET_UP_MESSAGE);
         }
-        List<String> names = validatedNames(playerNames);
-        validateDeckForSetup(names.size());
-        List<Player> newPlayers = createPlayers(names);
-        prepareDeckAndGiveDefuses(newPlayers);
-        dealInitialCards(newPlayers);
-        finishSetup(newPlayers);
+        validateDeckForSetup();
+        prepareDeckAndGiveDefuses();
+        dealInitialCards();
+        finishSetup();
     }
 
     private List<String> validatedNames(List<String> playerNames) {
@@ -79,7 +84,16 @@ public class Game {
         return names;
     }
 
-    private void validateDeckForSetup(int numberOfPlayers) {
+    private List<Player> createPlayers(List<String> names) {
+        List<Player> created = new ArrayList<>();
+        for (String name : names) {
+            created.add(new Player(name));
+        }
+        return created;
+    }
+
+    private void validateDeckForSetup() {
+        int numberOfPlayers = players.size();
         int defuses = deck.count(CardType.DEFUSE);
         int kittens = deck.count(CardType.EXPLODING_KITTEN);
         int ordinaryCards = deck.size() - defuses - kittens;
@@ -91,37 +105,28 @@ public class Game {
         }
     }
 
-    private List<Player> createPlayers(List<String> names) {
-        List<Player> newPlayers = new ArrayList<>();
-        for (String name : names) {
-            newPlayers.add(new Player(name));
-        }
-        return newPlayers;
-    }
-
-    private void prepareDeckAndGiveDefuses(List<Player> newPlayers) {
+    private void prepareDeckAndGiveDefuses() {
         deck.removeAll(CardType.EXPLODING_KITTEN);
         int removedDefuses = deck.removeAll(CardType.DEFUSE);
-        for (Player player : newPlayers) {
+        for (Player player : players) {
             player.addToHand(CardType.DEFUSE);
         }
-        int extraDefuses = Math.min(MAX_EXTRA_DEFUSES, removedDefuses - newPlayers.size());
+        int extraDefuses = Math.min(MAX_EXTRA_DEFUSES, removedDefuses - players.size());
         deck.add(CardType.DEFUSE, extraDefuses);
         deck.shuffle();
     }
 
-    private void dealInitialCards(List<Player> newPlayers) {
-        for (Player player : newPlayers) {
+    private void dealInitialCards() {
+        for (Player player : players) {
             for (int i = 0; i < INITIAL_HAND_SIZE; i++) {
                 player.addToHand(deck.draw());
             }
         }
     }
 
-    private void finishSetup(List<Player> newPlayers) {
-        deck.add(CardType.EXPLODING_KITTEN, newPlayers.size() - 1);
+    private void finishSetup() {
+        deck.add(CardType.EXPLODING_KITTEN, players.size() - 1);
         deck.shuffle();
-        players = newPlayers;
         isSetUp = true;
     }
 
