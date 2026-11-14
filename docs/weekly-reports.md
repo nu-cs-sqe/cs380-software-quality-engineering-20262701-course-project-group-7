@@ -27,6 +27,10 @@
 5. [done] Graciela: Deck class implementation with TDD. All 8 public methods are implemented and every test case in the BVA (docs/bva/Deck.md) is implemented and passing (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/19)
 6. [in progress] Yiliu: Game setup implementation and tests; pending GUI interface confirmation (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
 
+# Week 7 (11/09/2026-11/15/2026)
+**Planning and Progress Tracking**:
+1. [done] Yiliu: Completed Game setup implementation, tests and BVA; aligned with coding standards and verified coverage and mutation testing. Pending review (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
+
 # One section per week until the last week of class (the week before the Finals week)
 
 
