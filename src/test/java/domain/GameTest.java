@@ -1,61 +1,27 @@
 package domain;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class GameTest {
-
-    @Test
-    void constructorRejectsNullDeck() {
-        assertThrows(IllegalArgumentException.class, () -> new Game(null, namesFor(2)));
-    }
-
-    @Test
-    void constructorRejectsNullNames() {
-        assertInvalidConstruction(null);
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 6})
-    void constructorRejectsInvalidCounts(int count) {
-        assertInvalidConstruction(namesFor(count));
-    }
-
-    @Test
-    void constructorRejectsNullName() {
-        assertInvalidConstruction(Arrays.asList("Alice", null));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"", " ", "\t\n"})
-    void constructorRejectsBlankNames(String name) {
-        assertInvalidConstruction(Arrays.asList("Alice", name));
-    }
-
-    @Test
-    void constructorRejectsNonInternedEmptyName() {
-        assertInvalidConstruction(Arrays.asList("Alice", new String(new char[0])));
-    }
-
-    @Test
-    void constructorRejectsDuplicateNameValues() {
-        assertInvalidConstruction(Arrays.asList("Alice", new String("Alice")));
-    }
 
     @Test
     void constructorAcceptsDeckWithoutSettingUpOrDrawingCards() {
@@ -88,31 +54,8 @@ class GameTest {
         assertTrue(game.isSetUp());
         assertEquals(count, game.getPlayers().size());
         assertSame(game.getPlayers().get(0), game.getCurrentPlayer());
-        int extraDefuses = Math.min(2, 6 - count);
-        int totalDefuses = deck.count(CardType.DEFUSE);
-        for (int i = 0; i < count; i++) {
-            Player player = game.getPlayers().get(i);
-            assertEquals(names.get(i), player.getName());
-            assertEquals(8, player.getHandSize());
-            assertEquals(CardType.DEFUSE, player.getHand().get(0));
-            assertEquals(0, player.countInHand(CardType.EXPLODING_KITTEN));
-            totalDefuses += player.countInHand(CardType.DEFUSE);
-        }
-        assertEquals(count + extraDefuses, totalDefuses);
-        assertEquals(count - 1, deck.count(CardType.EXPLODING_KITTEN));
-        assertEquals(46 + extraDefuses - 7 * count + count - 1, deck.size());
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 6})
-    void validatePlayerCountRejectsOutsideBoundaries(int count) {
-        assertThrows(IllegalArgumentException.class, () -> Game.validatePlayerCount(count));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {2, 3, 4, 5})
-    void validatePlayerCountAcceptsValidCounts(int count) {
-        assertDoesNotThrow(() -> Game.validatePlayerCount(count));
+        assertInitialHands(game, names);
+        assertStandardDeckCounts(game, deck, count);
     }
 
     @Test
@@ -131,12 +74,13 @@ class GameTest {
         Game game = new Game(deck, namesFor(2));
         game.setup();
         Player current = game.getCurrentPlayer();
-        List<Player> players = game.getPlayers();
-        List<CardType> firstHand = current.getHand();
-        Map<CardType, Integer> counts = cardCounts(deck);
-        int size = deck.size();
+        final List<Player> players = game.getPlayers();
+        final List<CardType> firstHand = current.getHand();
+        final Map<CardType, Integer> counts = cardCounts(deck);
+        final int size = deck.size();
 
-        assertThrows(IllegalStateException.class, game::setup);
+        assertEquals("game.alreadySetUp",
+                assertThrows(IllegalStateException.class, game::setup).getMessage());
 
         assertTrue(game.isSetUp());
         assertSame(current, game.getCurrentPlayer());
@@ -150,9 +94,9 @@ class GameTest {
     void queriesRejectAccessBeforeSetup() {
         Game game = new Game(Deck.createStandardDeck(new Random(0)), namesFor(2));
 
-        assertEquals("Game has not been set up.",
+        assertEquals("game.notSetUp",
                 assertThrows(IllegalStateException.class, game::getCurrentPlayer).getMessage());
-        assertEquals("Game has not been set up.",
+        assertEquals("game.notSetUp",
                 assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
     }
 
@@ -162,7 +106,8 @@ class GameTest {
         game.setup();
         Player first = game.getCurrentPlayer();
 
-        assertThrows(UnsupportedOperationException.class, () -> game.getPlayers().clear());
+        assertNull(assertThrows(UnsupportedOperationException.class,
+                () -> game.getPlayers().clear()).getMessage());
 
         assertSame(first, game.getCurrentPlayer());
         assertSame(first, game.getCurrentPlayer());
@@ -180,17 +125,6 @@ class GameTest {
         game.setup();
         assertEquals("Player 1", game.getCurrentPlayer().getName());
         assertEquals(2, game.getPlayers().size());
-    }
-
-    @Test
-    void invalidConstructionDoesNotPreventLaterValidGame() {
-        Deck deck = Deck.createStandardDeck(new Random(0));
-        assertThrows(IllegalArgumentException.class, () -> new Game(deck, namesFor(1)));
-
-        Game game = new Game(deck, namesFor(2));
-        game.setup();
-
-        assertTrue(game.isSetUp());
     }
 
     @Test
@@ -231,6 +165,25 @@ class GameTest {
     }
 
     @Test
+    void setupCountsReturnedDefuseTowardDrawableBoundary() {
+        Deck deck = customDeck(13, 3, 1);
+        Game game = new Game(deck, namesFor(2));
+
+        game.setup();
+
+        assertTrue(game.isSetUp());
+        assertEquals(1, deck.size());
+        assertEquals(1, deck.count(CardType.EXPLODING_KITTEN));
+        int totalDefuses = 0;
+        for (Player player : game.getPlayers()) {
+            assertEquals(8, player.getHandSize());
+            assertEquals(0, player.countInHand(CardType.EXPLODING_KITTEN));
+            totalDefuses += player.countInHand(CardType.DEFUSE);
+        }
+        assertEquals(3, totalDefuses);
+    }
+
+    @Test
     void setupUsesOfficialCallOrderAndMayDealAdditionalDefuse() {
         Deck deck = mockDeckBeforeDealing();
         EasyMock.expect(deck.draw()).andReturn(CardType.DEFUSE);
@@ -251,17 +204,54 @@ class GameTest {
     @Test
     void setupPropagatesUnexpectedDrawFailureWithoutPublishingPlayers() {
         Deck deck = mockDeckBeforeDealing();
-        IllegalStateException failure = new IllegalStateException("Simulated draw failure");
+        IllegalStateException failure = new IllegalStateException("test.drawFailure");
         EasyMock.expect(deck.draw()).andThrow(failure);
         EasyMock.replay(deck);
         Game game = new Game(deck, namesFor(2));
 
         assertSame(failure, assertThrows(IllegalStateException.class, game::setup));
+        assertEquals("test.drawFailure", failure.getMessage());
 
         assertFalse(game.isSetUp());
-        assertThrows(IllegalStateException.class, game::getCurrentPlayer);
-        assertThrows(IllegalStateException.class, game::getPlayers);
+        assertEquals("game.notSetUp",
+                assertThrows(IllegalStateException.class, game::getCurrentPlayer).getMessage());
+        assertEquals("game.notSetUp",
+                assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
         EasyMock.verify(deck);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"en", "zh"})
+    void setupErrorsHaveTranslationsForSupportedLocales(String language) {
+        ResourceBundle messages =
+                ResourceBundle.getBundle("message", Locale.forLanguageTag(language));
+        assertEquals(language, messages.getLocale().getLanguage());
+        for (String key : List.of("game.alreadySetUp", "game.notSetUp", "game.insufficientDeck")) {
+            String translation = messages.getString(key);
+            assertFalse(translation.isBlank());
+            assertFalse(translation.equals(key));
+        }
+    }
+
+    private void assertInitialHands(Game game, List<String> names) {
+        for (int i = 0; i < names.size(); i++) {
+            Player player = game.getPlayers().get(i);
+            assertEquals(names.get(i), player.getName());
+            assertEquals(8, player.getHandSize());
+            assertEquals(CardType.DEFUSE, player.getHand().get(0));
+            assertEquals(0, player.countInHand(CardType.EXPLODING_KITTEN));
+        }
+    }
+
+    private void assertStandardDeckCounts(Game game, Deck deck, int count) {
+        int extraDefuses = Math.min(2, 6 - count);
+        int totalDefuses = deck.count(CardType.DEFUSE);
+        for (Player player : game.getPlayers()) {
+            totalDefuses += player.countInHand(CardType.DEFUSE);
+        }
+        assertEquals(count + extraDefuses, totalDefuses);
+        assertEquals(count - 1, deck.count(CardType.EXPLODING_KITTEN));
+        assertEquals(46 + extraDefuses - 7 * count + count - 1, deck.size());
     }
 
     private Deck mockDeckBeforeDealing() {
@@ -276,23 +266,13 @@ class GameTest {
         return deck;
     }
 
-    private void assertInvalidConstruction(List<String> names) {
-        Deck deck = Deck.createStandardDeck(new Random(0));
-        Map<CardType, Integer> counts = cardCounts(deck);
-        int size = deck.size();
-
-        assertThrows(IllegalArgumentException.class, () -> new Game(deck, names));
-
-        assertEquals(size, deck.size());
-        assertEquals(counts, cardCounts(deck));
-    }
-
     private void assertInsufficientDeck(Deck deck) {
         Game game = new Game(deck, namesFor(2));
-        Map<CardType, Integer> counts = cardCounts(deck);
+        final Map<CardType, Integer> counts = cardCounts(deck);
         int size = deck.size();
 
-        assertThrows(IllegalStateException.class, game::setup);
+        assertEquals("game.insufficientDeck",
+                assertThrows(IllegalStateException.class, game::setup).getMessage());
 
         assertFalse(game.isSetUp());
         assertEquals(size, deck.size());

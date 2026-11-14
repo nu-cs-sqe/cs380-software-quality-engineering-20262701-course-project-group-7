@@ -1,54 +1,31 @@
 package domain;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Coordinates game setup using a deck and player names supplied by the caller.
  */
-public class Game {
+public final class Game {
 
-    public static final int MIN_PLAYERS = 2;
-    public static final int MAX_PLAYERS = 5;
-    public static final int INITIAL_HAND_SIZE = 7;
-
+    private static final int INITIAL_HAND_SIZE = 7;
     private static final int MAX_EXTRA_DEFUSES = 2;
-    private static final String NULL_DECK_MESSAGE = "Deck must not be null.";
-    private static final String PLAYER_COUNT_MESSAGE = "Number of players must be between 2 and 5.";
-    private static final String NULL_NAMES_MESSAGE = "Player names must not be null.";
-    private static final String BLANK_NAME_MESSAGE = "Player names must not be blank.";
-    private static final String DUPLICATE_NAME_MESSAGE = "Player names must be unique.";
-    private static final String INSUFFICIENT_DECK_MESSAGE = "Deck does not contain enough cards for setup.";
-    private static final String ALREADY_SET_UP_MESSAGE = "Game has already been set up.";
-    private static final String NOT_SET_UP_MESSAGE = "Game has not been set up.";
+    private static final String INSUFFICIENT_DECK_MESSAGE = "game.insufficientDeck";
+    private static final String ALREADY_SET_UP_MESSAGE = "game.alreadySetUp";
+    private static final String NOT_SET_UP_MESSAGE = "game.notSetUp";
 
     private final Deck deck;
     private final List<Player> players;
     private boolean isSetUp = false;
 
     /**
-     * Creates the players in the given order, which becomes the turn order.
-     * Input order and case-sensitive names are preserved. The UI is expected to
-     * validate the count and names first; the constructor repeats the checks so
-     * a game always starts with a valid set of players.
+     * The caller supplies a non-null deck and non-null, UI-validated names.
+     * Creating players here keeps later changes to the caller's list from
+     * changing the turn order.
      */
     public Game(Deck deck, List<String> playerNames) {
-        if (deck == null) {
-            throw new IllegalArgumentException(NULL_DECK_MESSAGE);
-        }
         this.deck = deck;
-        this.players = createPlayers(validatedNames(playerNames));
-    }
-
-    /**
-     * The UI can call this before asking for names; the constructor checks the count again.
-     */
-    public static void validatePlayerCount(int numberOfPlayers) {
-        if (numberOfPlayers < MIN_PLAYERS || numberOfPlayers > MAX_PLAYERS) {
-            throw new IllegalArgumentException(PLAYER_COUNT_MESSAGE);
-        }
+        this.players = createPlayers(playerNames);
     }
 
     /**
@@ -66,27 +43,26 @@ public class Game {
         finishSetup();
     }
 
-    private List<String> validatedNames(List<String> playerNames) {
-        if (playerNames == null) {
-            throw new IllegalArgumentException(NULL_NAMES_MESSAGE);
-        }
-        List<String> names = new ArrayList<>(playerNames);
-        validatePlayerCount(names.size());
-        Set<String> uniqueNames = new HashSet<>();
-        for (String name : names) {
-            if (name == null || name.isBlank()) {
-                throw new IllegalArgumentException(BLANK_NAME_MESSAGE);
-            }
-            if (!uniqueNames.add(name)) {
-                throw new IllegalArgumentException(DUPLICATE_NAME_MESSAGE);
-            }
-        }
-        return names;
+    public Player getCurrentPlayer() {
+        requireSetUp();
+        return players.get(0);
     }
 
-    private List<Player> createPlayers(List<String> names) {
+    /**
+     * Protects the player order, but does not copy the mutable Player objects.
+     */
+    public List<Player> getPlayers() {
+        requireSetUp();
+        return List.copyOf(players);
+    }
+
+    public boolean isSetUp() {
+        return isSetUp;
+    }
+
+    private List<Player> createPlayers(List<String> playerNames) {
         List<Player> created = new ArrayList<>();
-        for (String name : names) {
+        for (String name : playerNames) {
             created.add(new Player(name));
         }
         return created;
@@ -130,26 +106,10 @@ public class Game {
         isSetUp = true;
     }
 
-    public Player getCurrentPlayer() {
-        requireSetUp();
-        return players.get(0);
-    }
-
-    /**
-     * Protects the player order, but does not copy the mutable Player objects.
-     */
-    public List<Player> getPlayers() {
-        requireSetUp();
-        return List.copyOf(players);
-    }
-
     private void requireSetUp() {
         if (!isSetUp) {
             throw new IllegalStateException(NOT_SET_UP_MESSAGE);
         }
     }
 
-    public boolean isSetUp() {
-        return isSetUp;
-    }
 }
