@@ -31,6 +31,7 @@
 **Planning and Progress Tracking**:
 1. [done] Yiliu: Completed Game setup implementation, tests and BVA; aligned with coding standards and verified coverage and mutation testing. Pending review (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
 2. [in progress] Fiona: Add tools for code coverage and mutation testing
+3. [done] Casey: User story for one-turn-phase, awaiting review (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/30)
 
 # One section per week until the last week of class (the week before the Finals week)
 
