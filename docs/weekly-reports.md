@@ -30,6 +30,7 @@
 # Week 7 (11/09/2026-11/15/2026)
 **Planning and Progress Tracking**:
 1. [done] Yiliu: Completed Game setup implementation, tests and BVA; aligned with coding standards and verified coverage and mutation testing. Pending review (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/18)
+2. [in progress] Fiona: Add tools for code coverage and mutation testing
 
 # One section per week until the last week of class (the week before the Finals week)
 
