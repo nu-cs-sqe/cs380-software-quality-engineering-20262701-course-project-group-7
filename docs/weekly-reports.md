@@ -33,6 +33,10 @@
 2. [in progress] Fiona: Add tools for code coverage and mutation testing
 3. [done] Casey: User story for one-turn-phase, awaiting review (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/30)
 
+# Week 8 (11/16/2026-11/22/2026)
+**Planning and Progress Tracking**:
+1. [done] Yiliu: Updated Game setup design to match the implemented API and behavior; merged in PR #9 (https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/pull/9)
+
 # One section per week until the last week of class (the week before the Finals week)
 
 
