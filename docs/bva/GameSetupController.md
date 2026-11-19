@@ -34,7 +34,7 @@ input, all other UI classes are views and exempt from BVA.
 |----|---------------|-----------------|--------------|
 | SETUP-01 | `["Ana", "Ben"]` | No exception | :white_check_mark: |
 | SETUP-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` | No exception | :white_check_mark: |
-| SETUP-03 | `["A", "B"]` | No exception | :x: |
+| SETUP-03 | `["A", "B"]` | No exception | :white_check_mark: |
 | SETUP-04 | `["A", "a"]` | No exception; names are case-sensitive | :x: |
 | SETUP-05 | `[" Ana", "Ben"]` | No exception; names are not trimmed | :x: |
 | SETUP-06 | `["", "Ben"]` | `IllegalArgumentException("setup.name.blank")` | :x: |
