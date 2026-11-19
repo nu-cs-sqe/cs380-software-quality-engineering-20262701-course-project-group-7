@@ -134,19 +134,83 @@ For standard decks with 2, 3, 4, or 5 players, final draw-pile sizes are
 4, 5, 6, and 6. Game behavior and boundaries are recorded in `docs/bva/Game.md`
 on the implementation branch.
 
-### Additional: UI
+## 6. UI (updated with MVC & JavaFX design)
 
-1. Ask for the number of players. Reject numbers outside 2 to 5 immediately,
-   before asking for any names. These bounds belong to the UI, not Game.
-2. Ask for each player's name. Reject empty or whitespace-only names and
-   duplicates. The current policy preserves spelling and compares names
-   case-sensitively, so "A" and "a" are distinct.
-3. Create `new Game(deck, validatedNames)` with non-null inputs in name-entry
-   order, then call `game.setup()`.
-4. After successful setup, query `getPlayers()` and `getCurrentPlayer()`.
-   The returned list protects the order, not the mutable Player objects.
-5. Translate known Game error keys using the locale bundle. Handle unexpected
-   collaborator failures with a generic localized error and a fresh game.
+The UI follows MVC. 
+- The model is the domain (`Game`, `Deck`, `Player`).
+- The view only builds and displays JavaFX controls. 
+- The controller validates user input and calls the model. Following
+`docs/requirements/code_style_standards.md`, all user input validation lives
+in the controller, and the domain assumes valid input.
+
+All visible text comes from the `message` resource bundle
+(`message.properties` as the English base). More languages are
+added by adding a bundle file and a dropdown entry for selection.
+
+### 6.1 `Main` (class, package `ui`)
+
+**Responsibility:** Entry point for JavaFX. Creates the view and controller,
+injects a `Random` for the deck, and shows the window. No logic.
+
+| Member | Description |
+|--------|-------------|
+| `- static final int SCREEN_WIDTH`, `SCREEN_HEIGHT` | Window size for display. |
+| `+ void start(Stage stage)` | `new GameSetupController(view, new Random())`, then shows `view.getRoot()`. |
+| `+ static void main(String[] args)` | Calls `launch(args)`. |
+
+### 6.2 `GameSetupView` (class, package `ui.view`)
+
+**Responsibility:** passive view with no validation or logic (no BVA).
+
+Controls: language dropdown (`ComboBox<Locale>`), one button per valid player count
+(2, 3, 4, 5), one name field per selected player, a Start button, an error
+label, and a player list showing the turn order and the current player (in this phase, shows the turn order after setup).
+
+| Member | Description |
+|--------|-------------|
+| `+ Parent getRoot()` | Root node shown by `Main`. |
+| `+ void setOnLocaleChanged(Consumer<Locale> handler)` | Called when the dropdown selection changes. |
+| `+ void setOnPlayerCountSelected(IntConsumer handler)` | Called with 2 to 5 when a count button is pressed. |
+| `+ void setOnStart(Runnable handler)` | Called when Start is pressed. |
+| `+ void showNameFields(int count)` | Shows `count` empty name fields and the Start button. |
+| `+ List<String> getEnteredNames()` | Name field contents, in field order, exactly as typed. |
+| `+ void showError(String message)` | Displays an already translated message. |
+| `+ void clearError()` | Hides the error label. |
+| `+ void showPlayers(List<String> names, String currentPlayerName)` | Displays the turn order and highlights the current player. |
+| `+ void updateText(ResourceBundle bundle)` | Sets every label and button text from the bundle. |
+
+### 6.3 `GameSetupController` (class, package `ui.controller`)
+
+**Responsibility:** connects the view to the model. Validates player names,
+creates and sets up the `Game`, translates error keys, and switches language.
+
+| Member | Description |
+|--------|-------------|
+| `- static final String BLANK_NAME_KEY` | Resource key `setup.name.blank`. |
+| `- static final String DUPLICATE_NAME_KEY` | Resource key `setup.name.duplicate`. |
+| `- static final String UNEXPECTED_ERROR_KEY` | Resource key `setup.error.unexpected`. |
+| `- final GameSetupView view` | |
+| `- final Random random` | Injected; passed to `Deck.createStandardDeck`. |
+| `- ResourceBundle bundle` | Current language; English by default. |
+| `+ GameSetupController(GameSetupView view, Random random)` | Registers the view handlers, loads the English bundle, and calls `view.updateText`. No checks. |
+| `+ static void validateNames(List<String> names)` | Throws `IllegalArgumentException(BLANK_NAME_KEY)` if any name is empty or whitespace only, otherwise `IllegalArgumentException(DUPLICATE_NAME_KEY)` if two names are equal (case-sensitive). Names are not trimmed. Static so it can be tested without JavaFX. |
+| `- void handleStart()` | Reads `view.getEnteredNames()`, calls `validateNames`, creates `new Game(Deck.createStandardDeck(random), names)`, calls `setup()`, then `view.showPlayers(...)`. |
+| `- void handleLocaleChanged(Locale locale)` | Loads `ResourceBundle.getBundle("message", locale)` and calls `view.updateText`. |
+
+Error handling in `handleStart()`:
+
+The controller catches any errors from `Game` or the controller internally and displays it in the error label:
+
+- If the exception message is a key in the current bundle, the controller shows
+  `bundle.getString(e.getMessage())`.
+- Otherwise, it shows the `setup.error.unexpected` message to prevent showing any raw text to the user.
+- The next Start creates a fresh `Game` and `Deck`, so no state needs resetting.
+
+Player count needs no validation since the buttons only offer valid number of players.
+The list passed to `validateNames` therefore always has 2 to 5 names.
+
+BVA and tests cover `validateNames` (`docs/bva/GameSetupController.md`). The
+constructor only wires handlers, and the handlers are private.
 
 # User Story
 As a player of Exploding Kittens, I want to choose the number of players and enter each player's name when a new game starts, so that the game matches my group and I can tell whose turn it is.
@@ -177,8 +241,8 @@ The game application is launched.
 
 ## Main Flow
 1. Player selects "Start Game".
-2. System asks for the total number of players.
-3. Player enters the number of players.
+2. System asks for the total number of players, offering 2, 3, 4 and 5 as choices.
+3. Player selects the number of players.
 4. Player enters a name for each player.
 5. System removes all Exploding Kitten and Defuse cards from the deck.
 6. System gives each player 1 Defuse card.
@@ -190,9 +254,7 @@ The game application is launched.
 12. System sets the initial turn order in the order the names were entered, starting with player 1.
 
 ## Alternative Flow
-3a. Player enters a number less than 2 or greater than 5:
-  1. System immediately displays an error message, before asking for any names.
-  2. Return to step 2.
+3a. Removed: the player can only select 2 to 5, so an invalid number cannot be entered.
 4a. Player enters an empty or whitespace-only name:
   1. System displays an error message.
   2. System asks for that player's name again.
