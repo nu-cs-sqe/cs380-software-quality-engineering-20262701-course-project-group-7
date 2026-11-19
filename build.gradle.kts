@@ -86,13 +86,13 @@ tasks.jacocoTestReport {
     }
     // Add any other classes that should be excluded from the coverage requirement
     classDirectories.setFrom(files(classDirectories.files.map {
-        fileTree(it) { exclude("ui/**", "domain/CardType*") }
+        fileTree(it) { exclude("ui/view/**", "ui/Main*", "domain/CardType*") }
     }))
 }
 
 pitest {
-    targetClasses = setOf("domain.*")   // Edit here to change set of target classes
-    targetTests = setOf("domain.*")
+    targetClasses = setOf("domain.*", "ui.controller.*")   // Edit here to change set of target classes
+    targetTests = setOf("domain.*", "ui.controller.*")
     junit5PluginVersion = "1.2.1"
     pitestVersion = "1.15.0"
 

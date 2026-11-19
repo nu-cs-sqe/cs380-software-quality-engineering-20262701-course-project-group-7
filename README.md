@@ -14,11 +14,13 @@
 - Gradle 8.10
 - Checkstyle 10.18.2 (Google style base, customized in config/checkstyle/checkstyle.xml)
 - SpotBugs (Gradle plugin 6.0.25)
+- JaCoCo (Gradle built-in plugin)
+- PITest 1.15.0 (Gradle plugin 1.15.0, JUnit 5 plugin 1.2.1)
 
 ## Exceptions
 ### Code Coverage
-N/A
+View classes (`ui/view/**`), the main class (`ui/Main`), and enums (`domain/CardType`) are excluded from JaCoCo coverage.
 ### Mutation Testing
-N/A
+PITest mutates only `domain.*` and `ui.controller.*`; view classes and the main class are excluded.
 ### Others
 N/A
