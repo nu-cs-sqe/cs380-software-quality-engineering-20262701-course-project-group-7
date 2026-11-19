@@ -31,4 +31,10 @@ class GameSetupControllerTest {
     void validateNamesTreatsNamesDifferingOnlyByCaseAsDifferent() {
         assertDoesNotThrow(() -> GameSetupController.validateNames(List.of("A", "a")));
     }
+
+    // SETUP-05
+    @Test
+    void validateNamesAcceptsNameWithLeadingSpace() {
+        assertDoesNotThrow(() -> GameSetupController.validateNames(List.of(" Ana", "Ben")));
+    }
 }
