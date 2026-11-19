@@ -12,4 +12,11 @@ class GameSetupControllerTest {
     void validateNamesAcceptsMinimumNumberOfNames() {
         assertDoesNotThrow(() -> GameSetupController.validateNames(List.of("Ana", "Ben")));
     }
+
+    // SETUP-02
+    @Test
+    void validateNamesAcceptsMaximumNumberOfNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Eve");
+        assertDoesNotThrow(() -> GameSetupController.validateNames(names));
+    }
 }

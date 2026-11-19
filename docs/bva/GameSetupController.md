@@ -33,7 +33,7 @@ input, all other UI classes are views and exempt from BVA.
 | ID | Input (names) | Expected output | Implemented? |
 |----|---------------|-----------------|--------------|
 | SETUP-01 | `["Ana", "Ben"]` | No exception | :white_check_mark: |
-| SETUP-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` | No exception | :x: |
+| SETUP-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` | No exception | :white_check_mark: |
 | SETUP-03 | `["A", "B"]` | No exception | :x: |
 | SETUP-04 | `["A", "a"]` | No exception; names are case-sensitive | :x: |
 | SETUP-05 | `[" Ana", "Ben"]` | No exception; names are not trimmed | :x: |
