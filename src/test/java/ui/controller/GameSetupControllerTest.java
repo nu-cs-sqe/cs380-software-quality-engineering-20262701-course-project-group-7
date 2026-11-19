@@ -55,10 +55,17 @@ class GameSetupControllerTest {
     @Test
     void validateNamesRejectsSingleSpaceName() {
         List<String> names = List.of(" ", "Ben");
-
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> GameSetupController.validateNames(names));
+        assertEquals(BLANK_NAME_KEY, exception.getMessage());
+    }
 
+    // SETUP-08
+    @Test
+    void validateNamesRejectsTabWhitespaceName() {
+        List<String> names = List.of("\t ", "Ben");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> GameSetupController.validateNames(names));
         assertEquals(BLANK_NAME_KEY, exception.getMessage());
     }
 }
