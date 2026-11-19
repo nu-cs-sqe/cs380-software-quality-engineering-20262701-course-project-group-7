@@ -1,11 +1,15 @@
 package ui.controller;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class GameSetupControllerTest {
+
+    private static final String BLANK_NAME_KEY = "setup.name.blank";
 
     // SETUP-01
     @Test
@@ -36,5 +40,14 @@ class GameSetupControllerTest {
     @Test
     void validateNamesAcceptsNameWithLeadingSpace() {
         assertDoesNotThrow(() -> GameSetupController.validateNames(List.of(" Ana", "Ben")));
+    }
+
+    // SETUP-06
+    @Test
+    void validateNamesRejectsEmptyFirstName() {
+        List<String> names = List.of("", "Ben");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> GameSetupController.validateNames(names));
+        assertEquals(BLANK_NAME_KEY, exception.getMessage());
     }
 }
