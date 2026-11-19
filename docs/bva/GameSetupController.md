@@ -43,4 +43,4 @@ input, all other UI classes are views and exempt from BVA.
 | SETUP-09 | `["Ana", "Ben", "Cy", "Dee", ""]` | `IllegalArgumentException("setup.name.blank")` | :white_check_mark: |
 | SETUP-10 | `["Ana", "Ana"]` | `IllegalArgumentException("setup.name.duplicate")` | :white_check_mark: |
 | SETUP-11 | `["Ana", "Ben", "Cy", "Dee", "Ana"]` | `IllegalArgumentException("setup.name.duplicate")` | :white_check_mark: |
-| SETUP-12 | `["", ""]` | `IllegalArgumentException("setup.name.blank")`; blank is checked first | :x: |
+| SETUP-12 | `["", ""]` | `IllegalArgumentException("setup.name.blank")`; blank is checked first | :white_check_mark: |
