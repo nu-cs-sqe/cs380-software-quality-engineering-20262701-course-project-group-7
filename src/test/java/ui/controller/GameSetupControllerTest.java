@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 class GameSetupControllerTest {
 
     private static final String BLANK_NAME_KEY = "setup.name.blank";
+    private static final String DUPLICATE_NAME_KEY = "setup.name.duplicate";
 
     // SETUP-01
     @Test
@@ -76,5 +77,14 @@ class GameSetupControllerTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> GameSetupController.validateNames(names));
         assertEquals(BLANK_NAME_KEY, exception.getMessage());
+    }
+
+    // SETUP-10
+    @Test
+    void validateNamesRejectsAdjacentDuplicateNames() {
+        List<String> names = List.of("Ana", "Ana");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> GameSetupController.validateNames(names));
+        assertEquals(DUPLICATE_NAME_KEY, exception.getMessage());
     }
 }
