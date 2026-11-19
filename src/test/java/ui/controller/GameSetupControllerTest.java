@@ -105,4 +105,13 @@ class GameSetupControllerTest {
                 () -> GameSetupController.validateNames(names));
         assertEquals(BLANK_NAME_KEY, exception.getMessage());
     }
+
+    // SETUP-13
+    @Test
+    void validateNamesChecksAllNamesForBlankBeforeDuplicates() {
+        List<String> names = List.of("Ana", "Ana", "");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> GameSetupController.validateNames(names));
+        assertEquals(BLANK_NAME_KEY, exception.getMessage());
+    }
 }
