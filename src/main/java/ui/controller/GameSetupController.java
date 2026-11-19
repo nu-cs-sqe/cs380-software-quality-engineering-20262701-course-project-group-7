@@ -8,7 +8,7 @@ public class GameSetupController {
 
     public static void validateNames(List<String> names) {
         for (String name : names) {
-            if (name.isEmpty()) {
+            if (name.isBlank()) {
                 throw new IllegalArgumentException(BLANK_NAME_KEY);
             }
         }

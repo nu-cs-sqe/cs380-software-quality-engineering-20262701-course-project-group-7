@@ -38,7 +38,7 @@ input, all other UI classes are views and exempt from BVA.
 | SETUP-04 | `["A", "a"]` | No exception; names are case-sensitive | :white_check_mark: |
 | SETUP-05 | `[" Ana", "Ben"]` | No exception; names are not trimmed | :white_check_mark: |
 | SETUP-06 | `["", "Ben"]` | `IllegalArgumentException("setup.name.blank")` | :white_check_mark: |
-| SETUP-07 | `[" ", "Ben"]` | `IllegalArgumentException("setup.name.blank")` | :x: |
+| SETUP-07 | `[" ", "Ben"]` | `IllegalArgumentException("setup.name.blank")` | :white_check_mark: |
 | SETUP-08 | `["\t ", "Ben"]` | `IllegalArgumentException("setup.name.blank")` | :x: |
 | SETUP-09 | `["Ana", "Ben", "Cy", "Dee", ""]` | `IllegalArgumentException("setup.name.blank")` | :x: |
 | SETUP-10 | `["Ana", "Ana"]` | `IllegalArgumentException("setup.name.duplicate")` | :x: |

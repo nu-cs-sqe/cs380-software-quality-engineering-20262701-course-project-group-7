@@ -50,4 +50,15 @@ class GameSetupControllerTest {
                 () -> GameSetupController.validateNames(names));
         assertEquals(BLANK_NAME_KEY, exception.getMessage());
     }
+
+    // SETUP-07
+    @Test
+    void validateNamesRejectsSingleSpaceName() {
+        List<String> names = List.of(" ", "Ben");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> GameSetupController.validateNames(names));
+
+        assertEquals(BLANK_NAME_KEY, exception.getMessage());
+    }
 }
