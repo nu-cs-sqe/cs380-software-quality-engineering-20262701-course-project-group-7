@@ -25,4 +25,10 @@ class GameSetupControllerTest {
     void validateNamesAcceptsOneCharacterNames() {
         assertDoesNotThrow(() -> GameSetupController.validateNames(List.of("A", "B")));
     }
+
+    // SETUP-04
+    @Test
+    void validateNamesTreatsNamesDifferingOnlyByCaseAsDifferent() {
+        assertDoesNotThrow(() -> GameSetupController.validateNames(List.of("A", "a")));
+    }
 }
