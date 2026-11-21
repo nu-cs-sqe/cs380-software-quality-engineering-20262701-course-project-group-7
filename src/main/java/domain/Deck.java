@@ -13,6 +13,9 @@ public class Deck {
     private static final int DEFUSE_COPIES = 6;
     private static final int SEE_THE_FUTURE_COPIES = 5;
     private static final int NOPE_COPIES = 5;
+    private static final String EMPTY_DECK_MESSAGE = "Cannot draw from an empty deck.";
+    private static final String NEGATIVE_NUMBER_OF_CARDS_MESSAGE =
+            "Number of cards must not be negative.";
     private static final Map<CardType, Integer> STANDARD_CARD_COUNTS = createStandardCardCounts();
 
     private final List<CardType> cards;
@@ -41,7 +44,7 @@ public class Deck {
 
     public void add(CardType type, int numberOfCards) {
         if (numberOfCards < 0) {
-            throw new IllegalArgumentException("Number of cards must not be negative.");
+            throw new IllegalArgumentException(NEGATIVE_NUMBER_OF_CARDS_MESSAGE);
         }
         for (int i = 0; i < numberOfCards; i++) {
             cards.add(type);
@@ -50,7 +53,7 @@ public class Deck {
 
     public CardType draw() {
         if (cards.isEmpty()) {
-            throw new IllegalStateException("Cannot draw from an empty deck.");
+            throw new IllegalStateException(EMPTY_DECK_MESSAGE);
         }
         return cards.remove(0);
     }

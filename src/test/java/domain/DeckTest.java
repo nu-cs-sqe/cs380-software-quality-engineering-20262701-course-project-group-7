@@ -56,7 +56,8 @@ public class DeckTest {
     public void draw_emptyDeck_throwsIllegalStateException() {
         Deck deck = createDeckWith();
 
-        assertThrows(IllegalStateException.class, deck::draw);
+        IllegalStateException exception = assertThrows(IllegalStateException.class, deck::draw);
+        assertEquals("Cannot draw from an empty deck.", exception.getMessage());
     }
 
     // BVA Method 3, TC2
@@ -85,7 +86,8 @@ public class DeckTest {
         assertEquals(CardType.SKIP, deck.draw());
         assertEquals(CardType.ATTACK, deck.draw());
         assertEquals(CardType.FAVOR, deck.draw());
-        assertThrows(IllegalStateException.class, deck::draw);
+        IllegalStateException exception = assertThrows(IllegalStateException.class, deck::draw);
+        assertEquals("Cannot draw from an empty deck.", exception.getMessage());
     }
 
     // BVA Method 3, TC7
@@ -128,7 +130,9 @@ public class DeckTest {
     public void add_negativeNumberOfCards_throwsAndLeavesDeckUnchanged() {
         Deck deck = createDeckWith(CardType.SKIP);
 
-        assertThrows(IllegalArgumentException.class, () -> deck.add(CardType.ATTACK, -1));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> deck.add(CardType.ATTACK, -1));
+        assertEquals("Number of cards must not be negative.", exception.getMessage());
         assertEquals(1, deck.size());
         assertEquals(CardType.SKIP, deck.draw());
     }
