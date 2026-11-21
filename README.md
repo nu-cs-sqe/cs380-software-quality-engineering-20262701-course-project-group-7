@@ -1,6 +1,6 @@
 ![Gradle Build](https://github.com/nu-cs-sqe/cs380-software-quality-engineering-20262701-course-project-group-7/actions/workflows/main.yml/badge.svg)
 
-# YOUR PROJECT NAME
+# Exploding Kittens
 
 ## Contributors
 - Casey Zhang
@@ -12,6 +12,8 @@
 - JDK 11
 - JUnit 5.10
 - Gradle 8.10
+- Checkstyle 10.18.2 (Google style base, customized in config/checkstyle/checkstyle.xml)
+- SpotBugs (Gradle plugin 6.0.25)
 
 ## Exceptions
 ### Code Coverage
