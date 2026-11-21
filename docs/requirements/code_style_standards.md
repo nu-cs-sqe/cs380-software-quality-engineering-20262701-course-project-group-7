@@ -56,11 +56,12 @@ For every newly-introduced public method in a PR, the PR's commit history must
 show, **in topological order**:
 
 1. A commit that adds the method's BVA (in `docs/bva/<ClassName>.md`).
-2. A commit that adds the failing test in `src/test/java/`.
-3. A commit that adds the implementation in `src/main/java/`.
+2. Then for each test:
+   - Add the failing test in `src/test/java/`. 
+   - Add the implementation in `src/main/java/`.
+   - Commit both at once
 
-It is fine for one commit doing two of these steps at once does not violate
-ordering. When white-box BVA introduces new cases, they must be added to the BVA file and committed immediately.
+Do not commit any failing tests. Aim for one commit per test when it passes. When white-box BVA introduces new cases, they must be added to the BVA file and committed immediately.
 
 ## 4. Clean Code
 
