@@ -11,6 +11,7 @@
 ## Dependencies
 - JDK 11
 - JUnit 5.10
+- EasyMock 5.4
 - Gradle 8.10
 - Checkstyle 10.18.2 (Google style base, customized in config/checkstyle/checkstyle.xml)
 - SpotBugs (Gradle plugin 6.0.25)
