@@ -146,6 +146,12 @@ class GameTest {
         assertInsufficientDeck(new Deck(new Random(0)));
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1})
+    void setupRejectsInsufficientDefuses(int defuses) {
+        assertInsufficientDeck(customDeck(14, defuses, 1));
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
