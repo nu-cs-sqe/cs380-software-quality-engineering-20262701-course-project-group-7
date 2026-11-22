@@ -43,18 +43,18 @@ after setup. There is no standalone invalid-input constructor test.
 | GAME-02 | `setup`, `isSetUp`, player queries | Standard deck; 2, 3, 4, 5 validated names. | Eight cards each, guaranteed first Defuse, no hand Kittens, input order, first player current, correct final counts. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` |
 | GAME-03 | `setup`, `getPlayers` | Valid names `" A "` and `"a"`. | Exact spelling and whitespace preserved. | Yes: `setupPreservesValidatedNamesExactly` |
 | GAME-04 | `setup`, player queries | Caller changes and clears names after construction, before setup. | Stored player names and order unchanged. | Yes: `callerCannotChangeStoredNamesBeforeSetup` |
-| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up English diagnostic; deck, both hands, players and current player unchanged. | Pending: `repeatedSetupPreservesExistingState` |
-| GAME-06 | `getCurrentPlayer`, `getPlayers` | Not yet set up. | Not-set-up English diagnostic from each query. | Pending: `queriesRejectAccessBeforeSetup` |
+| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up English diagnostic; deck, both hands, players and current player unchanged. | Yes: `repeatedSetupPreservesExistingState` |
+| GAME-06 | `getCurrentPlayer`, `getPlayers` | Not yet set up. | Not-set-up English diagnostic from each query. | Yes: `queriesRejectAccessBeforeSetup` |
 | GAME-07 | `getPlayers`, `getCurrentPlayer` | Set up; repeat queries and attempt list mutation. | Unmodifiable list; no turn advancement. | Yes: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
-| GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck English diagnostic; no mutation. | Pending: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |
-| GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck English diagnostic; no mutation. | Pending: `setupRejectsInsufficientKittens` |
-| GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck English diagnostic; no mutation. | Pending: `setupRejectsOneFewerDrawableCardThanRequired` |
+| GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck English diagnostic; no mutation. | Yes: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |
+| GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck English diagnostic; no mutation. | Yes: `setupRejectsInsufficientKittens` |
+| GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck English diagnostic; no mutation. | Yes: `setupRejectsOneFewerDrawableCardThanRequired` |
 | GAME-11 | `setup`, `getPlayers` | 2 players; 2 Defuses, 1 Kitten, 14/15 ordinary cards. | Setup succeeds at and above boundary; eight cards each and one guaranteed Defuse. | Yes: `setupAcceptsDrawableCardBoundary` |
 | GAME-12 | `setup`, `getPlayers` | 2 players; 3/4 Defuses and 13/12 ordinary cards. | Returned 1/2 Defuses count toward the 14 drawable cards; exact total preserved. | Yes: `returnedDefusesCountTowardDrawableBoundary` |
-| GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; English diagnostic and no mutation. | Pending: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
-| GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | English diagnostic and unchanged initial deck; retry succeeds. | Pending: `setupCanRetryAfterDeckIsReplenished` |
+| GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; English diagnostic and no mutation. | Yes: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
+| GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | English diagnostic and unchanged initial deck; retry succeeds. | Yes: `setupCanRetryAfterDeckIsReplenished` |
 | GAME-15 | `setup`, `getPlayers` | Strict mock tracks removal, return, two shuffles and dealing; first draw Defuse. | Official call order, 14 draws, one Kitten returned, possible second hand Defuse. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
-| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up English diagnostics; no rollback promised. | Pending: `setupPropagatesUnexpectedDrawFailure` |
+| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up English diagnostics; no rollback promised. | Yes: `setupPropagatesUnexpectedDrawFailure` |
 | GAME-17 | `setup` | Strict mock returns 6 in count and 3 from removeAll. | Return count uses actual removal result (one extra), not preflight count. | Yes: `extraDefusesUseActualRemovalCount` |
 
 ## Execution Record
@@ -105,6 +105,27 @@ current constructor API or the new team quality tools.
 - No Game or GameTest Checkstyle or SpotBugs findings. Team tool versions,
   exclusions and failure settings were not weakened.
 
+### Internal Exception Message Correction
+
+- The author clarified that internal domain exception messages do not need
+  i18n. The Game resource-key design is superseded by meaningful English
+  diagnostics. Player-facing text remains the UI's separate responsibility.
+- BVA contract changes were committed first in `6c51ea5`.
+  Updated assertions then produced 10 failing invocations out of 24 in the
+  local GameTest run: the implementation still returned the old keys.
+- Only after observing those assertion failures were the three Game message
+  constants changed. The author explicitly approved one atomic correction
+  commit for the implementation, existing assertions and documentation.
+  The previous 18 individual test commits remain unchanged.
+- Full Gradle verification after correction: all 148 tests pass (24 Game);
+  Game has 100% complexity, branch and line coverage and all 35 PIT mutants
+  KILLED. Game and GameTest have no Checkstyle or SpotBugs findings.
+- This PIT run reports 63/63 project mutants KILLED, with no MEMORY_ERROR.
+  The earlier Deck.add error was not reproduced and its cause was not
+  investigated; it is historical evidence, not a current failed outcome.
+- Full build still fails Checkstyle main/test and SpotBugs main for the
+  Deck/Player findings below. SpotBugs test now passes.
+
 ### Unresolved Project Blockers
 
 - Checkstyle: Deck has literal card counts flagged as magic numbers; Player
@@ -113,11 +134,8 @@ current constructor API or the new team quality tools.
 - SpotBugs: Deck's throwing, non-final constructor triggers
   `CT_CONSTRUCTOR_THROW`; Player.getName compares strings using `==`,
   triggering `ES_COMPARING_STRINGS_WITH_EQ`.
-- PIT: one negated loop condition in Deck.add produces `MEMORY_ERROR`.
-  Its root cause has not been investigated. The aggregate detected percentage
-  must not be described as every mutant being killed normally.
-- UI.Main is empty and no locale bundles are present on this branch.
-  Game follows the agreed resource-key API; UI validation, bundle lookup
-  and localized error display still need implementation by the UI owner.
+- UI.Main remains empty. UI validation and any localized player-facing
+  prompts or recovery text remain UI work; Game's internal exception messages
+  do not need locale bundles or translation lookup.
 - These are unresolved work, not approved exceptions. Game changes remain
   local until the author requests a push; the PR must stay Draft.

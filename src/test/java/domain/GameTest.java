@@ -64,7 +64,7 @@ class GameTest {
         final Map<CardType, Integer> counts = cardCounts(deck);
         final int size = deck.size();
 
-        assertEquals("game.alreadySetUp",
+        assertEquals("Game has already been set up.",
                 assertThrows(IllegalStateException.class, game::setup).getMessage());
 
         assertTrue(game.isSetUp());
@@ -80,9 +80,9 @@ class GameTest {
     void queriesRejectAccessBeforeSetup() {
         Game game = new Game(Deck.createStandardDeck(new Random(0)), namesFor(2));
 
-        assertEquals("game.notSetUp",
+        assertEquals("Game has not been set up.",
                 assertThrows(IllegalStateException.class, game::getCurrentPlayer).getMessage());
-        assertEquals("game.notSetUp",
+        assertEquals("Game has not been set up.",
                 assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
     }
 
@@ -117,7 +117,7 @@ class GameTest {
     void setupCanRetryAfterDeckIsReplenished() {
         Deck deck = customDeck(13, 2, 1);
         Game game = new Game(deck, namesFor(2));
-        assertEquals("game.insufficientDeck",
+        assertEquals("Deck does not contain enough cards for setup.",
                 assertThrows(IllegalStateException.class, game::setup).getMessage());
 
         deck.add(CardType.ATTACK, 1);
@@ -217,9 +217,9 @@ class GameTest {
         assertSame(failure, assertThrows(IllegalStateException.class, game::setup));
 
         assertFalse(game.isSetUp());
-        assertEquals("game.notSetUp",
+        assertEquals("Game has not been set up.",
                 assertThrows(IllegalStateException.class, game::getCurrentPlayer).getMessage());
-        assertEquals("game.notSetUp",
+        assertEquals("Game has not been set up.",
                 assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
         EasyMock.verify(deck);
     }
@@ -285,7 +285,7 @@ class GameTest {
         final Map<CardType, Integer> counts = cardCounts(deck);
         final int size = deck.size();
 
-        assertEquals("game.insufficientDeck",
+        assertEquals("Deck does not contain enough cards for setup.",
                 assertThrows(IllegalStateException.class, game::setup).getMessage());
 
         assertFalse(game.isSetUp());

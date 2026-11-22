@@ -10,9 +10,10 @@ public final class Game {
 
     private static final int INITIAL_HAND_SIZE = 7;
     private static final int MAX_EXTRA_DEFUSES = 2;
-    private static final String INSUFFICIENT_DECK_MESSAGE = "game.insufficientDeck";
-    private static final String ALREADY_SET_UP_MESSAGE = "game.alreadySetUp";
-    private static final String NOT_SET_UP_MESSAGE = "game.notSetUp";
+    private static final String INSUFFICIENT_DECK_MESSAGE =
+            "Deck does not contain enough cards for setup.";
+    private static final String ALREADY_SET_UP_MESSAGE = "Game has already been set up.";
+    private static final String NOT_SET_UP_MESSAGE = "Game has not been set up.";
 
     private final Deck deck;
     private final List<Player> players;

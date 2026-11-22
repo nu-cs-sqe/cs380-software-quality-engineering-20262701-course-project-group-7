@@ -20,9 +20,10 @@
 ### Code Coverage
 N/A
 ### Mutation Testing
-Game: all 35 mutants killed. The current full-project report contains one
-`MEMORY_ERROR` in `Deck.add`; this is not an equivalent-mutant exemption or a
-normal assertion-based kill, even though PIT counts it as detected.
+Game: all 35 mutants killed; the latest full-project run killed all 63 mutants.
+An earlier report contained one `MEMORY_ERROR` in `Deck.add`, not a normal
+assertion-based kill or an equivalent-mutant exemption. It was not reproduced
+in the latest run; its cause has not been investigated.
 ### Others
 Game API migration: BVA was committed before the local compile-time red run;
 the previously unpublished migration commit was split with author permission.
@@ -39,6 +40,8 @@ comparison. These are unresolved issues, not approved exceptions.
 Game and GameTest have no findings. See [Game BVA](docs/bva/Game.md)
 for the execution record.
 
-UI integration and locale bundles are not implemented on this branch.
-Game follows the specified resource-key contract, but the design's claimed
-English and Chinese bundles and localized error handler remain UI work.
+Game exceptions contain meaningful English internal diagnostics, not locale
+keys. Internal messages do not require i18n, per the author's clarification
+of the team guidance. No exception-message bundles or lookup are required.
+UI integration is still unfinished; localization of player-facing prompts
+and recovery text is separate UI work, not a Game exception-message blocker.
