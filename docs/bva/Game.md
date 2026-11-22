@@ -47,7 +47,7 @@ after setup. There is no standalone invalid-input constructor test.
 | GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck key; no mutation. | Yes: `setupRejectsInsufficientKittens` |
 | GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck key; no mutation. | Yes: `setupRejectsOneFewerDrawableCardThanRequired` |
 | GAME-11 | `setup`, `getPlayers` | 2 players; 2 Defuses, 1 Kitten, 14/15 ordinary cards. | Setup succeeds at and above boundary; eight cards each and one guaranteed Defuse. | Yes: `setupAcceptsDrawableCardBoundary` |
-| GAME-12 | `setup`, `getPlayers` | 2 players; 3/4 Defuses and 13/12 ordinary cards. | Returned 1/2 Defuses count toward the 14 drawable cards; exact total preserved. | Pending: `returnedDefusesCountTowardDrawableBoundary` |
+| GAME-12 | `setup`, `getPlayers` | 2 players; 3/4 Defuses and 13/12 ordinary cards. | Returned 1/2 Defuses count toward the 14 drawable cards; exact total preserved. | Yes: `returnedDefusesCountTowardDrawableBoundary` |
 | GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; no mutation. | Pending: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
 | GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | Initial deck unchanged; retry succeeds. | Yes: `setupCanRetryAfterDeckIsReplenished` |
 | GAME-15 | `setup`, `getPlayers` | Strict mock tracks removal, return, two shuffles and dealing; first draw Defuse. | Official call order, 14 draws, one Kitten returned, possible second hand Defuse. | Pending: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |

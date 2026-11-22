@@ -179,6 +179,24 @@ class GameTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {3, 4})
+    void returnedDefusesCountTowardDrawableBoundary(int defuses) {
+        Deck deck = customDeck(16 - defuses, defuses, 1);
+        Game game = new Game(deck, namesFor(2));
+
+        game.setup();
+
+        assertTrue(game.isSetUp());
+        assertEquals(1, deck.size());
+        int totalDefuses = deck.count(CardType.DEFUSE);
+        for (Player player : game.getPlayers()) {
+            assertEquals(8, player.getHandSize());
+            totalDefuses += player.countInHand(CardType.DEFUSE);
+        }
+        assertEquals(defuses, totalDefuses);
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
