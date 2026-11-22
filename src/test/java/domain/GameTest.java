@@ -141,6 +141,11 @@ class GameTest {
         assertEquals(8, game.getCurrentPlayer().getHandSize());
     }
 
+    @Test
+    void setupRejectsEmptyDeckBeforeMutation() {
+        assertInsufficientDeck(new Deck(new Random(0)));
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
