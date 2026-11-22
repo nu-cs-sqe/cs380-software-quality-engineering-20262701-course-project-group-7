@@ -162,6 +162,23 @@ class GameTest {
         assertInsufficientDeck(customDeck(13, 2, 1));
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {14, 15})
+    void setupAcceptsDrawableCardBoundary(int ordinaryCards) {
+        Deck deck = customDeck(ordinaryCards, 2, 1);
+        Game game = new Game(deck, namesFor(2));
+
+        game.setup();
+
+        assertTrue(game.isSetUp());
+        assertEquals(ordinaryCards - 14 + 1, deck.size());
+        assertEquals(1, deck.count(CardType.EXPLODING_KITTEN));
+        for (Player player : game.getPlayers()) {
+            assertEquals(8, player.getHandSize());
+            assertEquals(1, player.countInHand(CardType.DEFUSE));
+        }
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
