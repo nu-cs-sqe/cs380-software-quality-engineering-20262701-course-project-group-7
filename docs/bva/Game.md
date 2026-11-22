@@ -151,16 +151,28 @@ current constructor API or the new team quality tools.
   GitHub nevertheless reported CONFLICTING; that remote status is distinct
   from local unresolved conflicts and requires a refreshed mergeability check.
 
+### Subsequent Main Synchronization
+
+- Reading the actual main branch revealed `4e087df`, the later merge of
+  Deck PR #19. The PR metadata initially still showed the older `dc674387`;
+  verifying ancestry against that older hash did not cover the new main.
+- Merge latest main normally, preserving its updated Deck, DeckTest, Deck
+  BVA and design. The actual conflict is README's shared Exceptions section.
+  Keep both contributor records and clearly separate Deck's reported
+  instructor discussion from Game, which claims no waiver.
+- Verification on this merge: all 143 tests pass, including 24 Game.
+  Game retains 100% complexity, branch and line coverage and 35/35 KILLED.
+  All 58 project mutants are now normally KILLED, with no MEMORY_ERROR.
+- Full build still fails `checkstyleMain`, `checkstyleTest`, `spotbugsMain`,
+  now solely due to Player/PlayerTest. Deck's previous quality issues are
+  absent with the team's updated implementation, not suppressed by Game.
+
 ### Unresolved Project Blockers
 
-- Checkstyle: Deck has literal card counts flagged as magic numbers; Player
-  has spacing violations. DeckTest has long lines and variable-use distance
-  violations; PlayerTest has import order, wildcard import and spacing issues.
-- SpotBugs: Deck's throwing, non-final constructor triggers
-  `CT_CONSTRUCTOR_THROW`; Player.getName compares strings using `==`,
-  triggering `ES_COMPARING_STRINGS_WITH_EQ`.
-- Deck.add mutation produces MEMORY_ERROR in the publication run; the cause
-  has not been investigated and no mutation exemption is claimed.
+- Checkstyle: Player has spacing violations; PlayerTest has import order,
+  wildcard import and spacing issues.
+- SpotBugs: Player.getName compares strings using `==`, triggering
+  `ES_COMPARING_STRINGS_WITH_EQ`.
 - UI.Main remains empty. UI validation and any localized player-facing
   prompts or recovery text remain UI work; Game's internal exception messages
   do not need locale bundles or translation lookup.
