@@ -38,22 +38,8 @@ class GameTest {
 
         game.setup();
 
-        assertTrue(game.isSetUp());
-        assertEquals(count, game.getPlayers().size());
-        assertSame(game.getPlayers().get(0), game.getCurrentPlayer());
-        int extraDefuses = Math.min(2, 6 - count);
-        int totalDefuses = deck.count(CardType.DEFUSE);
-        for (int i = 0; i < count; i++) {
-            Player player = game.getPlayers().get(i);
-            assertEquals(names.get(i), player.getName());
-            assertEquals(8, player.getHandSize());
-            assertEquals(CardType.DEFUSE, player.getHand().get(0));
-            assertEquals(0, player.countInHand(CardType.EXPLODING_KITTEN));
-            totalDefuses += player.countInHand(CardType.DEFUSE);
-        }
-        assertEquals(count + extraDefuses, totalDefuses);
-        assertEquals(count - 1, deck.count(CardType.EXPLODING_KITTEN));
-        assertEquals(46 + extraDefuses - 7 * count + count - 1, deck.size());
+        assertInitialPlayers(game, names);
+        assertInitialDeck(deck, game.getPlayers());
     }
 
     @Test
@@ -251,6 +237,31 @@ class GameTest {
 
         assertTrue(game.isSetUp());
         EasyMock.verify(deck);
+    }
+
+    private void assertInitialPlayers(Game game, List<String> names) {
+        assertTrue(game.isSetUp());
+        assertEquals(names.size(), game.getPlayers().size());
+        assertSame(game.getPlayers().get(0), game.getCurrentPlayer());
+        for (int i = 0; i < names.size(); i++) {
+            Player player = game.getPlayers().get(i);
+            assertEquals(names.get(i), player.getName());
+            assertEquals(8, player.getHandSize());
+            assertEquals(CardType.DEFUSE, player.getHand().get(0));
+            assertEquals(0, player.countInHand(CardType.EXPLODING_KITTEN));
+        }
+    }
+
+    private void assertInitialDeck(Deck deck, List<Player> players) {
+        int count = players.size();
+        int extraDefuses = Math.min(2, 6 - count);
+        int totalDefuses = deck.count(CardType.DEFUSE);
+        for (Player player : players) {
+            totalDefuses += player.countInHand(CardType.DEFUSE);
+        }
+        assertEquals(count + extraDefuses, totalDefuses);
+        assertEquals(count - 1, deck.count(CardType.EXPLODING_KITTEN));
+        assertEquals(46 + extraDefuses - 7 * count + count - 1, deck.size());
     }
 
     private Deck mockDeckBeforeDealing() {
