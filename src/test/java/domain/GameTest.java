@@ -90,6 +90,16 @@ class GameTest {
         assertEquals(size, deck.size());
     }
 
+    @Test
+    void queriesRejectAccessBeforeSetup() {
+        Game game = new Game(Deck.createStandardDeck(new Random(0)), namesFor(2));
+
+        assertEquals("game.notSetUp",
+                assertThrows(IllegalStateException.class, game::getCurrentPlayer).getMessage());
+        assertEquals("game.notSetUp",
+                assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
