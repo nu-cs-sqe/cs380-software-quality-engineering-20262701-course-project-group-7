@@ -51,7 +51,7 @@ after setup. There is no standalone invalid-input constructor test.
 | GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; no mutation. | Yes: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
 | GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | Initial deck unchanged; retry succeeds. | Yes: `setupCanRetryAfterDeckIsReplenished` |
 | GAME-15 | `setup`, `getPlayers` | Strict mock tracks removal, return, two shuffles and dealing; first draw Defuse. | Official call order, 14 draws, one Kitten returned, possible second hand Defuse. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
-| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up keys; no rollback promised. | Pending: `setupPropagatesUnexpectedDrawFailure` |
+| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up keys; no rollback promised. | Yes: `setupPropagatesUnexpectedDrawFailure` |
 | GAME-17 | `setup` | Strict mock returns 6 in count and 3 from removeAll. | Return count uses actual removal result (one extra), not preflight count. | Pending: `extraDefusesUseActualRemovalCount` |
 
 ## Execution Record

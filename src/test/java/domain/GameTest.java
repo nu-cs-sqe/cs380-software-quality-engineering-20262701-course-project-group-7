@@ -220,6 +220,24 @@ class GameTest {
         EasyMock.verify(deck);
     }
 
+    @Test
+    void setupPropagatesUnexpectedDrawFailure() {
+        Deck deck = mockDeckBeforeDealing();
+        IllegalStateException failure = new IllegalStateException("Simulated draw failure");
+        EasyMock.expect(deck.draw()).andThrow(failure);
+        EasyMock.replay(deck);
+        Game game = new Game(deck, namesFor(2));
+
+        assertSame(failure, assertThrows(IllegalStateException.class, game::setup));
+
+        assertFalse(game.isSetUp());
+        assertEquals("game.notSetUp",
+                assertThrows(IllegalStateException.class, game::getCurrentPlayer).getMessage());
+        assertEquals("game.notSetUp",
+                assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
+        EasyMock.verify(deck);
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
