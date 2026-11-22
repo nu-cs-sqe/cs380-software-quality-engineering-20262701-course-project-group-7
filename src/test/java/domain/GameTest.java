@@ -56,6 +56,16 @@ class GameTest {
         assertEquals(46 + extraDefuses - 7 * count + count - 1, deck.size());
     }
 
+    @Test
+    void setupPreservesValidatedNamesExactly() {
+        Game game = new Game(Deck.createStandardDeck(new Random(0)), List.of(" A ", "a"));
+
+        game.setup();
+
+        assertEquals(" A ", game.getPlayers().get(0).getName());
+        assertEquals("a", game.getPlayers().get(1).getName());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
