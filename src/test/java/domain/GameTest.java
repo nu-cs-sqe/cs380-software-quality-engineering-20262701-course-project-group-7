@@ -157,6 +157,11 @@ class GameTest {
         assertInsufficientDeck(customDeck(14, 2, 0));
     }
 
+    @Test
+    void setupRejectsOneFewerDrawableCardThanRequired() {
+        assertInsufficientDeck(customDeck(13, 2, 1));
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
