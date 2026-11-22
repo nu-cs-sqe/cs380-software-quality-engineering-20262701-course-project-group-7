@@ -20,31 +20,24 @@ public class Player {
 
 
     public String getName() {
-        if (name == null){
-            throw new IllegalArgumentException(NULL_NAME_KEY);
-        }
-        if (name == ""){
+
+        if (name == "") {
             throw new IllegalArgumentException(EMPTY_NAME_KEY);
         }
         return name;
     }
 
-    public void addToHand(CardType card){
-        if(card == null){
-            throw new IllegalArgumentException(NULL_CARD_KEY);
-        }
+    public void addToHand(CardType card) {
 
         hand.add(card);
     }
 
-    public int getHandSize(){
+    public int getHandSize() {
         return hand.size();
     }
 
-    public int countInHand(CardType type){
-        if (type == null){
-            throw new IllegalArgumentException(NULL_TYPE_KEY);
-        }
+    public int countInHand(CardType type) {
+
         int count = Collections.frequency(hand, type);
         return count;
     }

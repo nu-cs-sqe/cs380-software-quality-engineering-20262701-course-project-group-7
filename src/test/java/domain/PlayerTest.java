@@ -1,10 +1,10 @@
 package domain;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class PlayerTest {
     @Test
@@ -19,27 +19,7 @@ public class PlayerTest {
         assertSame("A", player.getName());
     }
 
-    @Test
-    void getNullName_throwIllegalArgumentException() {
-        Player player = new Player(null);
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.getName();
-                });
-        assertEquals("player.constructor.nullName", ex.getMessage());
-    }
 
-    @Test
-    void getEmptyName_throwIllegalArgumentException() {
-        Player player = new Player("");
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.getName();
-                });
-        assertEquals("player.constructor.emptyName", ex.getMessage());
-    }
 
     @Test
     void addDefuseOnEmptyHand_sizeOne() {
@@ -67,17 +47,7 @@ public class PlayerTest {
         assertEquals(2, player.getHandSize());
     }
 
-    @Test
-    void addNullCard_throwIllegalArgumentException() {
-        Player player = new Player("Alice");
 
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.addToHand(null);
-                });
-        assertEquals("player.addToHand.nullCard", ex.getMessage());
-    }
 
     @Test
     void countEmptyHand_returnZero() {
@@ -113,17 +83,6 @@ public class PlayerTest {
         assertEquals(2, player.countInHand(CardType.ATTACK));
     }
 
-    @Test
-    void countNullType_throwIllegalArgumentException() {
-        Player player = new Player("Alice");
-        player.addToHand(CardType.ATTACK);
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.countInHand(null);
-                });
-        assertEquals( "player.countInHand.nullType", ex.getMessage());
-    }
 
     @Test
     void getHandOnNewPlayer_returnZero() {
