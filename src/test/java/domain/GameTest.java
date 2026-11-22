@@ -113,6 +113,20 @@ class GameTest {
         assertEquals(2, game.getPlayers().size());
     }
 
+    @Test
+    void callerCannotChangeStoredNamesBeforeSetup() {
+        List<String> names = namesFor(2);
+        Game game = new Game(Deck.createStandardDeck(new Random(0)), names);
+
+        names.set(0, "Changed");
+        names.clear();
+        game.setup();
+
+        assertEquals("Player 1", game.getCurrentPlayer().getName());
+        assertEquals("Player 2", game.getPlayers().get(1).getName());
+        assertEquals(2, game.getPlayers().size());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
