@@ -42,7 +42,7 @@ after setup. There is no standalone invalid-input constructor test.
 | GAME-04 | `setup`, player queries | Caller changes and clears names after construction, before setup. | Stored player names and order unchanged. | Pending: `callerCannotChangeStoredNamesBeforeSetup` |
 | GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up key; deck, both hands, players and current player unchanged. | Yes: `repeatedSetupPreservesExistingState` |
 | GAME-06 | `getCurrentPlayer`, `getPlayers` | Not yet set up. | Not-set-up key from each query. | Yes: `queriesRejectAccessBeforeSetup` |
-| GAME-07 | `getPlayers`, `getCurrentPlayer` | Set up; repeat queries and attempt list mutation. | Unmodifiable list; no turn advancement. | Pending: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
+| GAME-07 | `getPlayers`, `getCurrentPlayer` | Set up; repeat queries and attempt list mutation. | Unmodifiable list; no turn advancement. | Yes: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
 | GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck key; no mutation. | Pending: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |
 | GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck key; no mutation. | Pending: `setupRejectsInsufficientKittens` |
 | GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck key; no mutation. | Pending: `setupRejectsOneFewerDrawableCardThanRequired` |

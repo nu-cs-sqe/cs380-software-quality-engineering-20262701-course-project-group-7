@@ -100,6 +100,19 @@ class GameTest {
                 assertThrows(IllegalStateException.class, game::getPlayers).getMessage());
     }
 
+    @Test
+    void playerQueriesDoNotAdvanceTurnOrExposeMutableList() {
+        Game game = new Game(Deck.createStandardDeck(new Random(0)), namesFor(2));
+        game.setup();
+        Player first = game.getCurrentPlayer();
+
+        assertThrows(UnsupportedOperationException.class, () -> game.getPlayers().clear());
+
+        assertSame(first, game.getCurrentPlayer());
+        assertSame(first, game.getCurrentPlayer());
+        assertEquals(2, game.getPlayers().size());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
