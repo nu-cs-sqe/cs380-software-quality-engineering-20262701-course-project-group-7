@@ -29,8 +29,8 @@ are 4, 5, 6, 6 respectively.
 
 ## Test Cases
 
-IDs below replace the earlier proposed-API cases. Markers remain pending until
-the corresponding test passes; test code and the marker update share a commit.
+IDs below replace the earlier proposed-API cases. Markers flip only after the
+corresponding test passes; test code and the marker update share a commit.
 The constructor's ownership of player names is exercised through public queries
 after setup. There is no standalone invalid-input constructor test.
 
@@ -70,5 +70,51 @@ after setup. There is no standalone invalid-input constructor test.
   result does not establish that the Gradle build or remote CI passes.
 
 The earlier execution record is historical evidence, not verification of the
-current constructor API or the new team quality tools. Current results will be
-recorded after running the Gradle reports.
+current constructor API or the new team quality tools.
+
+### Current API Verification and Commit Split
+
+- Before the original unpublished migration, the new API tests failed locally
+  at `compileTestJava`: the old implementation did not accept
+  `(Deck, List<String>)` or provide argument-free `setup()`. This was an
+  API-level red run, not a separate failing-assertion run for each test.
+- With author permission, unpublished commit `8937274` was replaced by 18
+  individual test-method commits, from `2572498` through `3dc952d`.
+  The original remains on local branch `backup/game-before-test-split`.
+  Earlier history was not rewritten, and nothing was force-pushed.
+- Each test was restored individually, the cumulative GameTest suite was
+  run successfully using `./gradlew test --tests domain.GameTest --offline
+  --no-daemon --console=plain`, then its passing code and BVA marker were
+  committed. GAME-08 groups two methods, so its marker changed only after
+  both methods passed. Parameterized inputs remain one method per commit.
+- A diff audit confirmed exactly one test method introduced per split commit,
+  and the restored final test file matched the original byte for byte.
+- Existing setup behavior and the API migration implementation accompany
+  the first restored test. Splitting commits does not retroactively establish
+  a new per-test red-green workflow. No instructor waiver is claimed.
+- A subsequent refactoring-only commit extracts player and deck assertions.
+  Game and GameTest method bodies meet the 20-line target.
+- The final `./gradlew build --continue --offline --no-daemon --console=plain`
+  ran all 148 tests successfully: 24 Game invocations, with no test failures
+  or errors. The full build nevertheless failed quality checks below.
+- JaCoCo Game: zero missed complexity (20 covered), branches (18 covered),
+  and lines (51 covered). PIT Game: all 35 mutants KILLED, no error outcomes.
+- No Game or GameTest Checkstyle or SpotBugs findings. Team tool versions,
+  exclusions and failure settings were not weakened.
+
+### Unresolved Project Blockers
+
+- Checkstyle: Deck has literal card counts flagged as magic numbers; Player
+  has spacing violations. DeckTest has long lines and variable-use distance
+  violations; PlayerTest has import order, wildcard import and spacing issues.
+- SpotBugs: Deck's throwing, non-final constructor triggers
+  `CT_CONSTRUCTOR_THROW`; Player.getName compares strings using `==`,
+  triggering `ES_COMPARING_STRINGS_WITH_EQ`.
+- PIT: one negated loop condition in Deck.add produces `MEMORY_ERROR`.
+  Its root cause has not been investigated. The aggregate detected percentage
+  must not be described as every mutant being killed normally.
+- UI.Main is empty and no locale bundles are present on this branch.
+  Game follows the agreed resource-key API; UI validation, bundle lookup
+  and localized error display still need implementation by the UI owner.
+- These are unresolved work, not approved exceptions. Game changes remain
+  local until the author requests a push; the PR must stay Draft.

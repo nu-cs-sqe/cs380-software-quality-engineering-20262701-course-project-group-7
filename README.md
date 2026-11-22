@@ -20,6 +20,25 @@
 ### Code Coverage
 N/A
 ### Mutation Testing
-N/A
+Game: all 35 mutants killed. The current full-project report contains one
+`MEMORY_ERROR` in `Deck.add`; this is not an equivalent-mutant exemption or a
+normal assertion-based kill, even though PIT counts it as detected.
 ### Others
-N/A
+Game API migration: BVA was committed before the local compile-time red run;
+the previously unpublished migration commit was split with author permission.
+Each restored test method has its own passing commit with the corresponding
+BVA marker update. Parameterized invocations remain one test method.
+The implementation accompanies the first restored test, since existing setup
+behavior was migrated, not reimplemented test by test. Splitting history does
+not establish a new per-test red-green workflow. Earlier failing-test commits
+remain in the preserved history. No instructor waiver is claimed.
+
+Full build remains blocked by Checkstyle findings in Deck, Player and their
+tests, plus SpotBugs findings in Deck's constructor and Player's string
+comparison. These are unresolved issues, not approved exceptions.
+Game and GameTest have no findings. See [Game BVA](docs/bva/Game.md)
+for the execution record.
+
+UI integration and locale bundles are not implemented on this branch.
+Game follows the specified resource-key contract, but the design's claimed
+English and Chinese bundles and localized error handler remain UI work.
