@@ -127,6 +127,20 @@ class GameTest {
         assertEquals(2, game.getPlayers().size());
     }
 
+    @Test
+    void setupCanRetryAfterDeckIsReplenished() {
+        Deck deck = customDeck(13, 2, 1);
+        Game game = new Game(deck, namesFor(2));
+        assertEquals("game.insufficientDeck",
+                assertThrows(IllegalStateException.class, game::setup).getMessage());
+
+        deck.add(CardType.ATTACK, 1);
+        game.setup();
+
+        assertTrue(game.isSetUp());
+        assertEquals(8, game.getCurrentPlayer().getHandSize());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
