@@ -6,10 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Player {
-    private static final String NULL_NAME_KEY = "player.constructor.nullName";
     private static final String EMPTY_NAME_KEY = "player.constructor.emptyName";
-    private static final String NULL_CARD_KEY = "player.addToHand.nullCard";
-    private static final String NULL_TYPE_KEY = "player.countInHand.nullType";
+
     private final String name;
     private final ArrayList<CardType> hand;
     
@@ -21,7 +19,7 @@ public class Player {
 
     public String getName() {
 
-        if (name == "") {
+        if (name.equals("")) {
             throw new IllegalArgumentException(EMPTY_NAME_KEY);
         }
         return name;
