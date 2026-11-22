@@ -152,6 +152,11 @@ class GameTest {
         assertInsufficientDeck(customDeck(14, defuses, 1));
     }
 
+    @Test
+    void setupRejectsInsufficientKittens() {
+        assertInsufficientDeck(customDeck(14, 2, 0));
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
