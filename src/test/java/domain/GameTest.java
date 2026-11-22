@@ -202,6 +202,24 @@ class GameTest {
         assertInsufficientDeck(customDeck(11, 4, 1));
     }
 
+    @Test
+    void setupUsesOfficialCallOrderAndMayDealAdditionalDefuse() {
+        Deck deck = mockDeckBeforeDealing();
+        EasyMock.expect(deck.draw()).andReturn(CardType.DEFUSE);
+        EasyMock.expect(deck.draw()).andReturn(CardType.ATTACK).times(13);
+        deck.add(CardType.EXPLODING_KITTEN, 1);
+        deck.shuffle();
+        EasyMock.replay(deck);
+        Game game = new Game(deck, namesFor(2));
+
+        game.setup();
+
+        assertEquals(2, game.getPlayers().get(0).countInHand(CardType.DEFUSE));
+        assertEquals(8, game.getPlayers().get(0).getHandSize());
+        assertEquals(8, game.getPlayers().get(1).getHandSize());
+        EasyMock.verify(deck);
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
