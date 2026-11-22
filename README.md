@@ -17,6 +17,7 @@
 - SpotBugs (Gradle plugin 6.0.25)
 - JaCoCo (Gradle built-in plugin)
 - PITest 1.15.0 (Gradle plugin 1.15.0, JUnit 5 plugin 1.2.1)
+- Easymock 5.4
 
 ## Exceptions
 ### Code Coverage
