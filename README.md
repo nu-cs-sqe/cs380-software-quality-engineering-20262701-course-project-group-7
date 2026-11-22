@@ -15,15 +15,19 @@
 - Gradle 8.10
 - Checkstyle 10.18.2 (Google style base, customized in config/checkstyle/checkstyle.xml)
 - SpotBugs (Gradle plugin 6.0.25)
+- JaCoCo (Gradle built-in plugin)
+- PITest 1.15.0 (Gradle plugin 1.15.0, JUnit 5 plugin 1.2.1)
 
 ## Exceptions
 ### Code Coverage
-N/A
+View classes (`ui/view/**`), the main class (`ui/Main`), and enums (`domain/CardType`) are excluded from JaCoCo coverage.
 ### Mutation Testing
-Game: all 35 mutants killed; the latest full-project run killed all 63 mutants.
-An earlier report contained one `MEMORY_ERROR` in `Deck.add`, not a normal
-assertion-based kill or an equivalent-mutant exemption. It was not reproduced
-in the latest run; its cause has not been investigated.
+PITest mutates only `domain.*` and `ui.controller.*`; view classes and the main class are excluded.
+Game: all 35 mutants killed. The publication verification run reports 62
+normally killed project mutants and one `MEMORY_ERROR` in `Deck.add`.
+The error was reproduced after an intervening run without it; its cause has
+not been investigated. It is not an assertion-based kill or an approved
+equivalent-mutant exemption, even though PIT counts it as detected.
 ### Others
 Game API migration: BVA was committed before the local compile-time red run;
 the previously unpublished migration commit was split with author permission.

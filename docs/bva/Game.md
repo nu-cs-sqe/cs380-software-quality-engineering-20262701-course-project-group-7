@@ -126,6 +126,23 @@ current constructor API or the new team quality tools.
 - Full build still fails Checkstyle main/test and SpotBugs main for the
   Deck/Player findings below. SpotBugs test now passes.
 
+### PR Publication Verification
+
+- The published draft had five commits outside the local branch. A merge
+  preserves that remote history while retaining the verified Game version.
+  Its obsolete exception-only locale bundles are not restored.
+- Latest main `dc674387` is merged, including the narrower JaCoCo exclusions
+  and `ui.controller.*` PIT scope. No checks are disabled.
+- `./gradlew build --continue --offline --no-daemon --console=plain` was
+  rerun on this merged version: all 148 tests pass, including 24 Game.
+  Game retains 100% complexity/branch/line coverage and 35/35 KILLED mutants.
+- Project PIT now has 62 normal kills and one Deck.add MEMORY_ERROR.
+  That error has recurred after the intervening successful run; its root
+  cause remains uninvestigated, and the displayed detected percentage is
+  not treated as all mutants killed normally.
+- Full build still fails teammate Checkstyle and SpotBugs main checks.
+  Game/GameTest have no findings. The PR remains Draft pending resolution.
+
 ### Unresolved Project Blockers
 
 - Checkstyle: Deck has literal card counts flagged as magic numbers; Player
@@ -134,8 +151,10 @@ current constructor API or the new team quality tools.
 - SpotBugs: Deck's throwing, non-final constructor triggers
   `CT_CONSTRUCTOR_THROW`; Player.getName compares strings using `==`,
   triggering `ES_COMPARING_STRINGS_WITH_EQ`.
+- Deck.add mutation produces MEMORY_ERROR in the publication run; the cause
+  has not been investigated and no mutation exemption is claimed.
 - UI.Main remains empty. UI validation and any localized player-facing
   prompts or recovery text remain UI work; Game's internal exception messages
   do not need locale bundles or translation lookup.
-- These are unresolved work, not approved exceptions. Game changes remain
-  local until the author requests a push; the PR must stay Draft.
+- These are unresolved work, not approved exceptions. The author requested
+  PR publication; the PR must stay Draft until the blockers are resolved.
