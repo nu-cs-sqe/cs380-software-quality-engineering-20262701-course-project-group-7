@@ -238,6 +238,21 @@ class GameTest {
         EasyMock.verify(deck);
     }
 
+    @Test
+    void extraDefusesUseActualRemovalCount() {
+        Deck deck = mockDeckWithRemovedDefuses(3);
+        EasyMock.expect(deck.draw()).andReturn(CardType.ATTACK).times(14);
+        deck.add(CardType.EXPLODING_KITTEN, 1);
+        deck.shuffle();
+        EasyMock.replay(deck);
+        Game game = new Game(deck, namesFor(2));
+
+        game.setup();
+
+        assertTrue(game.isSetUp());
+        EasyMock.verify(deck);
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
