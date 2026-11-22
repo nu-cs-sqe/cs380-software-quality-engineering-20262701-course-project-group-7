@@ -25,17 +25,19 @@ Values: `EXPLODING_KITTEN`, `DEFUSE`, `ATTACK`, `SKIP`, `FAVOR`, `SHUFFLE`, `SEE
 | Member | Description |
 |--------|-------------|
 | `- List<CardType> cards` | Index 0 is the top of the deck. |
-| `- Random random` | Injected for shuffling, so tests can pass a seeded `Random`. |
-| `+ Deck(Random random)` | Creates an empty deck. Throws `IllegalArgumentException` if `random` is `null`. Lets tests build small decks (0, 1, few cards) with `add`. |
-| `+ static Deck createStandardDeck(Random random)` | Builds the 56 card Original Edition deck with the counts in rule 1, in a fixed (unshuffled) order. Throws `IllegalArgumentException` if `random` is `null`. |
+| `- Random random` | Injected for shuffling, so tests can pass an EasyMock mock of `Random` and stub `nextInt`. |
+| `+ Deck(Random random)` | Creates an empty deck. Simple constructor (only initializes fields), so it has no BVA or tests. Lets tests build small decks (0, 1, few cards) with `add`. |
+| `+ static Deck createStandardDeck(Random random)` | Builds the 56 card Original Edition deck with the counts in rule 1, in a fixed (unshuffled) order. |
 | `+ void shuffle()` | Shuffles the cards with `Collections.shuffle(cards, random)`. Size and card counts do not change. |
 | `+ CardType draw()` | Removes and returns the top card. Throws `IllegalStateException("Cannot draw from an empty deck.")` if deck empty. |
-| `+ int removeAll(CardType type)` | Removes every card of `type`, returns how many were removed (0 if none). Throws `IllegalArgumentException` if `type` is `null`. Used to remove Exploding and Defuse from deck. |
-| `+ void add(CardType type, int count)` | Adds `count` cards of `type` to the bottom of the deck. `count = 0` does nothing. Throws `IllegalArgumentException` if `type` is `null` or `count < 0`. Used to put Exploding and Defuse back into the deck. |
+| `+ int removeAll(CardType type)` | Removes every card of `type`, returns how many were removed (0 if none). Used to remove Exploding and Defuse from deck. |
+| `+ void add(CardType type, int numberOfCards)` | Adds `numberOfCards` cards of `type` to the bottom of the deck. `numberOfCards = 0` does nothing. Throws `IllegalArgumentException` if `numberOfCards < 0`. Does not enforce official card limits; callers stay within them. Used to put Exploding and Defuse back into the deck. |
 | `+ int size()` | Number of cards in the deck. |
-| `+ int count(CardType type)` | Number of cards of `type` in the deck. Throws `IllegalArgumentException` if `type` is `null`. Lets tests check the Defuse and Exploding Kitten counts after setup without drawing every card. |
+| `+ int count(CardType type)` | Number of cards of `type` in the deck. Lets tests check the Defuse and Exploding Kitten counts after setup without drawing every card. |
 
-The standard counts are kept in one constant map (`CardType` → count) inside `Deck`, not as literal numbers spread through `createStandardDeck`.
+Following the team code style standards, `Deck` does not check for `null` arguments: callers never pass `null`.
+
+The standard counts are kept in one constant `EnumMap` (`CardType` → count) inside `Deck`, built from named constants, not as literal numbers spread through `createStandardDeck`. Because an `EnumMap` iterates in enum order, the unshuffled standard deck always has the same order.
 
 ### 3. `Player` (class, package `domain`)
 
