@@ -141,7 +141,15 @@ current constructor API or the new team quality tools.
   cause remains uninvestigated, and the displayed detected percentage is
   not treated as all mutants killed normally.
 - Full build still fails teammate Checkstyle and SpotBugs main checks.
-  Game/GameTest have no findings. The PR remains Draft pending resolution.
+  Game/GameTest have no findings. These failures still prevent merge readiness.
+- GitHub Actions run `45069380492` on `a536563` also failed
+  `checkstyleMain`, `checkstyleTest` and `spotbugsMain`, matching the local
+  build blockers. Passing Game checks are not a passing project CI result.
+- Synchronization audit: local and remote Game heads both equal `a536563`;
+  `dc674387` is its direct parent. `git ls-files -u` is empty, and
+  `git merge-tree --write-tree HEAD dc674387` succeeds without conflicts.
+  GitHub nevertheless reported CONFLICTING; that remote status is distinct
+  from local unresolved conflicts and requires a refreshed mergeability check.
 
 ### Unresolved Project Blockers
 
@@ -157,4 +165,4 @@ current constructor API or the new team quality tools.
   prompts or recovery text remain UI work; Game's internal exception messages
   do not need locale bundles or translation lookup.
 - These are unresolved work, not approved exceptions. The author requested
-  PR publication; the PR must stay Draft until the blockers are resolved.
+  PR publication; successful CI and review are still required before merging.
