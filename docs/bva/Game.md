@@ -36,7 +36,7 @@ after setup. There is no standalone invalid-input constructor test.
 
 | ID | Method(s) under test | System state / input | Expected output | Implemented? |
 |----|----------------------|----------------------|-----------------|--------------|
-| GAME-01 | `isSetUp()` | Newly constructed game; strict mock deck has no expected calls. | False twice; constructor and query do not inspect or mutate deck. | Pending: `isSetUpRemainsFalseWithoutInspectingDeck` |
+| GAME-01 | `isSetUp()` | Newly constructed game; strict mock deck has no expected calls. | False twice; constructor and query do not inspect or mutate deck. | Yes: `isSetUpRemainsFalseWithoutInspectingDeck` |
 | GAME-02 | `setup`, `isSetUp`, player queries | Standard deck; 2, 3, 4, 5 validated names. | Eight cards each, guaranteed first Defuse, no hand Kittens, input order, first player current, correct final counts. | Pending: `setupFollowsOfficialRulesForEachPlayerCount` |
 | GAME-03 | `setup`, `getPlayers` | Valid names `" A "` and `"a"`. | Exact spelling and whitespace preserved. | Pending: `setupPreservesValidatedNamesExactly` |
 | GAME-04 | `setup`, player queries | Caller changes and clears names after construction, before setup. | Stored player names and order unchanged. | Pending: `callerCannotChangeStoredNamesBeforeSetup` |
