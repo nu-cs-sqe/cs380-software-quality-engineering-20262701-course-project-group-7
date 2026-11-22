@@ -197,6 +197,11 @@ class GameTest {
         assertEquals(defuses, totalDefuses);
     }
 
+    @Test
+    void setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses() {
+        assertInsufficientDeck(customDeck(11, 4, 1));
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
