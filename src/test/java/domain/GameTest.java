@@ -29,6 +29,33 @@ class GameTest {
         EasyMock.verify(deck);
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3, 4, 5})
+    void setupFollowsOfficialRulesForEachPlayerCount(int count) {
+        Deck deck = Deck.createStandardDeck(new Random(0));
+        List<String> names = namesFor(count);
+        Game game = new Game(deck, names);
+
+        game.setup();
+
+        assertTrue(game.isSetUp());
+        assertEquals(count, game.getPlayers().size());
+        assertSame(game.getPlayers().get(0), game.getCurrentPlayer());
+        int extraDefuses = Math.min(2, 6 - count);
+        int totalDefuses = deck.count(CardType.DEFUSE);
+        for (int i = 0; i < count; i++) {
+            Player player = game.getPlayers().get(i);
+            assertEquals(names.get(i), player.getName());
+            assertEquals(8, player.getHandSize());
+            assertEquals(CardType.DEFUSE, player.getHand().get(0));
+            assertEquals(0, player.countInHand(CardType.EXPLODING_KITTEN));
+            totalDefuses += player.countInHand(CardType.DEFUSE);
+        }
+        assertEquals(count + extraDefuses, totalDefuses);
+        assertEquals(count - 1, deck.count(CardType.EXPLODING_KITTEN));
+        assertEquals(46 + extraDefuses - 7 * count + count - 1, deck.size());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
