@@ -40,7 +40,7 @@ after setup. There is no standalone invalid-input constructor test.
 | GAME-02 | `setup`, `isSetUp`, player queries | Standard deck; 2, 3, 4, 5 validated names. | Eight cards each, guaranteed first Defuse, no hand Kittens, input order, first player current, correct final counts. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` |
 | GAME-03 | `setup`, `getPlayers` | Valid names `" A "` and `"a"`. | Exact spelling and whitespace preserved. | Yes: `setupPreservesValidatedNamesExactly` |
 | GAME-04 | `setup`, player queries | Caller changes and clears names after construction, before setup. | Stored player names and order unchanged. | Pending: `callerCannotChangeStoredNamesBeforeSetup` |
-| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up key; deck, both hands, players and current player unchanged. | Pending: `repeatedSetupPreservesExistingState` |
+| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up key; deck, both hands, players and current player unchanged. | Yes: `repeatedSetupPreservesExistingState` |
 | GAME-06 | `getCurrentPlayer`, `getPlayers` | Not yet set up. | Not-set-up key from each query. | Pending: `queriesRejectAccessBeforeSetup` |
 | GAME-07 | `getPlayers`, `getCurrentPlayer` | Set up; repeat queries and attempt list mutation. | Unmodifiable list; no turn advancement. | Pending: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
 | GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck key; no mutation. | Pending: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |

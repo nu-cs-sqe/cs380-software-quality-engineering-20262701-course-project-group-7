@@ -66,6 +66,30 @@ class GameTest {
         assertEquals("a", game.getPlayers().get(1).getName());
     }
 
+    @Test
+    void repeatedSetupPreservesExistingState() {
+        Deck deck = Deck.createStandardDeck(new Random(0));
+        Game game = new Game(deck, namesFor(2));
+        game.setup();
+        final Player current = game.getCurrentPlayer();
+        final List<Player> players = game.getPlayers();
+        final List<CardType> firstHand = current.getHand();
+        final List<CardType> secondHand = players.get(1).getHand();
+        final Map<CardType, Integer> counts = cardCounts(deck);
+        final int size = deck.size();
+
+        assertEquals("game.alreadySetUp",
+                assertThrows(IllegalStateException.class, game::setup).getMessage());
+
+        assertTrue(game.isSetUp());
+        assertSame(current, game.getCurrentPlayer());
+        assertEquals(players, game.getPlayers());
+        assertEquals(firstHand, current.getHand());
+        assertEquals(secondHand, players.get(1).getHand());
+        assertEquals(counts, cardCounts(deck));
+        assertEquals(size, deck.size());
+    }
+
     private Deck mockDeckBeforeDealing() {
         return mockDeckWithRemovedDefuses(6);
     }
