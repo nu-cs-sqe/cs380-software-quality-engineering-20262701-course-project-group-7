@@ -2,17 +2,20 @@
 
 ## Contract
 
-The specification is `docs/design/game-setup-phase.md` on the merged main
-branch. The UI validates non-null inputs, 2 to 5 players, and non-blank,
+The specification is `docs/design/game-setup-phase.md`, refined by the author's
+clarification that internal exception messages do not require i18n.
+The UI validates non-null inputs, 2 to 5 players, and non-blank,
 case-sensitive unique names before calling `new Game(deck, playerNames)`.
 Game preserves names and their order and exposes `setup()` with no arguments.
 Invalid user inputs and null checks are not domain test cases under the team
 standards. Earlier validation cases are retired, not silently claimed as tested.
 
 `getPlayers()` protects the list order, not the mutable Player objects.
-Both player queries throw `IllegalStateException("game.notSetUp")` before
-successful setup. Repeated setup throws `"game.alreadySetUp"`. Insufficient
-deck contents throw `"game.insufficientDeck"` before mutation and permit retry.
+Both player queries throw `IllegalStateException("Game has not been set up.")`
+before successful setup. Repeated setup throws `"Game has already been set up."`.
+Insufficient deck contents throw `"Deck does not contain enough cards for setup."`
+before mutation and permit retry. These are internal English diagnostics, not
+resource keys or user-facing localized messages.
 Unexpected Deck errors propagate without rollback; use a fresh game afterward.
 
 ## Setup Rules
@@ -40,18 +43,18 @@ after setup. There is no standalone invalid-input constructor test.
 | GAME-02 | `setup`, `isSetUp`, player queries | Standard deck; 2, 3, 4, 5 validated names. | Eight cards each, guaranteed first Defuse, no hand Kittens, input order, first player current, correct final counts. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` |
 | GAME-03 | `setup`, `getPlayers` | Valid names `" A "` and `"a"`. | Exact spelling and whitespace preserved. | Yes: `setupPreservesValidatedNamesExactly` |
 | GAME-04 | `setup`, player queries | Caller changes and clears names after construction, before setup. | Stored player names and order unchanged. | Yes: `callerCannotChangeStoredNamesBeforeSetup` |
-| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up key; deck, both hands, players and current player unchanged. | Yes: `repeatedSetupPreservesExistingState` |
-| GAME-06 | `getCurrentPlayer`, `getPlayers` | Not yet set up. | Not-set-up key from each query. | Yes: `queriesRejectAccessBeforeSetup` |
+| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up English diagnostic; deck, both hands, players and current player unchanged. | Pending: `repeatedSetupPreservesExistingState` |
+| GAME-06 | `getCurrentPlayer`, `getPlayers` | Not yet set up. | Not-set-up English diagnostic from each query. | Pending: `queriesRejectAccessBeforeSetup` |
 | GAME-07 | `getPlayers`, `getCurrentPlayer` | Set up; repeat queries and attempt list mutation. | Unmodifiable list; no turn advancement. | Yes: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
-| GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck key; no mutation. | Yes: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |
-| GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck key; no mutation. | Yes: `setupRejectsInsufficientKittens` |
-| GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck key; no mutation. | Yes: `setupRejectsOneFewerDrawableCardThanRequired` |
+| GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck English diagnostic; no mutation. | Pending: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |
+| GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck English diagnostic; no mutation. | Pending: `setupRejectsInsufficientKittens` |
+| GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck English diagnostic; no mutation. | Pending: `setupRejectsOneFewerDrawableCardThanRequired` |
 | GAME-11 | `setup`, `getPlayers` | 2 players; 2 Defuses, 1 Kitten, 14/15 ordinary cards. | Setup succeeds at and above boundary; eight cards each and one guaranteed Defuse. | Yes: `setupAcceptsDrawableCardBoundary` |
 | GAME-12 | `setup`, `getPlayers` | 2 players; 3/4 Defuses and 13/12 ordinary cards. | Returned 1/2 Defuses count toward the 14 drawable cards; exact total preserved. | Yes: `returnedDefusesCountTowardDrawableBoundary` |
-| GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; no mutation. | Yes: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
-| GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | Initial deck unchanged; retry succeeds. | Yes: `setupCanRetryAfterDeckIsReplenished` |
+| GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; English diagnostic and no mutation. | Pending: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
+| GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | English diagnostic and unchanged initial deck; retry succeeds. | Pending: `setupCanRetryAfterDeckIsReplenished` |
 | GAME-15 | `setup`, `getPlayers` | Strict mock tracks removal, return, two shuffles and dealing; first draw Defuse. | Official call order, 14 draws, one Kitten returned, possible second hand Defuse. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
-| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up keys; no rollback promised. | Yes: `setupPropagatesUnexpectedDrawFailure` |
+| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up English diagnostics; no rollback promised. | Pending: `setupPropagatesUnexpectedDrawFailure` |
 | GAME-17 | `setup` | Strict mock returns 6 in count and 3 from removeAll. | Return count uses actual removal result (one extra), not preflight count. | Yes: `extraDefusesUseActualRemovalCount` |
 
 ## Execution Record
