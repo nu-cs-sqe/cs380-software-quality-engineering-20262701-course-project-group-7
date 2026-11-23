@@ -67,7 +67,7 @@ constructor registers on the view and running it. "English text" and
 | ID | State of the system | Expected output | Implemented? |
 |----|---------------------|-----------------|--------------|
 | COUNT-01 | Count 2 (minimum button) | In order: `clearError()`, `showNameFields(2)` | :white_check_mark: |
-| COUNT-02 | Count 5 (maximum button) | In order: `clearError()`, `showNameFields(5)` | :x: |
+| COUNT-02 | Count 5 (maximum button) | In order: `clearError()`, `showNameFields(5)` | :white_check_mark: |
 
 ### Method under test: `handleLocaleChanged(Locale locale)` (via `setOnLocaleChanged`)
 

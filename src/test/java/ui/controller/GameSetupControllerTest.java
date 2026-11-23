@@ -142,4 +142,23 @@ class GameSetupControllerTest {
 
         EasyMock.verify(view);
     }
+
+    // COUNT-02
+    @Test
+    void playerCountHandlerShowsFiveNameFieldsForMaximumCount() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        Capture<IntConsumer> countHandler = EasyMock.newCapture();
+        view.setOnPlayerCountSelected(EasyMock.capture(countHandler));
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        view.clearError();
+        view.showNameFields(5);
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        countHandler.getValue().accept(5);
+
+        EasyMock.verify(view);
+    }
 }
