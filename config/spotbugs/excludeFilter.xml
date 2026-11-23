@@ -12,6 +12,7 @@
         <Or>
             <Class name="domain.Deck"/>
             <Class name="domain.Game"/>
+            <Class name="ui.controller.GameSetupController"/>
         </Or>
         <Bug pattern="EI_EXPOSE_REP2"/>
     </Match>

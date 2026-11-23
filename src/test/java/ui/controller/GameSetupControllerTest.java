@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.function.IntConsumer;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
@@ -121,5 +122,24 @@ class GameSetupControllerTest {
 
         EasyMock.verify(view);
         assertEquals("Exploding Kittens", bundle.getValue().getString("setup.title"));
+    }
+
+    // COUNT-01
+    @Test
+    void playerCountHandlerShowsTwoNameFieldsForMinimumCount() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        Capture<IntConsumer> countHandler = EasyMock.newCapture();
+        view.setOnPlayerCountSelected(EasyMock.capture(countHandler));
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        view.clearError();
+        view.showNameFields(2);
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        countHandler.getValue().accept(2);
+
+        EasyMock.verify(view);
     }
 }

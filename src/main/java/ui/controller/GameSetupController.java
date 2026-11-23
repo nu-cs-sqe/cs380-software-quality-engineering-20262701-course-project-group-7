@@ -12,9 +12,12 @@ public class GameSetupController {
 
     private static final String BUNDLE_NAME = "message";
 
+    private final GameSetupView view;
+
     public GameSetupController(GameSetupView view, Random random) {
+        this.view = view;
         view.setOnLocaleChanged(locale -> {});
-        view.setOnPlayerCountSelected(count -> {});
+        view.setOnPlayerCountSelected(this::handlePlayerCountSelected);
         view.setOnStart(() -> {});
         view.updateText(ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH));
     }
@@ -36,5 +39,10 @@ public class GameSetupController {
             }
         }
         return false;
+    }
+
+    private void handlePlayerCountSelected(int count) {
+        view.clearError();
+        view.showNameFields(count);
     }
 }
