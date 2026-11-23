@@ -15,7 +15,6 @@ public class Player {
         this.hand = new ArrayList<>();
     }
 
-
     public String getName() {
         return name;
     }
