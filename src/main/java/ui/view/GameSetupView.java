@@ -25,6 +25,8 @@ public class GameSetupView {
     private static final String CHOOSE_COUNT_KEY = "setup.chooseCount";
     private static final String PLAYER_NAME_KEY = "setup.playerName";
     private static final String START_KEY = "setup.start";
+    private static final String TURN_ORDER_KEY = "setup.turnOrder";
+    private static final String GOES_FIRST_KEY = "setup.goesFirst";
     private static final int MIN_PLAYERS = 2;
     private static final int MAX_PLAYERS = 5;
     private static final double SPACING = 10;
@@ -41,15 +43,22 @@ public class GameSetupView {
     private final List<TextField> nameFields = new ArrayList<>();
     private final Button startButton = new Button();
     private final Label errorLabel = new Label();
+    private final Label turnOrderLabel = new Label();
+    private final VBox playerRows = new VBox(SPACING);
+    private final VBox playerSection = new VBox(SPACING, turnOrderLabel, playerRows);
     private final VBox root;
     private String playerNamePattern = "";
+    private String goesFirstPattern = "";
+    private List<String> shownPlayers = List.of();
+    private String shownCurrentPlayer = "";
 
     public GameSetupView() {
         errorLabel.setStyle(ERROR_STYLE);
         setShown(startButton, false);
         setShown(errorLabel, false);
+        setShown(playerSection, false);
         root = new VBox(SPACING, createLanguageRow(), titleLabel, chooseCountLabel,
-                createCountRow(), nameRows, startButton, errorLabel);
+                createCountRow(), nameRows, startButton, errorLabel, playerSection);
         root.setPadding(new Insets(PADDING));
     }
 
@@ -100,6 +109,13 @@ public class GameSetupView {
         setShown(errorLabel, false);
     }
 
+    public void showPlayers(List<String> names, String currentPlayerName) {
+        shownPlayers = List.copyOf(names);
+        shownCurrentPlayer = currentPlayerName;
+        renderPlayers();
+        setShown(playerSection, true);
+    }
+
     public void updateText(ResourceBundle bundle) {
         titleLabel.setText(bundle.getString(TITLE_KEY));
         languageLabel.setText(bundle.getString(LANGUAGE_KEY));
@@ -109,6 +125,9 @@ public class GameSetupView {
         for (int i = 0; i < nameLabels.size(); i++) {
             nameLabels.get(i).setText(formatPlayerName(i));
         }
+        turnOrderLabel.setText(bundle.getString(TURN_ORDER_KEY));
+        goesFirstPattern = bundle.getString(GOES_FIRST_KEY);
+        renderPlayers();
     }
 
     private HBox createLanguageRow() {
@@ -138,6 +157,16 @@ public class GameSetupView {
 
     private String formatPlayerName(int index) {
         return MessageFormat.format(playerNamePattern, index + 1);
+    }
+
+    private void renderPlayers() {
+        playerRows.getChildren().clear();
+        for (String name : shownPlayers) {
+            String text = name.equals(shownCurrentPlayer)
+                    ? MessageFormat.format(goesFirstPattern, name)
+                    : name;
+            playerRows.getChildren().add(new Label(text));
+        }
     }
 
     private static void setShown(Node node, boolean shown) {
