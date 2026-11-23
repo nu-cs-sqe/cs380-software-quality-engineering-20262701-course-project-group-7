@@ -84,7 +84,7 @@ constructor registers on the view and running it. "English text" and
 | START-02 | Entered names `["Ana", "Ana"]` | In order: `getEnteredNames()`, `clearError()`, `showError(English text of setup.name.duplicate)`; `showPlayers` not called | :white_check_mark: |
 | START-03 | Entered names `["", ""]` (blank and duplicate) | `showError(English text of setup.name.blank)`; blank is reported first | :white_check_mark: |
 | START-04 | Entered names `["Ana", "Ana", ""]` (white-box: the duplicate appears before the blank name) | `showError(English text of setup.name.blank)`; all names are checked for blanks before duplicates | :white_check_mark: |
-| START-05 | Chinese selected, then entered names `["", "Ben"]` | `showError(Chinese text of setup.name.blank)` | :x: |
+| START-05 | Chinese selected, then entered names `["", "Ben"]` | `showError(Chinese text of setup.name.blank)` | :white_check_mark: |
 | START-06 | Entered names `["Ana", "Ben", "Cy"]` (valid) | In order: `getEnteredNames()`, `clearError()`, `showPlayers(["Ana", "Ben", "Cy"], "Ana")`; `showError` not called | :x: |
 
 `handleStart()` step 5 (`Game.setup()` throws `IllegalStateException`) cannot

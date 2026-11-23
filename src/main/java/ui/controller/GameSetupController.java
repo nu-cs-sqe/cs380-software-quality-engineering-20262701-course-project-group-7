@@ -15,13 +15,15 @@ public class GameSetupController {
     private static final String DUPLICATE_NAME_KEY = "setup.name.duplicate";
 
     private final GameSetupView view;
+    private ResourceBundle bundle;
 
     public GameSetupController(GameSetupView view, Random random) {
         this.view = view;
         view.setOnLocaleChanged(this::handleLocaleChanged);
         view.setOnPlayerCountSelected(this::handlePlayerCountSelected);
         view.setOnStart(this::handleStart);
-        view.updateText(ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH));
+        bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
+        view.updateText(bundle);
     }
 
     public static boolean hasBlankName(List<String> names) {
@@ -49,13 +51,13 @@ public class GameSetupController {
     }
 
     private void handleLocaleChanged(Locale locale) {
-        view.updateText(ResourceBundle.getBundle(BUNDLE_NAME, locale));
+        bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        view.updateText(bundle);
     }
 
     private void handleStart() {
         List<String> names = view.getEnteredNames();
         view.clearError();
-        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
         if (hasBlankName(names)) {
             view.showError(bundle.getString(BLANK_NAME_KEY));
         } else if (hasDuplicateName(names)) {

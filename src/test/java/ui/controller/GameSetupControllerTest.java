@@ -19,6 +19,8 @@ class GameSetupControllerTest {
 
     private static final ResourceBundle ENGLISH =
             ResourceBundle.getBundle("message", Locale.ENGLISH);
+    private static final ResourceBundle CHINESE =
+            ResourceBundle.getBundle("message", Locale.CHINESE);
 
     // BLANK-01
     @Test
@@ -284,6 +286,29 @@ class GameSetupControllerTest {
         EasyMock.replay(view);
 
         new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+
+    // START-05
+    @Test
+    void startHandlerShowsErrorInChineseAfterChineseSelected() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        Capture<Consumer<Locale>> localeHandler = EasyMock.newCapture();
+        view.setOnLocaleChanged(EasyMock.capture(localeHandler));
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("", "Ben"));
+        view.clearError();
+        view.showError(CHINESE.getString("setup.name.blank"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        localeHandler.getValue().accept(Locale.CHINESE);
         startHandler.getValue().run();
 
         EasyMock.verify(view);
