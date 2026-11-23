@@ -91,4 +91,12 @@ class GameSetupControllerTest {
     void hasDuplicateNameReturnsTrueForAdjacentDuplicateNames() {
         assertTrue(GameSetupController.hasDuplicateName(List.of("Ana", "Ana")));
     }
+
+    // DUP-06
+    @Test
+    void hasDuplicateNameReturnsTrueForEqualFirstAndLastNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Ana");
+
+        assertTrue(GameSetupController.hasDuplicateName(names));
+    }
 }
