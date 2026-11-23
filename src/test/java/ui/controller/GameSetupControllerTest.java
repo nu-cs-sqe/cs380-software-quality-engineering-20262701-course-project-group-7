@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
@@ -160,5 +162,25 @@ class GameSetupControllerTest {
         countHandler.getValue().accept(5);
 
         EasyMock.verify(view);
+    }
+
+    // LANG-01
+    @Test
+    void localeHandlerShowsChineseTextWhenChineseSelected() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        Capture<Consumer<Locale>> localeHandler = EasyMock.newCapture();
+        view.setOnLocaleChanged(EasyMock.capture(localeHandler));
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        Capture<ResourceBundle> bundle = EasyMock.newCapture();
+        view.updateText(EasyMock.capture(bundle));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        localeHandler.getValue().accept(Locale.CHINESE);
+
+        EasyMock.verify(view);
+        assertEquals("爆炸猫", bundle.getValue().getString("setup.title"));
     }
 }

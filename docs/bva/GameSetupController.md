@@ -73,7 +73,7 @@ constructor registers on the view and running it. "English text" and
 
 | ID | State of the system | Expected output | Implemented? |
 |----|---------------------|-----------------|--------------|
-| LANG-01 | English is current; Chinese selected | `updateText` with the Chinese bundle (`setup.title` is "爆炸猫") | :x: |
+| LANG-01 | English is current; Chinese selected | `updateText` with the Chinese bundle (`setup.title` is "爆炸猫") | :white_check_mark: |
 | LANG-02 | Chinese is current; English selected again | `updateText` with the English bundle | :x: |
 
 ### Method under test: `handleStart()` (via `setOnStart`)
