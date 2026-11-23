@@ -79,4 +79,10 @@ class GameSetupControllerTest {
     void hasDuplicateNameReturnsFalseForNamesDifferingOnlyByCase() {
         assertFalse(GameSetupController.hasDuplicateName(List.of("A", "a")));
     }
+
+    // DUP-04
+    @Test
+    void hasDuplicateNameReturnsFalseForNamesDifferingOnlyByLeadingSpace() {
+        assertFalse(GameSetupController.hasDuplicateName(List.of("Ana", " Ana")));
+    }
 }
