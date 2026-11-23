@@ -26,7 +26,7 @@ Assumptions for the input checks:
 
 | ID | Input (names) | Expected output | Implemented? |
 |----|---------------|-----------------|--------------|
-| BLANK-01 | `["Ana", "Ben"]` (minimum size) | `false` | :x: |
+| BLANK-01 | `["Ana", "Ben"]` (minimum size) | `false` | :white_check_mark: |
 | BLANK-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` (maximum size) | `false` | :x: |
 | BLANK-03 | `["A", "B"]` (one-character names) | `false` | :x: |
 | BLANK-04 | `[" Ana", "Ben"]` (leading space) | `false`; a name with other characters is not blank | :x: |

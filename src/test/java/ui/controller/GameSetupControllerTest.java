@@ -1,0 +1,15 @@
+package ui.controller;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
+class GameSetupControllerTest {
+
+    // BLANK-01
+    @Test
+    void hasBlankNameReturnsFalseForMinimumNumberOfNames() {
+        assertFalse(GameSetupController.hasBlankName(List.of("Ana", "Ben")));
+    }
+}
