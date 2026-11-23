@@ -12,6 +12,7 @@ public class GameSetupController {
 
     private static final String BUNDLE_NAME = "message";
     private static final String BLANK_NAME_KEY = "setup.name.blank";
+    private static final String DUPLICATE_NAME_KEY = "setup.name.duplicate";
 
     private final GameSetupView view;
 
@@ -54,9 +55,11 @@ public class GameSetupController {
     private void handleStart() {
         List<String> names = view.getEnteredNames();
         view.clearError();
+        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
         if (hasBlankName(names)) {
-            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
             view.showError(bundle.getString(BLANK_NAME_KEY));
+        } else if (hasDuplicateName(names)) {
+            view.showError(bundle.getString(DUPLICATE_NAME_KEY));
         }
     }
 }

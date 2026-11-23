@@ -81,7 +81,7 @@ constructor registers on the view and running it. "English text" and
 | ID | State of the system | Expected output | Implemented? |
 |----|---------------------|-----------------|--------------|
 | START-01 | Entered names `["", "Ben"]` | In order: `getEnteredNames()`, `clearError()`, `showError(English text of setup.name.blank)`; `showPlayers` not called | :white_check_mark: |
-| START-02 | Entered names `["Ana", "Ana"]` | In order: `getEnteredNames()`, `clearError()`, `showError(English text of setup.name.duplicate)`; `showPlayers` not called | :x: |
+| START-02 | Entered names `["Ana", "Ana"]` | In order: `getEnteredNames()`, `clearError()`, `showError(English text of setup.name.duplicate)`; `showPlayers` not called | :white_check_mark: |
 | START-03 | Entered names `["", ""]` (blank and duplicate) | `showError(English text of setup.name.blank)`; blank is reported first | :x: |
 | START-04 | Entered names `["Ana", "Ana", ""]` (white-box: the duplicate appears before the blank name) | `showError(English text of setup.name.blank)`; all names are checked for blanks before duplicates | :x: |
 | START-05 | Chinese selected, then entered names `["", "Ben"]` | `showError(Chinese text of setup.name.blank)` | :x: |

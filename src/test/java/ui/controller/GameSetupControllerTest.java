@@ -228,4 +228,24 @@ class GameSetupControllerTest {
 
         EasyMock.verify(view);
     }
+
+    // START-02
+    @Test
+    void startHandlerShowsDuplicateNameErrorForRepeatedName() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("Ana", "Ana"));
+        view.clearError();
+        view.showError(ENGLISH.getString("setup.name.duplicate"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
 }
