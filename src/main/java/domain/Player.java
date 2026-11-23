@@ -6,10 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class Player {
-    private static final String EMPTY_NAME_KEY = "player.constructor.emptyName";
 
     private final String name;
-    private final ArrayList<CardType> hand;
+    private final List<CardType> hand;
     
     public Player(String name) {
         this.name = name;
@@ -18,15 +17,10 @@ public class Player {
 
 
     public String getName() {
-
-        if (name.equals("")) {
-            throw new IllegalArgumentException(EMPTY_NAME_KEY);
-        }
         return name;
     }
 
     public void addToHand(CardType card) {
-
         hand.add(card);
     }
 
@@ -35,7 +29,6 @@ public class Player {
     }
 
     public int countInHand(CardType type) {
-
         int count = Collections.frequency(hand, type);
         return count;
     }
