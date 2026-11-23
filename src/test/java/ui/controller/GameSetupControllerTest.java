@@ -183,4 +183,26 @@ class GameSetupControllerTest {
         EasyMock.verify(view);
         assertEquals("爆炸猫", bundle.getValue().getString("setup.title"));
     }
+
+    // LANG-02
+    @Test
+    void localeHandlerShowsEnglishTextWhenEnglishSelectedAgain() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        Capture<Consumer<Locale>> localeHandler = EasyMock.newCapture();
+        view.setOnLocaleChanged(EasyMock.capture(localeHandler));
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        Capture<ResourceBundle> bundle = EasyMock.newCapture();
+        view.updateText(EasyMock.capture(bundle));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        localeHandler.getValue().accept(Locale.CHINESE);
+        localeHandler.getValue().accept(Locale.ENGLISH);
+
+        EasyMock.verify(view);
+        assertEquals("Exploding Kittens", bundle.getValue().getString("setup.title"));
+    }
 }
