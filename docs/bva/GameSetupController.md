@@ -32,7 +32,7 @@ Assumptions for the input checks:
 | BLANK-04 | `[" Ana", "Ben"]` (leading space) | `false`; a name with other characters is not blank | :white_check_mark: |
 | BLANK-05 | `["", "Ben"]` (empty name first) | `true` | :white_check_mark: |
 | BLANK-06 | `[" ", "Ben"]` (single space) | `true` | :white_check_mark: |
-| BLANK-07 | `["\t ", "Ben"]` (mixed whitespace) | `true` | :x: |
+| BLANK-07 | `["\t ", "Ben"]` (mixed whitespace) | `true` | :white_check_mark: |
 | BLANK-08 | `["Ana", "Ben", "Cy", "Dee", ""]` (blank name last) | `true` | :x: |
 
 ## Method under test: `static boolean hasDuplicateName(List<String> names)`
