@@ -42,7 +42,7 @@ Assumptions for the input checks:
 | ID | Input (names) | Expected output | Implemented? |
 |----|---------------|-----------------|--------------|
 | DUP-01 | `["Ana", "Ben"]` (minimum size, all different) | `false` | :white_check_mark: |
-| DUP-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` (maximum size, all different) | `false` | :x: |
+| DUP-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` (maximum size, all different) | `false` | :white_check_mark: |
 | DUP-03 | `["A", "a"]` (differ only by case) | `false`; names are case-sensitive | :x: |
 | DUP-04 | `["Ana", " Ana"]` (differ only by leading space) | `false`; names are not trimmed | :x: |
 | DUP-05 | `["Ana", "Ana"]` (adjacent duplicate) | `true` | :x: |

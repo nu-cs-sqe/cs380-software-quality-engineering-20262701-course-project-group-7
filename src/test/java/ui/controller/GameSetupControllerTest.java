@@ -65,4 +65,12 @@ class GameSetupControllerTest {
     void hasDuplicateNameReturnsFalseForMinimumNumberOfNames() {
         assertFalse(GameSetupController.hasDuplicateName(List.of("Ana", "Ben")));
     }
+
+    // DUP-02
+    @Test
+    void hasDuplicateNameReturnsFalseForMaximumNumberOfNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Eve");
+
+        assertFalse(GameSetupController.hasDuplicateName(names));
+    }
 }
