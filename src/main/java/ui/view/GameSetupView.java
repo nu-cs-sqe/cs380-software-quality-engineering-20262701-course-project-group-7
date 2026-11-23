@@ -29,6 +29,7 @@ public class GameSetupView {
     private static final int MAX_PLAYERS = 5;
     private static final double SPACING = 10;
     private static final double PADDING = 20;
+    private static final String ERROR_STYLE = "-fx-text-fill: red;";
 
     private final Label titleLabel = new Label();
     private final Label languageLabel = new Label();
@@ -39,13 +40,16 @@ public class GameSetupView {
     private final List<Label> nameLabels = new ArrayList<>();
     private final List<TextField> nameFields = new ArrayList<>();
     private final Button startButton = new Button();
+    private final Label errorLabel = new Label();
     private final VBox root;
     private String playerNamePattern = "";
 
     public GameSetupView() {
+        errorLabel.setStyle(ERROR_STYLE);
         setShown(startButton, false);
+        setShown(errorLabel, false);
         root = new VBox(SPACING, createLanguageRow(), titleLabel, chooseCountLabel,
-                createCountRow(), nameRows, startButton);
+                createCountRow(), nameRows, startButton, errorLabel);
         root.setPadding(new Insets(PADDING));
     }
 
@@ -84,6 +88,16 @@ public class GameSetupView {
             names.add(field.getText());
         }
         return names;
+    }
+
+    public void showError(String message) {
+        errorLabel.setText(message);
+        setShown(errorLabel, true);
+    }
+
+    public void clearError() {
+        errorLabel.setText("");
+        setShown(errorLabel, false);
     }
 
     public void updateText(ResourceBundle bundle) {
