@@ -17,6 +17,9 @@ import ui.view.GameSetupView;
 
 class GameSetupControllerTest {
 
+    private static final ResourceBundle ENGLISH =
+            ResourceBundle.getBundle("message", Locale.ENGLISH);
+
     // BLANK-01
     @Test
     void hasBlankNameReturnsFalseForMinimumNumberOfNames() {
@@ -204,5 +207,25 @@ class GameSetupControllerTest {
 
         EasyMock.verify(view);
         assertEquals("Exploding Kittens", bundle.getValue().getString("setup.title"));
+    }
+
+    // START-01
+    @Test
+    void startHandlerShowsBlankNameErrorForEmptyName() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("", "Ben"));
+        view.clearError();
+        view.showError(ENGLISH.getString("setup.name.blank"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
     }
 }

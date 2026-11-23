@@ -11,6 +11,7 @@ import ui.view.GameSetupView;
 public class GameSetupController {
 
     private static final String BUNDLE_NAME = "message";
+    private static final String BLANK_NAME_KEY = "setup.name.blank";
 
     private final GameSetupView view;
 
@@ -18,7 +19,7 @@ public class GameSetupController {
         this.view = view;
         view.setOnLocaleChanged(this::handleLocaleChanged);
         view.setOnPlayerCountSelected(this::handlePlayerCountSelected);
-        view.setOnStart(() -> {});
+        view.setOnStart(this::handleStart);
         view.updateText(ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH));
     }
 
@@ -48,5 +49,14 @@ public class GameSetupController {
 
     private void handleLocaleChanged(Locale locale) {
         view.updateText(ResourceBundle.getBundle(BUNDLE_NAME, locale));
+    }
+
+    private void handleStart() {
+        List<String> names = view.getEnteredNames();
+        view.clearError();
+        if (hasBlankName(names)) {
+            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
+            view.showError(bundle.getString(BLANK_NAME_KEY));
+        }
     }
 }
