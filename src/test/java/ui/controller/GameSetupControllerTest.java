@@ -1,10 +1,16 @@
 package ui.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
+import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import ui.view.GameSetupView;
 
 class GameSetupControllerTest {
 
@@ -98,5 +104,22 @@ class GameSetupControllerTest {
         List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Ana");
 
         assertTrue(GameSetupController.hasDuplicateName(names));
+    }
+
+    // CTRL-01
+    @Test
+    void constructorRegistersHandlersThenShowsEnglishText() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        view.setOnStart(EasyMock.anyObject());
+        Capture<ResourceBundle> bundle = EasyMock.newCapture();
+        view.updateText(EasyMock.capture(bundle));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+
+        EasyMock.verify(view);
+        assertEquals("Exploding Kittens", bundle.getValue().getString("setup.title"));
     }
 }

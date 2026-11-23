@@ -60,7 +60,7 @@ constructor registers on the view and running it. "English text" and
 
 | ID | State of the system | Expected output | Implemented? |
 |----|---------------------|-----------------|--------------|
-| CTRL-01 | New controller with a mocked view | In order: `setOnLocaleChanged`, `setOnPlayerCountSelected`, `setOnStart`, then `updateText` with the English bundle (`setup.title` is "Exploding Kittens") | :x: |
+| CTRL-01 | New controller with a mocked view | In order: `setOnLocaleChanged`, `setOnPlayerCountSelected`, `setOnStart`, then `updateText` with the English bundle (`setup.title` is "Exploding Kittens") | :white_check_mark: |
 
 ### Method under test: `handlePlayerCountSelected(int count)` (via `setOnPlayerCountSelected`)
 
