@@ -45,5 +45,5 @@ Assumptions for the input checks:
 | DUP-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` (maximum size, all different) | `false` | :white_check_mark: |
 | DUP-03 | `["A", "a"]` (differ only by case) | `false`; names are case-sensitive | :white_check_mark: |
 | DUP-04 | `["Ana", " Ana"]` (differ only by leading space) | `false`; names are not trimmed | :white_check_mark: |
-| DUP-05 | `["Ana", "Ana"]` (adjacent duplicate) | `true` | :x: |
+| DUP-05 | `["Ana", "Ana"]` (adjacent duplicate) | `true` | :white_check_mark: |
 | DUP-06 | `["Ana", "Ben", "Cy", "Dee", "Ana"]` (first and last equal) | `true` | :x: |
