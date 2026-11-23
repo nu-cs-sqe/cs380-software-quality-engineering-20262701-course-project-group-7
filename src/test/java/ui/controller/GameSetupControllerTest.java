@@ -12,4 +12,12 @@ class GameSetupControllerTest {
     void hasBlankNameReturnsFalseForMinimumNumberOfNames() {
         assertFalse(GameSetupController.hasBlankName(List.of("Ana", "Ben")));
     }
+
+    // BLANK-02
+    @Test
+    void hasBlankNameReturnsFalseForMaximumNumberOfNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Eve");
+
+        assertFalse(GameSetupController.hasBlankName(names));
+    }
 }
