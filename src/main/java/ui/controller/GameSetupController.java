@@ -12,4 +12,8 @@ public class GameSetupController {
         }
         return false;
     }
+
+    public static boolean hasDuplicateName(List<String> names) {
+        return false;
+    }
 }
