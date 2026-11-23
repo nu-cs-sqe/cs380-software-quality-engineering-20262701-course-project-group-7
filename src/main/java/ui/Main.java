@@ -1,9 +1,11 @@
 package ui;
 
+import java.util.Random;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import ui.controller.GameSetupController;
+import ui.view.GameSetupView;
 
 public class Main extends Application {
 
@@ -12,7 +14,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setScene(new Scene(new StackPane(), SCREEN_WIDTH, SCREEN_HEIGHT));
+        GameSetupView view = new GameSetupView();
+        new GameSetupController(view, new Random());
+        stage.setScene(new Scene(view.getRoot(), SCREEN_WIDTH, SCREEN_HEIGHT));
         stage.show();
     }
 
