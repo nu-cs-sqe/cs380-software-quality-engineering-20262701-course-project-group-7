@@ -51,4 +51,12 @@ class GameSetupControllerTest {
     void hasBlankNameReturnsTrueForMixedWhitespaceName() {
         assertTrue(GameSetupController.hasBlankName(List.of("\t ", "Ben")));
     }
+
+    // BLANK-08
+    @Test
+    void hasBlankNameReturnsTrueForBlankLastName() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "");
+
+        assertTrue(GameSetupController.hasBlankName(names));
+    }
 }

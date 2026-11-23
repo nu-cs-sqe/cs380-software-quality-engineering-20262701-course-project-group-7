@@ -33,7 +33,7 @@ Assumptions for the input checks:
 | BLANK-05 | `["", "Ben"]` (empty name first) | `true` | :white_check_mark: |
 | BLANK-06 | `[" ", "Ben"]` (single space) | `true` | :white_check_mark: |
 | BLANK-07 | `["\t ", "Ben"]` (mixed whitespace) | `true` | :white_check_mark: |
-| BLANK-08 | `["Ana", "Ben", "Cy", "Dee", ""]` (blank name last) | `true` | :x: |
+| BLANK-08 | `["Ana", "Ben", "Cy", "Dee", ""]` (blank name last) | `true` | :white_check_mark: |
 
 ## Method under test: `static boolean hasDuplicateName(List<String> names)`
 
