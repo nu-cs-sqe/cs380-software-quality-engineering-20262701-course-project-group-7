@@ -29,7 +29,7 @@ Assumptions for the input checks:
 | BLANK-01 | `["Ana", "Ben"]` (minimum size) | `false` | :white_check_mark: |
 | BLANK-02 | `["Ana", "Ben", "Cy", "Dee", "Eve"]` (maximum size) | `false` | :white_check_mark: |
 | BLANK-03 | `["A", "B"]` (one-character names) | `false` | :white_check_mark: |
-| BLANK-04 | `[" Ana", "Ben"]` (leading space) | `false`; a name with other characters is not blank | :x: |
+| BLANK-04 | `[" Ana", "Ben"]` (leading space) | `false`; a name with other characters is not blank | :white_check_mark: |
 | BLANK-05 | `["", "Ben"]` (empty name first) | `true` | :x: |
 | BLANK-06 | `[" ", "Ben"]` (single space) | `true` | :x: |
 | BLANK-07 | `["\t ", "Ben"]` (mixed whitespace) | `true` | :x: |
