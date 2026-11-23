@@ -6,7 +6,7 @@ public class GameSetupController {
 
     public static boolean hasBlankName(List<String> names) {
         for (String name : names) {
-            if (name.isEmpty()) {
+            if (name.isBlank()) {
                 return true;
             }
         }
