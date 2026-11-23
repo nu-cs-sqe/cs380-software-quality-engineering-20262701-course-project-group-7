@@ -20,4 +20,10 @@ class GameSetupControllerTest {
 
         assertFalse(GameSetupController.hasBlankName(names));
     }
+
+    // BLANK-03
+    @Test
+    void hasBlankNameReturnsFalseForOneCharacterNames() {
+        assertFalse(GameSetupController.hasBlankName(List.of("A", "B")));
+    }
 }
