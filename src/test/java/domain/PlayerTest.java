@@ -9,6 +9,17 @@ import org.junit.jupiter.api.Test;
 
 
 public class PlayerTest {
+    @Test
+    void getPlayerName_returnsAlice() {
+        Player player = new Player("Alice");
+        assertSame("Alice", player.getName());
+    }
+
+    @Test
+    void getPlayerName_returnsA() {
+        Player player = new Player("A");
+        assertSame("A", player.getName());
+    }
 
     @Test
     void addDefuseOnEmptyHand_sizeOne() {
