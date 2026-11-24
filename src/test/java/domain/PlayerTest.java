@@ -58,6 +58,16 @@ public class PlayerTest {
     }
 
     @Test
+    void countDefuseAttackOnDiffuseAttackHand_returnOne() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+        player.addToHand(CardType.ATTACK);
+
+        assertEquals(1, player.countInHand(CardType.DEFUSE));
+        assertEquals(1, player.countInHand(CardType.ATTACK));
+    }
+
+    @Test
     void countDuplicateDefuse_returnTwo() {
         Player player = new Player("Alice");
         player.addToHand(CardType.DEFUSE);
