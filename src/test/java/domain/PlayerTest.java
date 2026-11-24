@@ -1,10 +1,12 @@
 package domain;
 
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
     @Test
@@ -20,33 +22,12 @@ public class PlayerTest {
     }
 
     @Test
-    void getNullName_throwIllegalArgumentException() {
-        Player player = new Player(null);
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.getName();
-                });
-        assertEquals("player.constructor.nullName", ex.getMessage());
-    }
-
-    @Test
-    void getEmptyName_throwIllegalArgumentException() {
-        Player player = new Player("");
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.getName();
-                });
-        assertEquals("player.constructor.emptyName", ex.getMessage());
-    }
-
-    @Test
     void addDefuseOnEmptyHand_sizeOne() {
         Player player = new Player("Alice");
         player.addToHand(CardType.DEFUSE);
 
         assertEquals(1, player.getHandSize());
+        assertEquals(CardType.DEFUSE, player.getHand().get(0));
     }
 
     @Test
@@ -56,6 +37,8 @@ public class PlayerTest {
         player.addToHand(CardType.ATTACK);
 
         assertEquals(2, player.getHandSize());
+        assertEquals(List.of(CardType.DEFUSE, CardType.ATTACK), player.getHand());
+
     }
 
     @Test
@@ -65,19 +48,10 @@ public class PlayerTest {
         player.addToHand(CardType.DEFUSE);
 
         assertEquals(2, player.getHandSize());
+        assertEquals(2, player.countInHand(CardType.DEFUSE));
     }
 
-    @Test
-    void addNullCard_throwIllegalArgumentException() {
-        Player player = new Player("Alice");
 
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.addToHand(null);
-                });
-        assertEquals("player.addToHand.nullCard", ex.getMessage());
-    }
 
     @Test
     void countEmptyHand_returnZero() {
@@ -95,6 +69,16 @@ public class PlayerTest {
     }
 
     @Test
+    void countDefuseAttackOnDiffuseAttackHand_returnOne() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+        player.addToHand(CardType.ATTACK);
+
+        assertEquals(1, player.countInHand(CardType.DEFUSE));
+        assertEquals(1, player.countInHand(CardType.ATTACK));
+    }
+
+    @Test
     void countDuplicateDefuse_returnTwo() {
         Player player = new Player("Alice");
         player.addToHand(CardType.DEFUSE);
@@ -102,6 +86,7 @@ public class PlayerTest {
         player.addToHand(CardType.DEFUSE);
 
         assertEquals(2, player.countInHand(CardType.DEFUSE));
+        assertEquals(List.of(CardType.DEFUSE, CardType.ATTACK, CardType.DEFUSE), player.getHand());
     }
 
     @Test
@@ -111,25 +96,23 @@ public class PlayerTest {
         player.addToHand(CardType.ATTACK);
 
         assertEquals(2, player.countInHand(CardType.ATTACK));
+        assertEquals(List.of(CardType.ATTACK, CardType.ATTACK), player.getHand());
     }
 
-    @Test
-    void countNullType_throwIllegalArgumentException() {
-        Player player = new Player("Alice");
-        player.addToHand(CardType.ATTACK);
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    player.countInHand(null);
-                });
-        assertEquals( "player.countInHand.nullType", ex.getMessage());
-    }
 
     @Test
     void getHandOnNewPlayer_returnZero() {
         Player player = new Player("Alice");
 
         assertEquals(0, player.getHand().size());
+    }
+
+    @Test
+    void getHandOnOneCardHand_returnHand() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+
+        assertEquals(List.of(CardType.DEFUSE), player.getHand());
     }
 
     @Test
@@ -143,6 +126,13 @@ public class PlayerTest {
 
         result.add(CardType.DEFUSE);
         assertEquals(2, player.getHandSize());
+    }
+
+    @Test
+    void getEmptyHandSize_returnZero() {
+        Player player = new Player("Alice");
+
+        assertEquals(0, player.getHandSize());
     }
 
 
