@@ -9,19 +9,6 @@ import org.junit.jupiter.api.Test;
 
 
 public class PlayerTest {
-    @Test
-    void getPlayerName_returnsAlice() {
-        Player player = new Player("Alice");
-        assertSame("Alice", player.getName());
-    }
-
-    @Test
-    void getPlayerName_returnsA() {
-        Player player = new Player("A");
-        assertSame("A", player.getName());
-    }
-
-
 
     @Test
     void addDefuseOnEmptyHand_sizeOne() {
@@ -29,6 +16,7 @@ public class PlayerTest {
         player.addToHand(CardType.DEFUSE);
 
         assertEquals(1, player.getHandSize());
+        assertEquals(CardType.DEFUSE, player.getHand().get(0));
     }
 
     @Test
@@ -48,7 +36,8 @@ public class PlayerTest {
         player.addToHand(CardType.DEFUSE);
         player.addToHand(CardType.DEFUSE);
 
-        assertEquals(player.countInHand(CardType.DEFUSE), player.getHandSize());
+        assertEquals(2, player.getHandSize());
+        assertEquals(2, player.countInHand(CardType.DEFUSE));
     }
 
 

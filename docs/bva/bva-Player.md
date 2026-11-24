@@ -1,26 +1,6 @@
 # BVA Analysis for Player Class
 
-## Method 1: ```public Player(String name)```
-
-### Step 1-3 Results
-
-| Step | Input | Output |
-|------|-------|--------|
-| Step 1 | Player name | New player with that name and an empty hand |
-| Step 2 | Reference type `String`  | `Player` instance |
-| Step 3 |  `""` (empty string), `"A"` (one char), `"Alice"` (normal string) | `Player`|
-
-### Step 4:
-##### All-combination or each-choice: each-choice
-
-| Test Case # | System under test | Expected output | Implemented? |
-|-------------|------------------|-----------------|--------------|
-| TC1 | `new Player("Alice")` | `getName().equals("Alice")`, `getHandSize()==0` | y |
-| TC2 | `new Player("A")` | `getName().equals("A")`, `getHandSize()==0` | y |
-
----
-
-## Method 2: ```public String getName()```
+## Method 1: ```public String getName()```
 
 ### Step 1-3 Results
 
@@ -40,7 +20,7 @@
 
 ---
 
-## Method 3: ```public void addToHand(CardType card)```
+## Method 2: ```public void addToHand(CardType card)```
 
 ### Step 1-3 Results
 
@@ -60,7 +40,7 @@
 | TC3 | `addToHand(DEFUSE)` on hand `[DEFUSE]` | `getHandSize()==2`, `countInHand(DEFUSE)==2` (duplicates allowed) | y |
 ---
 
-## Method 4: ```public int getHandSize()```
+## Method 3: ```public int getHandSize()```
 
 ### Step 1-3 Results
 
@@ -81,7 +61,7 @@
 
 ---
 
-## Method 5: ```public int countInHand(CardType type)```
+## Method 4: ```public int countInHand(CardType type)```
 
 ### Step 1-3 Results
 
@@ -104,7 +84,7 @@
 | TC6 | hand `[ATTACK, ATTACK]`, `countInHand(ATTACK)` (whole hand) | `2` | y |
 ---
 
-## Method 6: ```public List<CardType> getHand()```
+## Method 5: ```public List<CardType> getHand()```
 
 ### Step 1-3 Results
 

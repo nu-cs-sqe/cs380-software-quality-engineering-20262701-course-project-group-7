@@ -8,7 +8,7 @@ import java.util.List;
 public class Player {
 
     private final String name;
-    private List<CardType> hand = List.of();
+    private final List<CardType> hand;
     
     public Player(String name) {
         this.name = name;
