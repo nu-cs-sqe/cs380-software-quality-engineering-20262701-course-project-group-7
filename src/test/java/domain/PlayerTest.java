@@ -38,6 +38,8 @@ public class PlayerTest {
         player.addToHand(CardType.ATTACK);
 
         assertEquals(2, player.getHandSize());
+        assertEquals(List.of(CardType.DEFUSE, CardType.ATTACK), player.getHand());
+
     }
 
     @Test
@@ -46,7 +48,7 @@ public class PlayerTest {
         player.addToHand(CardType.DEFUSE);
         player.addToHand(CardType.DEFUSE);
 
-        assertEquals(2, player.getHandSize());
+        assertEquals(player.countInHand(CardType.DEFUSE), player.getHandSize());
     }
 
 
@@ -74,6 +76,7 @@ public class PlayerTest {
         player.addToHand(CardType.DEFUSE);
 
         assertEquals(2, player.countInHand(CardType.DEFUSE));
+        assertEquals(List.of(CardType.DEFUSE, CardType.ATTACK, CardType.DEFUSE), player.getHand());
     }
 
     @Test
@@ -83,6 +86,7 @@ public class PlayerTest {
         player.addToHand(CardType.ATTACK);
 
         assertEquals(2, player.countInHand(CardType.ATTACK));
+        assertEquals(List.of(CardType.ATTACK, CardType.ATTACK), player.getHand());
     }
 
 
