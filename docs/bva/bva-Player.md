@@ -101,7 +101,7 @@
 |-------------|------------------|-----------------|--------------|
 | TC1 | `getHand()` on new player | empty list (`size()==0`) | y |
 | TC2 | `getHand()` after `addToHand(DEFUSE)` | list `[DEFUSE]` | y |
-| TC3 | `getHand()` after `addToHand(ATTACK)`, `addToHand(DEFUSE)` | list `[DEFUSE, ATTACK]` (insertion order) | y |
+| TC3 | `getHand()` after `addToHand(ATTACK)`, `addToHand(DEFUSE)` | list `[ATTACK, DEFUSE]` (insertion order) | y |
 | TC4 | call `add(ATTACK)` on the list returned by `getHand()`, then call `getHandSize()` | player's hand size is unchanged (the list is a copy) | y |
 
 ---
