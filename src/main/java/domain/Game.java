@@ -3,9 +3,6 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Coordinates game setup using a deck supplied by the caller.
- */
 public final class Game {
 
     private static final int INITIAL_HAND_SIZE = 7;
@@ -21,21 +18,22 @@ public final class Game {
 
     public Game(Deck deck, List<String> playerNames) {
         this.deck = deck;
-        players = createPlayers(playerNames);
+        this.players = createPlayers(playerNames);
     }
 
-    /**
-     * Insufficient decks are rejected before deck or hand mutation.
-     * Unexpected dealing failures are propagated without rolling back the deck.
-     */
     public void setup() {
         if (isSetUp) {
             throw new IllegalStateException(ALREADY_SET_UP_MESSAGE);
         }
-        validateDeckForSetup(players.size());
-        prepareDeckAndGiveDefuses();
+        validateDeckForSetup();
+        int removedDefuses = removeSpecialCards();
+        giveGuaranteedDefuses();
+        returnExtraDefuses(removedDefuses);
+        deck.shuffle();
         dealInitialCards();
-        finishSetup();
+        returnExplodingKittens();
+        deck.shuffle();
+        isSetUp = true;
     }
 
     public Player getCurrentPlayer() {
@@ -43,9 +41,6 @@ public final class Game {
         return players.get(0);
     }
 
-    /**
-     * Protects the player order, but does not copy the mutable Player objects.
-     */
     public List<Player> getPlayers() {
         requireSetUp();
         return List.copyOf(players);
@@ -63,27 +58,32 @@ public final class Game {
         return newPlayers;
     }
 
-    private void validateDeckForSetup(int numberOfPlayers) {
+    private void validateDeckForSetup() {
         int defuses = deck.count(CardType.DEFUSE);
         int kittens = deck.count(CardType.EXPLODING_KITTEN);
         int ordinaryCards = deck.size() - defuses - kittens;
-        int extraDefuses = Math.min(MAX_EXTRA_DEFUSES, defuses - numberOfPlayers);
+        int extraDefuses = Math.min(MAX_EXTRA_DEFUSES, defuses - players.size());
         int drawableCards = ordinaryCards + extraDefuses;
-        if (defuses < numberOfPlayers || kittens < numberOfPlayers - 1
-                || drawableCards < INITIAL_HAND_SIZE * numberOfPlayers) {
+        if (defuses < players.size() || kittens < players.size() - 1
+                || drawableCards < INITIAL_HAND_SIZE * players.size()) {
             throw new IllegalStateException(INSUFFICIENT_DECK_MESSAGE);
         }
     }
 
-    private void prepareDeckAndGiveDefuses() {
+    private int removeSpecialCards() {
         deck.removeAll(CardType.EXPLODING_KITTEN);
-        int removedDefuses = deck.removeAll(CardType.DEFUSE);
+        return deck.removeAll(CardType.DEFUSE);
+    }
+
+    private void giveGuaranteedDefuses() {
         for (Player player : players) {
             player.addToHand(CardType.DEFUSE);
         }
+    }
+
+    private void returnExtraDefuses(int removedDefuses) {
         int extraDefuses = Math.min(MAX_EXTRA_DEFUSES, removedDefuses - players.size());
         deck.add(CardType.DEFUSE, extraDefuses);
-        deck.shuffle();
     }
 
     private void dealInitialCards() {
@@ -94,10 +94,8 @@ public final class Game {
         }
     }
 
-    private void finishSetup() {
+    private void returnExplodingKittens() {
         deck.add(CardType.EXPLODING_KITTEN, players.size() - 1);
-        deck.shuffle();
-        isSetUp = true;
     }
 
     private void requireSetUp() {
