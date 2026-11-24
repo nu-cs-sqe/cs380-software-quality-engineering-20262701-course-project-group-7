@@ -117,5 +117,12 @@ public class PlayerTest {
         assertEquals(2, player.getHandSize());
     }
 
+    @Test
+    void getEmptyHandSize_returnZero() {
+        Player player = new Player("Alice");
+
+        assertEquals(0, player.getHandSize());
+    }
+
 
 }
