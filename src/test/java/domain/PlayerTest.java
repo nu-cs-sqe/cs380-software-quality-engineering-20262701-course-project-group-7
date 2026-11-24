@@ -97,6 +97,14 @@ public class PlayerTest {
     }
 
     @Test
+    void getHandOnOneCardHand_returnHand() {
+        Player player = new Player("Alice");
+        player.addToHand(CardType.DEFUSE);
+
+        assertEquals(List.of(CardType.DEFUSE), player.getHand());
+    }
+
+    @Test
     void getHandOnTwoCardHand_returnHand() {
         Player player = new Player("Alice");
 
