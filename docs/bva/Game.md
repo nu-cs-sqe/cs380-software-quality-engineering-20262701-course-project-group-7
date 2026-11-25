@@ -1,91 +1,116 @@
-# Game BVA Analysis
+# BVA Analysis for Game Class
 
-## Contract
+Notes:
+- The specification is `docs/design/game-setup-phase.md`. The UI validates the
+  player count (2 to 5) and non-blank, case-sensitive unique names before
+  calling `new Game(deck, playerNames)`, so the domain does not BVA or test
+  invalid user input or nulls (team standards).
+- `Game` keeps the given names and their order; `setup()` takes no arguments.
+- Internal exception messages are plain English diagnostics, not locale keys.
+- Drawable cards for dealing = ordinary cards + returned Defuses, where the
+  returned Defuses = `min(2, defuses - players)`. Each player draws 7, so a
+  2-player game needs 14 drawable cards.
+- Preflight rejects a deck when `defuses < players`, `kittens < players - 1`,
+  or `drawable < 7 * players`. A rejected `setup()` leaves the deck, the hands
+  and `isSetUp()` unchanged, so the caller can replenish the deck and retry.
 
-The specification is `docs/design/game-setup-phase.md`, refined by the author's
-clarification that internal exception messages do not require i18n.
-The UI validates non-null inputs, 2 to 5 players, and non-blank,
-case-sensitive unique names before calling `new Game(deck, playerNames)`.
-Game preserves names and their order and exposes `setup()` with no arguments.
-Invalid user inputs and null checks are not domain test cases under the team
-standards. Earlier validation cases are retired, not silently claimed as tested.
+## Method 1: ```public void setup()```
 
-`getPlayers()` protects the list order, not the mutable Player objects.
-Both player queries throw `IllegalStateException("Game has not been set up.")`
-before successful setup. Repeated setup throws `"Game has already been set up."`.
-Insufficient deck contents throw `"Deck does not contain enough cards for setup."`
-before mutation and permit retry. These are internal English diagnostics, not
-resource keys or user-facing localized messages.
-Unexpected Deck errors propagate without rollback; use a fresh game afterward.
+### Step 1-3 Results
 
-## Setup Rules
+| Step | Input | Output |
+|------|-------|--------|
+| Step 1 | Deck contents; number of players and their names | Deck and hands after the official setup / `IllegalStateException` |
+| Step 2 | Cases (not set up, already set up); Counts (players, cards per type); Boundaries (drawable cards below, at, above `7 * players`); Collection (deck contents); Exception | Mutated deck and hands / `IllegalStateException` |
+| Step 3 | players: 2, 5 (boundaries) and 3, 4 (interior); defuses: 0, 1, 2, 3, 4, 6; kittens: 0, 1, 4; ordinary: 11, 12, 13, 14, 15 | 8-card hands and the official final deck, or `IllegalStateException` |
 
-Remove all Exploding Kittens and Defuses, give each player one Defuse, return
-up to two remaining Defuses (only one remains in a standard five-player game),
-shuffle, then deal seven cards to each player. Those seven cards may contain
-additional Defuses. Return exactly player count minus one Exploding Kittens,
-discard the extra special cards, shuffle again, and select the first player.
+### Step 4:
+##### All-combination or each-choice: each-choice
 
-For standard decks, the final draw-pile sizes for 2, 3, 4, 5 players are
-35, 29, 23, 16 respectively. The total Defuse counts across hands and deck
-are 4, 5, 6, 6 respectively.
+| Test Case # | System under test | Expected output | Implemented? |
+|-------------|-------------------|-----------------|--------------|
+| TC1 | standard deck, 2 players | each hand 8 cards starting with a Defuse, no Kittens in hands, input order kept, first player current; final deck 35 cards with 1 Kitten; 4 Defuses across hands and deck | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC2 | standard deck, 3 players | same shape as TC1; final deck 29 cards; 5 Defuses across hands and deck | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC3 | standard deck, 4 players | same shape as TC1; final deck 23 cards; 6 Defuses across hands and deck | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC4 | standard deck, 5 players | same shape as TC1; final deck 16 cards; 6 Defuses across hands and deck | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC5 | names `" A "` and `"a"` | names stored exactly, including whitespace and case | y (setupPreservesValidatedNamesExactly) |
+| TC6 | caller changes and then clears the names list after construction | stored names and order unchanged | y (callerCannotChangeStoredNamesBeforeSetup) |
+| TC7 | already set up, `setup()` called again | `IllegalStateException("Game has already been set up.")`; players, hands, deck and current player unchanged; still set up | y (repeatedSetupPreservesExistingState) |
+| TC8 | empty deck (0 of every type) | insufficient-deck diagnostic; deck unchanged; not set up | y (setupRejectsEmptyDeckBeforeMutation) |
+| TC9 | 2 players, 14 ordinary, 0 Defuses, 1 Kitten | insufficient-deck diagnostic; deck unchanged | y (setupRejectsInsufficientDefuses) |
+| TC10 | 2 players, 14 ordinary, 1 Defuse, 1 Kitten | insufficient-deck diagnostic; deck unchanged | y (setupRejectsInsufficientDefuses) |
+| TC11 | 2 players, 14 ordinary, 2 Defuses, 0 Kittens | insufficient-deck diagnostic; deck unchanged | y (setupRejectsInsufficientKittens) |
+| TC12 | 2 players, 13 ordinary, 2 Defuses, 1 Kitten (13 drawable, one below the boundary) | insufficient-deck diagnostic; deck unchanged | y (setupRejectsOneFewerDrawableCardThanRequired) |
+| TC13 | 2 players, 14 ordinary, 2 Defuses, 1 Kitten (exactly 14 drawable) | setup succeeds; each hand 8 cards with 1 Defuse; final deck 1 card with 1 Kitten | y (setupAcceptsDrawableCardBoundary) |
+| TC14 | 2 players, 15 ordinary, 2 Defuses, 1 Kitten (15 drawable, just above) | setup succeeds; final deck 2 cards | y (setupAcceptsDrawableCardBoundary) |
+| TC15 | 2 players, 13 ordinary, 3 Defuses, 1 Kitten (1 returned Defuse makes 14 drawable) | returned Defuse counts; setup succeeds; final deck 1 card; 3 Defuses across hands and deck | y (returnedDefusesCountTowardDrawableBoundary) |
+| TC16 | 2 players, 12 ordinary, 4 Defuses, 1 Kitten (2 returned Defuses make 14 drawable) | both returned Defuses count; setup succeeds; final deck 1 card; 4 Defuses across hands and deck | y (returnedDefusesCountTowardDrawableBoundary) |
+| TC17 | 2 players, 11 ordinary, 4 Defuses, 1 Kitten (13 drawable even with returns) | insufficient-deck diagnostic; deck unchanged | y (setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses) |
+| TC18 | 13 ordinary rejected, then 1 ordinary added and `setup()` retried | first call throws and does not mutate the deck; the retry succeeds and is set up | y (setupCanRetryAfterDeckIsReplenished) |
+| TC19 | strict mock of a standard deck; 14 draws, the first one is a Defuse | official call order: remove Kittens, remove Defuses, give each player a Defuse, return extra Defuses, shuffle, 14 draws, return `players - 1` Kittens, shuffle; the dealt Defuse stays in hand (8 cards) | y (setupUsesOfficialCallOrderAndMayDealAdditionalDefuse) |
+| TC20 | `Deck.draw()` throws during dealing | the same exception propagates; not set up; both queries reject; no rollback promised | y (setupPropagatesUnexpectedDrawFailure) |
+| TC21 | `count(DEFUSE)` reports 6 but `removeAll(DEFUSE)` returns 3 | the returned count uses the actual removal result (1 extra), not the preflight count | y (extraDefusesUseActualRemovalCount) |
 
-## Method Under Test: `setup()`
+## Method 2: ```public Player getCurrentPlayer()```
 
-Player-count boundaries are 2 and 5; 3 and 4 are interior cases. Deck
-availability is tested below, at and above the required drawable-card boundary.
-Invalid UI inputs are outside the domain contract.
+### Step 1-3 Results
 
-| ID | Method(s) under test | System state / input | Expected output | Implemented? |
-|----|----------------------|----------------------|-----------------|--------------|
-| GAME-02 | `setup`, `isSetUp`, player queries | Standard deck; 2, 3, 4, 5 validated names. | Eight cards each, guaranteed first Defuse, no hand Kittens, input order, first player current, correct final counts. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` |
-| GAME-03 | `setup`, `getPlayers` | Valid names `" A "` and `"a"`. | Exact spelling and whitespace preserved. | Yes: `setupPreservesValidatedNamesExactly` |
-| GAME-04 | `setup`, player queries | Caller changes and clears names after construction, before setup. | Stored player names and order unchanged. | Yes: `callerCannotChangeStoredNamesBeforeSetup` |
-| GAME-05 | `setup`, player queries | Already set up; call again. | Already-set-up English diagnostic; deck, both hands, players and current player unchanged. | Yes: `repeatedSetupPreservesExistingState` |
-| GAME-08 | `setup`, `isSetUp` | Empty deck, or 0/1 Defuses for 2 players. | Insufficient-deck English diagnostic; no mutation. | Yes: `setupRejectsEmptyDeckBeforeMutation`, `setupRejectsInsufficientDefuses` |
-| GAME-09 | `setup`, `isSetUp` | 2 Defuses, 14 ordinary cards, no Kitten. | Insufficient-deck English diagnostic; no mutation. | Yes: `setupRejectsInsufficientKittens` |
-| GAME-10 | `setup`, `isSetUp` | 2 Defuses, 1 Kitten, 13 ordinary cards. | Insufficient-deck English diagnostic; no mutation. | Yes: `setupRejectsOneFewerDrawableCardThanRequired` |
-| GAME-11 | `setup`, `getPlayers` | 2 players; 2 Defuses, 1 Kitten, 14/15 ordinary cards. | Setup succeeds at and above boundary; eight cards each and one guaranteed Defuse. | Yes: `setupAcceptsDrawableCardBoundary` |
-| GAME-12 | `setup`, `getPlayers` | 2 players; 3/4 Defuses and 13/12 ordinary cards. | Returned 1/2 Defuses count toward the 14 drawable cards; exact total preserved. | Yes: `returnedDefusesCountTowardDrawableBoundary` |
-| GAME-13 | `setup` | 4 Defuses, 1 Kitten, 11 ordinary cards. | One fewer drawable card even after return; English diagnostic and no mutation. | Yes: `setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses` |
-| GAME-14 | `setup`, `isSetUp` | Preflight rejects 13 ordinary cards; add one and retry. | English diagnostic and unchanged initial deck; retry succeeds. | Yes: `setupCanRetryAfterDeckIsReplenished` |
-| GAME-15 | `setup`, `getPlayers` | Strict mock tracks removal, return, two shuffles and dealing; first draw Defuse. | Official call order, 14 draws, one Kitten returned, possible second hand Defuse. | Yes: `setupUsesOfficialCallOrderAndMayDealAdditionalDefuse` |
-| GAME-16 | `setup`, `isSetUp`, player queries | Preflight passes; draw throws. | Same exception propagated; false and not-set-up English diagnostics; no rollback promised. | Yes: `setupPropagatesUnexpectedDrawFailure` |
-| GAME-17 | `setup` | Strict mock returns 6 in count and 3 from removeAll. | Return count uses actual removal result (one extra), not preflight count. | Yes: `extraDefusesUseActualRemovalCount` |
+| Step | Input | Output |
+|------|-------|--------|
+| Step 1 | none (instance query) | The current player / `IllegalStateException` |
+| Step 2 | Cases (set up, not set up) | `Player` / `IllegalStateException` |
+| Step 3 | not set up; set up for 2, 3, 4, 5 players | the first player / `IllegalStateException` |
 
-## Method Under Test: `getCurrentPlayer()`
+### Step 4:
+##### All-combination or each-choice: each-choice
 
-| ID | System state | Expected output | Implemented? |
-|----|--------------|-----------------|--------------|
-| GAME-06 | Newly constructed game, before setup. | `IllegalStateException("Game has not been set up.")`. | Yes: `queriesRejectAccessBeforeSetup` |
-| GAME-18 | Successful setup with 2, 3, 4 or 5 players. | Same Player instance as the first entry of `getPlayers()`. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` (GAME-02) |
-| GAME-19 | Set up; repeat queries and attempt player-list mutation. | Current Player identity unchanged; queries do not advance the turn. | Yes: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
-| GAME-20 | Dealing threw an unexpected Deck exception. | Not-set-up diagnostic; partial setup is not exposed. | Yes: `setupPropagatesUnexpectedDrawFailure` (GAME-16) |
+| Test Case # | System under test | Expected output | Implemented? |
+|-------------|-------------------|-----------------|--------------|
+| TC1 | game created, not set up yet | `IllegalStateException("Game has not been set up.")` | y (queriesRejectAccessBeforeSetup) |
+| TC2 | set up with 2, 3, 4 or 5 players | the same instance as `getPlayers().get(0)` | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC3 | set up; query repeated several times | same instance each time; the turn does not advance | y (playerQueriesDoNotAdvanceTurnOrExposeMutableList) |
+| TC4 | dealing failed during setup | `IllegalStateException("Game has not been set up.")` | y (setupPropagatesUnexpectedDrawFailure) |
 
-## Method Under Test: `getPlayers()`
+## Method 3: ```public List<Player> getPlayers()```
 
-| ID | System state | Expected output | Implemented? |
-|----|--------------|-----------------|--------------|
-| GAME-07 | Set up; caller attempts to clear returned list. | `UnsupportedOperationException`; stored player order and count unchanged. | Yes: `playerQueriesDoNotAdvanceTurnOrExposeMutableList` |
-| GAME-21 | Newly constructed game, before setup. | `IllegalStateException("Game has not been set up.")`. | Yes: `queriesRejectAccessBeforeSetup` (GAME-06) |
-| GAME-22 | Successful setup with 2, 3, 4 or 5 players. | All players in input order with eight-card hands, guaranteed first Defuse and no Kittens. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` (GAME-02) |
-| GAME-23 | Names contain validated whitespace/case distinctions. | Names preserved exactly. | Yes: `setupPreservesValidatedNamesExactly` (GAME-03) |
-| GAME-24 | Caller changed and cleared names after construction. | Original player names and order preserved. | Yes: `callerCannotChangeStoredNamesBeforeSetup` (GAME-04) |
-| GAME-25 | Dealing threw an unexpected Deck exception. | Not-set-up diagnostic; partial setup is not exposed. | Yes: `setupPropagatesUnexpectedDrawFailure` (GAME-16) |
+### Step 1-3 Results
 
-## Method Under Test: `isSetUp()`
+| Step | Input | Output |
+|------|-------|--------|
+| Step 1 | none (instance query) | The players in turn order / `IllegalStateException` |
+| Step 2 | Cases (set up, not set up); Collection (order, size, mutability of the returned list) | `List<Player>` / `IllegalStateException` / `UnsupportedOperationException` |
+| Step 3 | not set up; set up for 2, 3, 4, 5 players; clearing the returned list | players in input order / `IllegalStateException` / `UnsupportedOperationException` |
 
-| ID | System state | Expected output | Implemented? |
-|----|--------------|-----------------|--------------|
-| GAME-01 | Newly constructed game; strict mock expects no Deck calls. | False on repeated queries; constructor and query do not access Deck. | Yes: `isSetUpRemainsFalseWithoutInspectingDeck` |
-| GAME-26 | Setup completed for 2, 3, 4 or 5 players. | True. | Yes: `setupFollowsOfficialRulesForEachPlayerCount` (GAME-02) |
-| GAME-27 | Insufficient deck rejected before mutation. | False. | Yes: rejection tests in GAME-08 through GAME-10 and GAME-13 |
-| GAME-28 | Insufficient deck replenished; retry completed. | True. | Yes: `setupCanRetryAfterDeckIsReplenished` (GAME-14) |
-| GAME-29 | Repeated setup rejected after successful setup. | Remains true. | Yes: `repeatedSetupPreservesExistingState` (GAME-05) |
-| GAME-30 | Unexpected Deck draw failure during setup. | False. | Yes: `setupPropagatesUnexpectedDrawFailure` (GAME-16) |
+### Step 4:
+##### All-combination or each-choice: each-choice
 
-The constructor initializes players without validating UI inputs. Its name
-preservation and collection-ownership properties are covered through the
-queries above. Additional IDs make existing cross-method assertions explicit;
-they do not represent newly introduced tests. TDD history limitations are
-recorded in README's Exceptions section, not as execution journals here.
+| Test Case # | System under test | Expected output | Implemented? |
+|-------------|-------------------|-----------------|--------------|
+| TC1 | game created, not set up yet | `IllegalStateException("Game has not been set up.")` | y (queriesRejectAccessBeforeSetup) |
+| TC2 | set up with 2, 3, 4 or 5 players | all players in input order, 8 cards each starting with a Defuse, no Kittens | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC3 | set up; caller calls `clear()` on the returned list | `UnsupportedOperationException`; stored players and order unchanged | y (playerQueriesDoNotAdvanceTurnOrExposeMutableList) |
+| TC4 | names `" A "` and `"a"` | the entered names are returned exactly, in order | y (setupPreservesValidatedNamesExactly) |
+| TC5 | caller changed and cleared the names list after construction | the stored names and order are unchanged | y (callerCannotChangeStoredNamesBeforeSetup) |
+| TC6 | dealing failed during setup | `IllegalStateException("Game has not been set up.")` | y (setupPropagatesUnexpectedDrawFailure) |
+
+## Method 4: ```public boolean isSetUp()```
+
+### Step 1-3 Results
+
+| Step | Input | Output |
+|------|-------|--------|
+| Step 1 | none (instance query) | Whether setup has completed |
+| Step 2 | n/a | `boolean` |
+| Step 3 | new game; after a successful setup; after a rejected setup; after a failed setup | `false`, `true` |
+
+### Step 4:
+##### All-combination or each-choice: each-choice
+
+| Test Case # | System under test | Expected output | Implemented? |
+|-------------|-------------------|-----------------|--------------|
+| TC1 | new game, strict mock deck | `false` on two calls; construction and the query do not call the deck | y (isSetUpRemainsFalseWithoutInspectingDeck) |
+| TC2 | set up with 2, 3, 4 or 5 players | `true` | y (setupFollowsOfficialRulesForEachPlayerCount) |
+| TC3 | preflight rejected the deck (empty, or insufficient Defuses, Kittens or drawable cards) | `false` | y (setupRejectsEmptyDeckBeforeMutation, setupRejectsInsufficientDefuses, setupRejectsInsufficientKittens, setupRejectsOneFewerDrawableCardThanRequired, setupRejectsInsufficientDrawableCardsIncludingReturnedDefuses) |
+| TC4 | rejected deck replenished, `setup()` retried | `true` | y (setupCanRetryAfterDeckIsReplenished) |
+| TC5 | `setup()` called again after a successful setup | stays `true` | y (repeatedSetupPreservesExistingState) |
+| TC6 | `Deck.draw()` threw during setup | `false` | y (setupPropagatesUnexpectedDrawFailure) |
