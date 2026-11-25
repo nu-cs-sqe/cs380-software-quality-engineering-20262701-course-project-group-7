@@ -6,6 +6,10 @@
 The instructor will perform code review with respect to software design, error handling, format and style on the main branch every week starting Week 6 using the letter grade A standards.
 The following chapters of the textbook are considered: Chapter 1, 2, 3, 4, 5, 6, 7, 9, and 10. The corresponding lectures are considered, too.
 
+## Week 7 Code Review
+There is no new code in main since my last review. Please let me know if this is not correct.
+
+Also, my comment regarding the README from last week has not been addressed yet.
 
 ## Week 6 Code Review
 I have read every line of production code currently in the main branch and I don't find any violations. I will do code review again next week when there is even more code in main.
