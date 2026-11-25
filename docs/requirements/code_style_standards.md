@@ -56,11 +56,12 @@ For every newly-introduced public method in a PR, the PR's commit history must
 show, **in topological order**:
 
 1. A commit that adds the method's BVA (in `docs/bva/<ClassName>.md`).
-2. A commit that adds the failing test in `src/test/java/`.
-3. A commit that adds the implementation in `src/main/java/`.
+2. Then for each test:
+   - Add the failing test in `src/test/java/`. 
+   - Add the implementation in `src/main/java/`.
+   - Commit both at once
 
-It is fine for one commit doing two of these steps at once does not violate
-ordering. When white-box BVA introduces new cases, they must be added to the BVA file and committed immediately.
+Do not commit any failing tests. Aim for one commit per test when it passes. When white-box BVA introduces new cases, they must be added to the BVA file and committed immediately.
 
 ## 4. Clean Code
 
@@ -143,9 +144,20 @@ The rubric: "code supports adding new locales without changing existing code."
   - `methodName_stateUnderTest_expectedBehavior`, as taught in class
 - Tests do not share mutable state (no `static` test fixtures).
 
+## 7. Code coverage and mutation testing
+
+- JaCoCo and PITest run as part of `./gradlew build`. Reports are generated, but not committed to the PR:
+  - Coverage: `build/reports/jacoco/test/html/index.html`
+  - Mutation: `build/reports/pitest/index.html`
+- Before marking a PR "Ready for Review", the author should check both reports for the classes
+  they changed and states the result in the PR description (e.g. "JaCoCo: 0 missed complexity in Deck; PIT: all mutants killed").
+- Goal: 100% cyclomatic coverage and 100% killed mutants for all non-view, non-main, non-enum classes.
+- Any mutant that cannot be killed  or line that cannot be covered is explained in the PR and documented in the README's Exceptions section.
+- Gaps found in a report are fixed with a test in their own commit, e.g. "Add test to kill surviving boundary mutant in Deck.draw".
+
 ---
 
-## 7. Reviewing a pull request
+## 8. Reviewing a pull request
 
 - Every PR is approved by at least one teammate before merging.
 - `./gradlew build` (tests, Checkstyle, SpotBugs) passes in CI.
