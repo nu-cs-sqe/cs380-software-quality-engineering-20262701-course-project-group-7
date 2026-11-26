@@ -64,16 +64,16 @@ for this increment.
 |--------|-------------|
 | `- static final int INITIAL_HAND_SIZE = 7` | Number of cards drawn per player, in addition to the guaranteed Defuse. |
 | `- static final int MAX_EXTRA_DEFUSES = 2` | Maximum number of extra Defuses returned to the deck (rule 3). |
-| `- static final String INSUFFICIENT_DECK_MESSAGE` | Resource key `game.insufficientDeck`. |
-| `- static final String ALREADY_SET_UP_MESSAGE` | Resource key `game.alreadySetUp`. |
-| `- static final String NOT_SET_UP_MESSAGE` | Resource key `game.notSetUp`. |
+| `- static final String INSUFFICIENT_DECK_MESSAGE` | Internal diagnostic `Deck does not contain enough cards for setup.` |
+| `- static final String ALREADY_SET_UP_MESSAGE` | Internal diagnostic `Game has already been set up.` |
+| `- static final String NOT_SET_UP_MESSAGE` | Internal diagnostic `Game has not been set up.` |
 | `- final Deck deck` | Non-null collaborator injected by the caller. |
 | `- final List<Player> players` | Owned Player entities created from validated names, in input order. |
 | `- boolean isSetUp = false` | Becomes true only after all setup steps succeed. |
 | `+ Game(Deck deck, List<String> playerNames)` | Creates players with empty hands in input order. Does not inspect or mutate the deck. Inputs are non-null and names are already validated by the UI. |
 | `+ void setup()` | Runs Section 5 on the players created by the constructor. |
-| `+ Player getCurrentPlayer()` | Returns the first player after setup, without advancing the turn. Throws `IllegalStateException("game.notSetUp")` before successful setup. |
-| `+ List<Player> getPlayers()` | Returns an unmodifiable copy of the list in input order after setup. The Player objects remain mutable. Throws `IllegalStateException("game.notSetUp")` before successful setup. |
+| `+ Player getCurrentPlayer()` | Returns the first player after setup, without advancing the turn. Throws `IllegalStateException("Game has not been set up.")` before successful setup. |
+| `+ List<Player> getPlayers()` | Returns an unmodifiable copy of the list in input order after setup. The Player objects remain mutable. Throws `IllegalStateException("Game has not been set up.")` before successful setup. |
 | `+ boolean isSetUp()` | Returns false before successful setup and true afterward; does not change state. |
 
 The constructor preserves each validated name exactly as supplied. Later changes
@@ -90,20 +90,22 @@ game-state check.
 Setup failures:
 
 - A repeated call after successful setup throws
-  `IllegalStateException("game.alreadySetUp")` without changing existing state.
-- An insufficient deck throws `IllegalStateException("game.insufficientDeck")`
+  `IllegalStateException("Game has already been set up.")` without changing existing state.
+- An insufficient deck throws
+  `IllegalStateException("Deck does not contain enough cards for setup.")`
   before any card is moved. The deck and hands remain unchanged, so the caller
   can replenish the deck and retry.
 - Unexpected Deck exceptions are propagated. `isSetUp` remains false, but
   cards may already have moved; there is no rollback guarantee. Use a fresh
   Game and deck after such a failure rather than retrying a partially dealt game.
 
-Game-owned exception constants store resource keys, not user-facing text.
-The UI resolves known keys with
-`ResourceBundle.getBundle("message", locale).getString(exception.getMessage())`.
-The implementation supplies English and Chinese bundles, with an English base
-bundle. Unexpected collaborator exceptions require a generic localized error
-handler; the UI must not display raw diagnostic text or unresolved keys.
+Game-owned exception constants store meaningful English internal diagnostics,
+not translation keys. Internal exception messages do not require i18n and
+must not be used as resource-bundle lookup keys. This follows the author's
+clarification of the team guidance and supersedes the earlier key-based design.
+Any prompts or recovery messages shown to players belong to the UI and may
+still require localization. The UI should not expose internal exception text
+directly as player-facing copy.
 
 ## 5. `Game.setup()` algorithm
 
@@ -111,8 +113,8 @@ handler; the UI must not display raw diagnostic text or unresolved keys.
 
 | Step | Action |
 |------|--------|
-| 1 | If already set up, throw `IllegalStateException("game.alreadySetUp")`. |
-| 2 | Check that the deck has at least `n` Defuses, `n - 1` Kittens, and `INITIAL_HAND_SIZE * n` drawable cards after returning extra Defuses. Otherwise throw `IllegalStateException("game.insufficientDeck")` before mutation. |
+| 1 | If already set up, throw `IllegalStateException("Game has already been set up.")`. |
+| 2 | Check that the deck has at least `n` Defuses, `n - 1` Kittens, and `INITIAL_HAND_SIZE * n` drawable cards after returning extra Defuses. Otherwise throw `IllegalStateException("Deck does not contain enough cards for setup.")` before mutation. |
 | 3 | `deck.removeAll(EXPLODING_KITTEN)`; `removedDefuses = deck.removeAll(DEFUSE)`. |
 | 4 | Give each player 1 `DEFUSE` (`addToHand`). |
 | 5 | `deck.add(DEFUSE, min(MAX_EXTRA_DEFUSES, removedDefuses - n))`. The other Defuses are removed from the game. |
