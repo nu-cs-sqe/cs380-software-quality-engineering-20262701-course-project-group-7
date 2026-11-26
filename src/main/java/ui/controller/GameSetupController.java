@@ -17,6 +17,7 @@ public class GameSetupController {
     private static final String BUNDLE_NAME = "message";
     private static final String BLANK_NAME_KEY = "setup.name.blank";
     private static final String DUPLICATE_NAME_KEY = "setup.name.duplicate";
+    private static final String SETUP_FAILED_KEY = "setup.error.failed";
 
     private final GameSetupView view;
     private final Random random;
@@ -74,9 +75,13 @@ public class GameSetupController {
     }
 
     private void startGame(List<String> names) {
-        Game game = new Game(Deck.createStandardDeck(random), names);
-        game.setup();
-        view.showPlayers(playerNames(game), game.getCurrentPlayer().getName());
+        try {
+            Game game = new Game(Deck.createStandardDeck(random), names);
+            game.setup();
+            view.showPlayers(playerNames(game), game.getCurrentPlayer().getName());
+        } catch (IllegalStateException e) {
+            view.showError(bundle.getString(SETUP_FAILED_KEY));
+        }
     }
 
     private static List<String> playerNames(Game game) {
