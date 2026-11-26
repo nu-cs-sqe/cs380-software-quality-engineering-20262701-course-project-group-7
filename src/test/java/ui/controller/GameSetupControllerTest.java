@@ -1,0 +1,336 @@
+package ui.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import org.easymock.Capture;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.Test;
+import ui.view.GameSetupView;
+
+class GameSetupControllerTest {
+
+    private static final ResourceBundle ENGLISH =
+            ResourceBundle.getBundle("message", Locale.ENGLISH);
+    private static final ResourceBundle CHINESE =
+            ResourceBundle.getBundle("message", Locale.CHINESE);
+
+    // BLANK-01
+    @Test
+    void hasBlankNameReturnsFalseForMinimumNumberOfNames() {
+        assertFalse(GameSetupController.hasBlankName(List.of("Ana", "Ben")));
+    }
+
+    // BLANK-02
+    @Test
+    void hasBlankNameReturnsFalseForMaximumNumberOfNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Eve");
+
+        assertFalse(GameSetupController.hasBlankName(names));
+    }
+
+    // BLANK-03
+    @Test
+    void hasBlankNameReturnsFalseForOneCharacterNames() {
+        assertFalse(GameSetupController.hasBlankName(List.of("A", "B")));
+    }
+
+    // BLANK-04
+    @Test
+    void hasBlankNameReturnsFalseForNameWithLeadingSpace() {
+        assertFalse(GameSetupController.hasBlankName(List.of(" Ana", "Ben")));
+    }
+
+    // BLANK-05
+    @Test
+    void hasBlankNameReturnsTrueForEmptyFirstName() {
+        assertTrue(GameSetupController.hasBlankName(List.of("", "Ben")));
+    }
+
+    // BLANK-06
+    @Test
+    void hasBlankNameReturnsTrueForSingleSpaceName() {
+        assertTrue(GameSetupController.hasBlankName(List.of(" ", "Ben")));
+    }
+
+    // BLANK-07
+    @Test
+    void hasBlankNameReturnsTrueForMixedWhitespaceName() {
+        assertTrue(GameSetupController.hasBlankName(List.of("\t ", "Ben")));
+    }
+
+    // BLANK-08
+    @Test
+    void hasBlankNameReturnsTrueForBlankLastName() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "");
+
+        assertTrue(GameSetupController.hasBlankName(names));
+    }
+
+    // DUP-01
+    @Test
+    void hasDuplicateNameReturnsFalseForMinimumNumberOfNames() {
+        assertFalse(GameSetupController.hasDuplicateName(List.of("Ana", "Ben")));
+    }
+
+    // DUP-02
+    @Test
+    void hasDuplicateNameReturnsFalseForMaximumNumberOfNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Eve");
+
+        assertFalse(GameSetupController.hasDuplicateName(names));
+    }
+
+    // DUP-03
+    @Test
+    void hasDuplicateNameReturnsFalseForNamesDifferingOnlyByCase() {
+        assertFalse(GameSetupController.hasDuplicateName(List.of("A", "a")));
+    }
+
+    // DUP-04
+    @Test
+    void hasDuplicateNameReturnsFalseForNamesDifferingOnlyByLeadingSpace() {
+        assertFalse(GameSetupController.hasDuplicateName(List.of("Ana", " Ana")));
+    }
+
+    // DUP-05
+    @Test
+    void hasDuplicateNameReturnsTrueForAdjacentDuplicateNames() {
+        assertTrue(GameSetupController.hasDuplicateName(List.of("Ana", "Ana")));
+    }
+
+    // DUP-06
+    @Test
+    void hasDuplicateNameReturnsTrueForEqualFirstAndLastNames() {
+        List<String> names = List.of("Ana", "Ben", "Cy", "Dee", "Ana");
+
+        assertTrue(GameSetupController.hasDuplicateName(names));
+    }
+
+    // CTRL-01
+    @Test
+    void constructorRegistersHandlersThenShowsEnglishText() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        view.setOnStart(EasyMock.anyObject());
+        Capture<ResourceBundle> bundle = EasyMock.newCapture();
+        view.updateText(EasyMock.capture(bundle));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+
+        EasyMock.verify(view);
+        assertEquals("Exploding Kittens", bundle.getValue().getString("setup.title"));
+    }
+
+    // COUNT-01
+    @Test
+    void playerCountHandlerShowsTwoNameFieldsForMinimumCount() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        Capture<IntConsumer> countHandler = EasyMock.newCapture();
+        view.setOnPlayerCountSelected(EasyMock.capture(countHandler));
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        view.clearError();
+        view.showNameFields(2);
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        countHandler.getValue().accept(2);
+
+        EasyMock.verify(view);
+    }
+
+    // COUNT-02
+    @Test
+    void playerCountHandlerShowsFiveNameFieldsForMaximumCount() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        Capture<IntConsumer> countHandler = EasyMock.newCapture();
+        view.setOnPlayerCountSelected(EasyMock.capture(countHandler));
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        view.clearError();
+        view.showNameFields(5);
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        countHandler.getValue().accept(5);
+
+        EasyMock.verify(view);
+    }
+
+    // LANG-01
+    @Test
+    void localeHandlerShowsChineseTextWhenChineseSelected() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        Capture<Consumer<Locale>> localeHandler = EasyMock.newCapture();
+        view.setOnLocaleChanged(EasyMock.capture(localeHandler));
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        Capture<ResourceBundle> bundle = EasyMock.newCapture();
+        view.updateText(EasyMock.capture(bundle));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        localeHandler.getValue().accept(Locale.CHINESE);
+
+        EasyMock.verify(view);
+        assertEquals("爆炸猫", bundle.getValue().getString("setup.title"));
+    }
+
+    // LANG-02
+    @Test
+    void localeHandlerShowsEnglishTextWhenEnglishSelectedAgain() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        Capture<Consumer<Locale>> localeHandler = EasyMock.newCapture();
+        view.setOnLocaleChanged(EasyMock.capture(localeHandler));
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        view.setOnStart(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        Capture<ResourceBundle> bundle = EasyMock.newCapture();
+        view.updateText(EasyMock.capture(bundle));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        localeHandler.getValue().accept(Locale.CHINESE);
+        localeHandler.getValue().accept(Locale.ENGLISH);
+
+        EasyMock.verify(view);
+        assertEquals("Exploding Kittens", bundle.getValue().getString("setup.title"));
+    }
+
+    // START-01
+    @Test
+    void startHandlerShowsBlankNameErrorForEmptyName() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("", "Ben"));
+        view.clearError();
+        view.showError(ENGLISH.getString("setup.name.blank"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+
+    // START-02
+    @Test
+    void startHandlerShowsDuplicateNameErrorForRepeatedName() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("Ana", "Ana"));
+        view.clearError();
+        view.showError(ENGLISH.getString("setup.name.duplicate"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+
+    // START-03
+    @Test
+    void startHandlerShowsBlankNameErrorWhenNamesAreBlankAndDuplicate() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("", ""));
+        view.clearError();
+        view.showError(ENGLISH.getString("setup.name.blank"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+
+    // START-04
+    @Test
+    void startHandlerShowsBlankNameErrorWhenDuplicateComesBeforeBlank() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("Ana", "Ana", ""));
+        view.clearError();
+        view.showError(ENGLISH.getString("setup.name.blank"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+
+    // START-05
+    @Test
+    void startHandlerShowsErrorInChineseAfterChineseSelected() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        Capture<Consumer<Locale>> localeHandler = EasyMock.newCapture();
+        view.setOnLocaleChanged(EasyMock.capture(localeHandler));
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("", "Ben"));
+        view.clearError();
+        view.showError(CHINESE.getString("setup.name.blank"));
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        localeHandler.getValue().accept(Locale.CHINESE);
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+
+    // START-06
+    @Test
+    void startHandlerSetsUpGameAndShowsPlayersForValidNames() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("Ana", "Ben", "Cy"));
+        view.clearError();
+        view.showPlayers(List.of("Ana", "Ben", "Cy"), "Ana");
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
+}
