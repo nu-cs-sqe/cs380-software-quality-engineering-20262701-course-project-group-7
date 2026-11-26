@@ -1,5 +1,9 @@
 package ui.controller;
 
+import domain.Deck;
+import domain.Game;
+import domain.Player;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -15,10 +19,12 @@ public class GameSetupController {
     private static final String DUPLICATE_NAME_KEY = "setup.name.duplicate";
 
     private final GameSetupView view;
+    private final Random random;
     private ResourceBundle bundle;
 
     public GameSetupController(GameSetupView view, Random random) {
         this.view = view;
+        this.random = random;
         view.setOnLocaleChanged(this::handleLocaleChanged);
         view.setOnPlayerCountSelected(this::handlePlayerCountSelected);
         view.setOnStart(this::handleStart);
@@ -62,6 +68,22 @@ public class GameSetupController {
             view.showError(bundle.getString(BLANK_NAME_KEY));
         } else if (hasDuplicateName(names)) {
             view.showError(bundle.getString(DUPLICATE_NAME_KEY));
+        } else {
+            startGame(names);
         }
+    }
+
+    private void startGame(List<String> names) {
+        Game game = new Game(Deck.createStandardDeck(random), names);
+        game.setup();
+        view.showPlayers(playerNames(game), game.getCurrentPlayer().getName());
+    }
+
+    private static List<String> playerNames(Game game) {
+        List<String> names = new ArrayList<>();
+        for (Player player : game.getPlayers()) {
+            names.add(player.getName());
+        }
+        return names;
     }
 }

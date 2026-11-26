@@ -313,4 +313,24 @@ class GameSetupControllerTest {
 
         EasyMock.verify(view);
     }
+
+    // START-06
+    @Test
+    void startHandlerSetsUpGameAndShowsPlayersForValidNames() {
+        GameSetupView view = EasyMock.createStrictMock(GameSetupView.class);
+        view.setOnLocaleChanged(EasyMock.anyObject());
+        view.setOnPlayerCountSelected(EasyMock.anyObject());
+        Capture<Runnable> startHandler = EasyMock.newCapture();
+        view.setOnStart(EasyMock.capture(startHandler));
+        view.updateText(EasyMock.anyObject());
+        EasyMock.expect(view.getEnteredNames()).andReturn(List.of("Ana", "Ben", "Cy"));
+        view.clearError();
+        view.showPlayers(List.of("Ana", "Ben", "Cy"), "Ana");
+        EasyMock.replay(view);
+
+        new GameSetupController(view, new Random(0));
+        startHandler.getValue().run();
+
+        EasyMock.verify(view);
+    }
 }
