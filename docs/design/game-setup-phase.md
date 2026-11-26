@@ -138,20 +138,96 @@ For standard decks with 2, 3, 4, or 5 players, final draw-pile sizes are
 4, 5, 6, and 6. Game behavior and boundaries are recorded in `docs/bva/Game.md`
 on the implementation branch.
 
-### Additional: UI
+## 6. GUI
 
-1. Ask for the number of players. Reject numbers outside 2 to 5 immediately,
-   before asking for any names. These bounds belong to the UI, not Game.
-2. Ask for each player's name. Reject empty or whitespace-only names and
-   duplicates. The current policy preserves spelling and compares names
-   case-sensitively, so "A" and "a" are distinct.
-3. Create `new Game(deck, validatedNames)` with non-null inputs in name-entry
-   order, then call `game.setup()`.
-4. After successful setup, query `getPlayers()` and `getCurrentPlayer()`.
-   The returned list protects the order, not the mutable Player objects.
-5. Treat Game exception messages as internal diagnostics, not locale keys.
-   Keep any player-facing recovery text separate. Use a fresh game after
-   unexpected collaborator failures.
+The UI follows MVC.
+- The model is the domain classes (`Game`, `Deck`, `Player`).
+- The view only builds and displays JavaFX controls.
+- The controller validates user input and calls the model. All user input validation lives
+  in the controller, and the domain assumes valid input.
+
+All visible text comes from the `message` resource bundle
+(`message.properties` is the English default). More languages are added with
+a bundle file and a dropdown entry. Exception messages are not translated, the
+controller may choose which localized message to show the user.
+
+### 6.1 `Main` (class, package `ui`)
+
+**Responsibility:** entry point for JavaFX. Creates the view and the
+controller, injects a `Random` for the deck, and shows the window. 
+
+| Member | Description |
+|--------|-------------|
+| `- static final int SCREEN_WIDTH`, `SCREEN_HEIGHT` | Window size. |
+| `+ void start(Stage stage)` | Creates `GameSetupView` and `new GameSetupController(view, new Random())`, then shows `view.getRoot()`. |
+| `+ static void main(String[] args)` | Calls `launch(args)`. |
+
+### 6.2 `GameSetupView` (class, package `ui.view`)
+
+**Responsibility:** passive view with no validation or game logic. 
+Since there is no logic, this class is free from BVA.
+
+Controls: language dropdown (`ComboBox<Locale>`), one button per valid player
+count (2, 3, 4, 5), one name field per selected player, a Start button, an
+error label for message display, and a player list showing the starting turn order after setup.
+
+| Member | Description |
+|--------|-------------|
+| `+ Parent getRoot()` | Root node shown by `Main`. |
+| `+ void setOnLocaleChanged(Consumer<Locale> handler)` | Called with the selected locale when the dropdown changes. |
+| `+ void setOnPlayerCountSelected(IntConsumer handler)` | Called with 2 to 5 when a count button is pressed. |
+| `+ void setOnStart(Runnable handler)` | Called when Start is pressed. |
+| `+ void showNameFields(int count)` | Shows `count` empty name fields and the Start button. |
+| `+ List<String> getEnteredNames()` | Name field contents, in field order, exactly as typed. |
+| `+ void showError(String message)` | Displays an already translated message. |
+| `+ void clearError()` | Hides the error label. |
+| `+ void showPlayers(List<String> names, String currentPlayerName)` | Displays the turn order and marks the current player. |
+| `+ void updateText(ResourceBundle bundle)` | Sets every label and button text from the bundle. |
+
+### 6.3 `GameSetupController` (class, package `ui.controller`)
+
+**Responsibility:** connects the view to the model. Validates player names,
+creates and sets up `Game`, chooses the localized message to show, and
+switches language.
+
+| Member | Description |
+|--------|-------------|
+| `- static final String BLANK_NAME_KEY` | Resource key `setup.name.blank`. |
+| `- static final String DUPLICATE_NAME_KEY` | Resource key `setup.name.duplicate`. |
+| `- static final String SETUP_FAILED_KEY` | Resource key `setup.error.failed`. |
+| `- final GameSetupView view` | |
+| `- final Random random` | Injected; passed to `Deck.createStandardDeck`. |
+| `- ResourceBundle bundle` | Current language; English by default. |
+| `+ GameSetupController(GameSetupView view, Random random)` | Registers the three view handlers, loads the English bundle, and calls `view.updateText(bundle)`. |
+| `+ static boolean hasBlankName(List<String> names)` | Return `true` if any name is empty or whitespace only. Names are not trimmed. |
+| `+ static boolean hasDuplicateName(List<String> names)` | Return `true` if two names are equal (case-sensitive, not trimmed). |
+| `- void handlePlayerCountSelected(int count)` | Calls `view.clearError()`, then `view.showNameFields(count)`. |
+| `- void handleStart()` | See below. |
+| `- void handleLocaleChanged(Locale locale)` | Loads `ResourceBundle.getBundle("message", locale)` and calls `view.updateText(bundle)`. |
+
+`handleStart()`:
+
+1. Reads `view.getEnteredNames()` and calls `view.clearError()`.
+2. If `hasBlankName(names)`, calls `view.showError(bundle.getString(BLANK_NAME_KEY))` and stops.
+3. Otherwise, if `hasDuplicateName(names)`, calls `view.showError(bundle.getString(DUPLICATE_NAME_KEY))` and stops.
+4. Otherwise, creates `new Game(Deck.createStandardDeck(random), names)`, calls
+   `setup()`, and calls `view.showPlayers(...)` with the player names in turn
+   order and the current player's name.
+5. If step 4 throws `IllegalStateException`, calls
+   `view.showError(bundle.getString(SETUP_FAILED_KEY))` to show generic error message.
+
+Blank names are reported before duplicates. User mistakes are not exceptions,
+so nothing is thrown or caught.
+
+Step 5 is a general failure message, similar to a server error 500.
+`IllegalStateException` (what `Game`throws when setup is not possible) is caught.
+The user sees a localized "setup failed" message instead of a crash.
+With a standard deck and a new `Game` on every Start, `setup()` cannot fail, so
+no test reaches this branch. This is listed under README → Exceptions → Code
+Coverage.
+
+Player count needs no validation, since the buttons only offer 2 to 5. The
+lists passed to `hasBlankName` and `hasDuplicateName` always have 2 to 5 names.
 
 # User Story
 As a player of Exploding Kittens, I want to choose the number of players and enter each player's name when a new game starts, so that the game matches my group and I can tell whose turn it is.
@@ -182,8 +258,8 @@ The game application is launched.
 
 ## Main Flow
 1. Player selects "Start Game".
-2. System asks for the total number of players.
-3. Player enters the number of players.
+2. System asks for the total number of players, offering 2, 3, 4 and 5 as choices.
+3. Player selects the number of players.
 4. Player enters a name for each player.
 5. System removes all Exploding Kitten and Defuse cards from the deck.
 6. System gives each player 1 Defuse card.
@@ -195,9 +271,7 @@ The game application is launched.
 12. System sets the initial turn order in the order the names were entered, starting with player 1.
 
 ## Alternative Flow
-3a. Player enters a number less than 2 or greater than 5:
-  1. System immediately displays an error message, before asking for any names.
-  2. Return to step 2.
+3a. Removed: the player can only select 2 to 5, so an invalid number cannot be entered.
 4a. Player enters an empty or whitespace-only name:
   1. System displays an error message.
   2. System asks for that player's name again.
