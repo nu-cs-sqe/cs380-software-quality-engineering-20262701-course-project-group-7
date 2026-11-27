@@ -228,7 +228,7 @@ each-choice
 |-------------|-------------------|-----------------|--------------|
 | TC1 | empty deck, `insertAt(EXPLODING_KITTEN, 0)` | size = 1; draw = EXPLODING_KITTEN | yes |
 | TC2 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 0)` | draws = EXPLODING_KITTEN, ATTACK | yes |
-| TC3 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 1)` | draws = ATTACK, EXPLODING_KITTEN | no |
+| TC3 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 1)` | draws = ATTACK, EXPLODING_KITTEN | yes |
 | TC4 | Deck [ATTACK, SKIP, FAVOR], `insertAt(EXPLODING_KITTEN, 0)` | draws = EXPLODING_KITTEN, ATTACK, SKIP, FAVOR | no |
 | TC5 | Deck [ATTACK, SKIP, FAVOR], `insertAt(EXPLODING_KITTEN, 3)` | draws = ATTACK, SKIP, FAVOR, EXPLODING_KITTEN | no |
 | TC6 | standard deck after one `draw` (55 cards), `insertAt(EXPLODING_KITTEN, 55)` | size = 56; count(EXPLODING_KITTEN) = 4; last draw = EXPLODING_KITTEN | no |
