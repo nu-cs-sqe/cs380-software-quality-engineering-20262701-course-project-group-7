@@ -912,6 +912,17 @@ public class DeckTest {
         assertEquals(CardType.EXPLODING_KITTEN, deck.draw());
     }
 
+    // BVA Method 8, TC2
+    @Test
+    public void insertAt_oneCardAtTop_cardGoesAboveExistingCard() {
+        Deck deck = createDeckWith(CardType.ATTACK);
+
+        deck.insertAt(CardType.EXPLODING_KITTEN, 0);
+
+        assertEquals(CardType.EXPLODING_KITTEN, deck.draw());
+        assertEquals(CardType.ATTACK, deck.draw());
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
