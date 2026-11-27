@@ -960,6 +960,22 @@ public class DeckTest {
         assertEquals(CardType.EXPLODING_KITTEN, deck.draw());
     }
 
+    // BVA Method 8, TC6
+    @Test
+    public void insertAt_maximumDeckAtBottom_cardBecomesBottomOfFullDeck() {
+        Deck deck = createStandardDeck();
+        deck.draw();
+
+        deck.insertAt(CardType.EXPLODING_KITTEN, 55);
+
+        assertEquals(56, deck.size());
+        assertEquals(4, deck.count(CardType.EXPLODING_KITTEN));
+        for (int i = 0; i < 55; i++) {
+            deck.draw();
+        }
+        assertEquals(CardType.EXPLODING_KITTEN, deck.draw());
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);
