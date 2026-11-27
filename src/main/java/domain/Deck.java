@@ -68,6 +68,10 @@ public class Deck {
         return sizeBefore - cards.size();
     }
 
+    public void insertAt(CardType type, int position) {
+        cards.add(position, type);
+    }
+
     private static Map<CardType, Integer> createStandardCardCounts() {
         Map<CardType, Integer> counts = new EnumMap<>(CardType.class);
         counts.put(CardType.EXPLODING_KITTEN, DEFAULT_COPIES);

@@ -901,6 +901,17 @@ public class DeckTest {
         }
     }
 
+    // BVA Method 8, TC1
+    @Test
+    public void insertAt_emptyDeckAtTop_cardBecomesOnlyCard() {
+        Deck deck = createDeckWith();
+
+        deck.insertAt(CardType.EXPLODING_KITTEN, 0);
+
+        assertEquals(1, deck.size());
+        assertEquals(CardType.EXPLODING_KITTEN, deck.draw());
+    }
+
     private Deck createDeckWith(CardType... cardsFromTop) {
         EasyMock.replay(mockRandom);
         Deck deck = new Deck(mockRandom);

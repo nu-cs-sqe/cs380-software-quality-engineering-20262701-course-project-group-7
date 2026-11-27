@@ -226,7 +226,7 @@ each-choice
 
 | Test Case # | System under test | Expected output | Implemented? |
 |-------------|-------------------|-----------------|--------------|
-| TC1 | empty deck, `insertAt(EXPLODING_KITTEN, 0)` | size = 1; draw = EXPLODING_KITTEN | no |
+| TC1 | empty deck, `insertAt(EXPLODING_KITTEN, 0)` | size = 1; draw = EXPLODING_KITTEN | yes |
 | TC2 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 0)` | draws = EXPLODING_KITTEN, ATTACK | no |
 | TC3 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 1)` | draws = ATTACK, EXPLODING_KITTEN | no |
 | TC4 | Deck [ATTACK, SKIP, FAVOR], `insertAt(EXPLODING_KITTEN, 0)` | draws = EXPLODING_KITTEN, ATTACK, SKIP, FAVOR | no |
