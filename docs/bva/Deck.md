@@ -208,3 +208,27 @@ each-choice
 | TC3 | Deck [ATTACK, SKIP, FAVOR], stub `nextInt(3)` → 2, `nextInt(2)` → 1 | draws = ATTACK, SKIP, FAVOR | yes |
 | TC4 | Deck [ATTACK, SKIP, FAVOR], stub `nextInt(anyInt())` → 0 | draws = SKIP, FAVOR, ATTACK | yes |
 | TC5 | standard deck, stub `nextInt(anyInt())` → 0 | size = 56; count of every type unchanged | yes |
+
+## Method 8: `public void insertAt(CardType type, int position)`
+
+### Step 1–3 Results
+
+| Step | Input | Output |
+|------|-------|--------|
+| Step 1 | Card type, position, deck state | Deck with the card at `position` from the top; other cards keep their order |
+| Step 2 | Interval [0, size], Collection (sizes, contents) | Collection |
+| Step 3 | type: EXPLODING_KITTEN; position: 0 (LOW), size (HIGH); deck sizes: 0, 1, 3, 55 (maximum possible size, 56 after inserting; duplicates) | size + 1; card order from top to bottom |
+
+Position −1 and size + 1 are CAN'T SET: the UI validates the position before `Game` calls `insertAt`.
+
+### Step 4:
+each-choice
+
+| Test Case # | System under test | Expected output | Implemented? |
+|-------------|-------------------|-----------------|--------------|
+| TC1 | empty deck, `insertAt(EXPLODING_KITTEN, 0)` | size = 1; draw = EXPLODING_KITTEN | no |
+| TC2 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 0)` | draws = EXPLODING_KITTEN, ATTACK | no |
+| TC3 | Deck [ATTACK], `insertAt(EXPLODING_KITTEN, 1)` | draws = ATTACK, EXPLODING_KITTEN | no |
+| TC4 | Deck [ATTACK, SKIP, FAVOR], `insertAt(EXPLODING_KITTEN, 0)` | draws = EXPLODING_KITTEN, ATTACK, SKIP, FAVOR | no |
+| TC5 | Deck [ATTACK, SKIP, FAVOR], `insertAt(EXPLODING_KITTEN, 3)` | draws = ATTACK, SKIP, FAVOR, EXPLODING_KITTEN | no |
+| TC6 | standard deck after one `draw` (55 cards), `insertAt(EXPLODING_KITTEN, 55)` | size = 56; count(EXPLODING_KITTEN) = 4; last draw = EXPLODING_KITTEN | no |
