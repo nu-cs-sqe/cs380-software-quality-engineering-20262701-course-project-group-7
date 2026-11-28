@@ -9,7 +9,6 @@ for.
 The game uses the Original Edition deck with **Nope removed**. The 5 Nope
 cards are replaced by 5 invented cards, so the deck keeps 56 cards.
 The setup phase is therefore unchanged.
-In this specific phase, only Exploding Kittens and Defuse is implemented.
 This deck will be applied when the invented card types are added in the
 Cards phase and `game-setup-phase.md` rule 1 is updated at the same time.
 
@@ -29,13 +28,19 @@ Cards phase and `game-setup-phase.md` rule 1 is updated at the same time.
 
 ## 2. Capabilities and the cards that need them
 
-Every new method exists because a rule or a card needs it.
-**This is written to account for all original cards except Nope, no invented cards are included since they are not designed.**
+**In this specific phase, only Exploding Kittens and Defuse is implemented since they are mandatory parts of each turn.**
+
+Every new capability exists because they are either:
+- Required to run each turn (as specified in User Story)
+- Related to Exploding Kittens card or Defuse card
+- Shared helper method for multiple cards in the deck.
+    - This is designed such that in the next phase, independent development of cards would not accidentally create very similar/identical helper methods or become heavily dependent on methods that are simultaneously in development.
+    - Helpers used by only one card are added together with that card in the Cards phase.
 
 | Capability | Method | Class | Needed by | Phase |
 |------------|--------|-------|-----------|-------|
 | Whose turn it is | `getCurrentPlayer()` | `Game` | every turn | One Turn |
-| Pass the turn, or take another turn | `endTurn()`, `getTurnsRemaining()` | `Game` | every turn; Attack, Skip | One Turn |
+| Pass the turn | `endTurn()` | `Game` | every turn; Attack, Skip | One Turn |
 | Draw to end a turn | `drawCard()` | `Game` | every turn | One Turn |
 | Remove a player | `eliminate(Player)` | `Game` | Exploding Kitten | One Turn |
 | Reinsert a card at a position | `insertAt(CardType, int)` | `Deck` | Defuse | One Turn |
@@ -44,8 +49,6 @@ Every new method exists because a rule or a card needs it.
 | Remove a card from a hand | `removeFromHand(CardType)` | `Player` | Defuse, every played card, Favor | One Turn |
 | Empty a hand | `discardHand()` | `Player` | elimination | One Turn |
 | End of game | `isGameOver()`, `getWinner()` | `Game` | elimination | One Turn |
-| Look at the top cards | `peekTop(int)` | `Deck` | See the Future | One Turn (used in Cards) |
-| Take a random card | `removeCardAt(int)` | `Player` | cat pairs | One Turn (used in Cards) |
 | Shuffle the draw pile | `shuffle()` (exists) | `Deck` | Shuffle (used in Cards) | Setup |
 
 ## 3. Classes
@@ -65,14 +68,12 @@ Every new method exists because a rule or a card needs it.
 | Member | Description |
 |--------|-------------|
 | `+ void insertAt(CardType type, int position)` | Inserts the card so that it becomes position `position` from the top: 0 is the top, `size()` is the bottom. The position is validated by the UI. |
-| `+ List<CardType> peekTop(int count)` | Returns the top `count` cards, top first, without removing them; fewer if the deck has fewer cards. |
 
 ### 3.3 `Player` (additions)
 
 | Member | Description |
 |--------|-------------|
 | `+ void removeFromHand(CardType card)` | Removes one copy of `card`. The caller only removes cards the player holds. |
-| `+ CardType removeCardAt(int index)` | Removes and returns the card at `index` in the hand. |
 | `+ List<CardType> discardHand()` | Empties the hand and returns the removed cards. |
 
 ### 3.4 `DiscardPile` (class, package `domain`)
@@ -93,21 +94,22 @@ Every new method exists because a rule or a card needs it.
 |--------|-------------|
 | `- final DiscardPile discardPile` | Created by `Game`. |
 | `- int currentPlayerIndex` | Index of the current player among the remaining players; 0 after setup. |
-| `- int turnsRemaining` | Turns the current player still has to take; 1 except after an Attack. |
 | `+ Player getCurrentPlayer()` *(changed)* | Returns the remaining player at `currentPlayerIndex`. |
 | `+ List<Player> getRemainingPlayers()` | Players not eliminated, in turn order. |
-| `+ int getTurnsRemaining()` | Turns the current player still has to take. |
-| `+ void endTurn()` | If the current player has more than one turn remaining, decrements it; otherwise passes the turn to the next remaining player with 1 turn. |
+| `+ void endTurn()` | Passes the turn to the next remaining player. |
 | `+ DrawResult drawCard()` | See Section 4. |
 | `+ void reinsertExplodingKitten(int position)` | Called after `drawCard()` returns `DEFUSE_NEEDED`. Removes a Defuse from the current player's hand and discards it, puts the Exploding Kitten at `position` with `Deck.insertAt`, and ends the turn. |
-| `+ void eliminate(Player player)` | Moves the player's hand to the discard pile and removes the player from the remaining players. The next player is the one who would have played after them, with 1 turn. |
+| `+ void eliminate(Player player)` | Moves the player's hand to the discard pile and removes the player from the remaining players. The next player is the one who would have played after them. |
 | `+ int getDrawPileSize()` | Number of cards in the draw pile, used by the UI to validate positions (0 to this size). |
 | `+ boolean isGameOver()` | True when one player remains. |
 | `+ Player getWinner()` | The remaining player; only meaningful once `isGameOver()` is true. |
 | `+ List<CardType> getDiscardedCards()` | Copy of the discard pile, for display and tests. |
+| `- void discardFromHand(CardType card)` | Removes `card` from the current player's hand and adds it to the discard pile. Used by `reinsertExplodingKitten` for the Defuse, and shared for many cards for the next phase. |
+
+**Game is no longer declared final, so TurnController can be tested with a mocked Game.**
 
 `Game` trusts its caller to use these methods in the right order. The only caller is the UI's `TurnController`, which
-only asks for a position after `DEFUSE_NEEDED`, only enables Draw otherwise, and only calls `getWinner()` once `isGameOver()` is true. 
+only asks for a position after `DEFUSE_NEEDED`, only enables Draw otherwise, and only calls `getWinner()` once `isGameOver()` is true.
 The controller will be implemented with tests check that order.
 
 ## 4. `drawCard()` behavior
@@ -128,9 +130,11 @@ The turn screen follows the same MVC structure as the setup UI.
 | Member | Description |
 |--------|-------------|
 | `+ Parent getRoot()` | Root node. |
+| `+ void setOnRevealHand(Runnable handler)` | Called when Show hand is pressed. |
 | `+ void setOnDraw(Runnable handler)` | Called when Draw is pressed. |
 | `+ void setOnReinsert(Runnable handler)` | Called when the reinsert position is confirmed. |
-| `+ void showTurn(String playerName, List<CardType> hand)` | Shows whose turn it is and only that player's hand. Card names come from the bundle (Section 7). |
+| `+ void showTurn(String playerName)` | Starts a turn: shows whose turn it is and the Show hand button; hides the previous hand and the Draw button. |
+| `+ void showHand(List<CardType> hand)` | Shows the active player's hand and the Draw button. Card names come from the bundle (Section 7). |
 | `+ void showReinsertPrompt(int maxPosition)` | Asks for a position from 0 to `maxPosition`. |
 | `+ String getEnteredPosition()` | The position text as typed. |
 | `+ void showEliminated(String playerName)` | Shows that a player was eliminated. |
@@ -142,10 +146,11 @@ The turn screen follows the same MVC structure as the setup UI.
 
 | Member | Description |
 |--------|-------------|
-| `+ TurnController(TurnView view, Game game, ResourceBundle bundle)` | Registers the handlers and shows the first turn. |
+| `+ TurnController(TurnView view, Game game, ResourceBundle bundle)` | Registers the handlers and starts the first turn with `view.showTurn(...)`. |
 | `+ static boolean isValidPosition(String text, int drawPileSize)` | True if `text` is a whole number from 0 to `drawPileSize`. |
-| `- void handleDraw()` | Calls `game.drawCard()` and responds to the `DrawResult`: show the next turn, show the reinsert prompt, or show the elimination and then the winner if `isGameOver()`. |
-| `- void handleReinsert()` | Validates the entered position; shows an error and asks again if invalid, otherwise calls `game.reinsertExplodingKitten(position)` and shows the next turn. |
+| `- void handleRevealHand()` | Calls `view.showHand(game.getCurrentPlayer().getHand())`. |
+| `- void handleDraw()` | Calls `game.drawCard()` and responds to the `DrawResult`: start the next turn with `view.showTurn(...)` (hand hidden), show the reinsert prompt, or show the elimination and then either the winner (if `isGameOver()`) or the next turn. |
+| `- void handleReinsert()` | Validates the entered position; shows an error and asks again if invalid, otherwise calls `game.reinsertExplodingKitten(position)` and starts the next turn with `view.showTurn(...)` (hand hidden). |
 
 All controller methods will have BVA and will be tested with a mocked view.
 
